@@ -10,9 +10,3 @@ jobs:
     secret: "${CRON_SECRET}"
     timeout_sec: 120
     description: "Nightly DB backup to external storage"
-
-  - name: linkedin-post
-    schedule: "0 9 * * 1-5"
-    secret: "${CRON_SECRET}"
-    timeout_sec: 60
-    description: "Post daily update"
