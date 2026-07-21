@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: cron-system
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    envVars:
+      - key: CRON_SECRET
+        generateValue: true
+      - key: RENDER_URL
+        fromService:
+          type: web
+          name: cron-system
+          property: host
+      - key: LOG_SINK_URL
+        sync: false
+      - key: LOG_SINK_TYPE
+        value: discord
+      - key: DATABASE_URL
+        sync: false
+      - key: BACKUP_DEST
+        sync: false
+      - key: LINKEDIN_ACCESS_TOKEN
+        sync: false
+      - key: LINKEDIN_PERSON_URN
+        sync: false
+    healthCheckPath: /health
