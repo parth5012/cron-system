@@ -6,10 +6,10 @@ jobs:
     description: "Keep Render awake 24/7"
 
   - name: freelance-ingest
-    schedule: "*/30 * * * *"
+    schedule: "0 11,17 * * *"
     secret: "${CRON_SECRET}"
     timeout_sec: 60
-    description: "Scan freelance email alerts and push relevant opportunities to Discord"
+    description: "Scan freelance email alerts and push relevant opportunities to Discord at 11:00 AM and 5:00 PM"
 
   - name: backup
     schedule: "0 3 * * *"
