@@ -17,12 +17,16 @@ services:
         sync: false
       - key: LOG_SINK_TYPE
         value: discord
+      - key: DISCORD_WEBHOOK_URL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REFRESH_TOKEN
+        sync: false
       - key: DATABASE_URL
         sync: false
       - key: BACKUP_DEST
-        sync: false
-      - key: LINKEDIN_ACCESS_TOKEN
-        sync: false
-      - key: LINKEDIN_PERSON_URN
         sync: false
     healthCheckPath: /health
