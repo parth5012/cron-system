@@ -1,10 +1,4 @@
 jobs:
-  - name: warmup
-    schedule: "*/10 * * * *"
-    secret: "${CRON_SECRET}"
-    timeout_sec: 30
-    description: "Keep Render awake"
-
   - name: backup
     schedule: "0 3 * * *"
     secret: "${CRON_SECRET}"
