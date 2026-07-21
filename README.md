@@ -26,20 +26,16 @@ A lightweight, stateless FastAPI application designed to execute scheduled scrip
 - **Background Execution for Long Jobs:** Tasks exceeding ~25 seconds return `202 Accepted` immediately and process asynchronously to prevent HTTP timeouts.
 - **External Observability:** Emits run records (success, error, duration, logs) to an external Discord webhook / HTTP log sink.
 
-## ⚙️ Cron-Job.org Setup Options
+## ⚙️ Cron-Job.org Registration
 
-### Option A: Automated API Sync (Recommended)
+Cron-job.org API registration is managed externally by AIOS using `AI-OS/scripts/cronjob_org_sync.py`.
 
-1. Get your API Key from [cron-job.org Console](https://console.cron-job.org/) -> **Settings** -> **API**.
-2. Run the sync script locally or in CI:
-   ```bash
-   export CRONJOB_ORG_API_KEY="your-api-key"
-   export RENDER_URL="https://your-app.onrender.com"
-   export CRON_SECRET="your-cron-secret"
+### Option A: Automated API Sync via AI-OS
 
-   python scripts/cronjob_org_sync.py
-   ```
-   This automatically creates/updates all jobs listed in `cron.yaml` on cron-job.org with proper schedule, target URLs, and headers.
+Run from AI-OS:
+```bash
+python D:\work\projects\AI-OS\scripts\cronjob_org_sync.py --cron-yaml D:\work\projects\cron-system\cron.yaml
+```
 
 ---
 
@@ -82,10 +78,7 @@ A lightweight, stateless FastAPI application designed to execute scheduled scrip
        sys.exit(main())
    ```
 
-3. **Sync to cron-job.org:**
-   Run `python scripts/cronjob_org_sync.py` or register manually in the dashboard.
-
-4. **Deploy / Push repository.** Zero FastAPI route code edits needed!
+3. **Deploy / Push repository.** Zero FastAPI route code edits needed!
 
 ---
 
