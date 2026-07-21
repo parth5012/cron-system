@@ -26,6 +26,38 @@ A lightweight, stateless FastAPI application designed to execute scheduled scrip
 - **Background Execution for Long Jobs:** Tasks exceeding ~25 seconds return `202 Accepted` immediately and process asynchronously to prevent HTTP timeouts.
 - **External Observability:** Emits run records (success, error, duration, logs) to an external Discord webhook / HTTP log sink.
 
+## ⚙️ Cron-Job.org Setup Options
+
+### Option A: Automated API Sync (Recommended)
+
+1. Get your API Key from [cron-job.org Console](https://console.cron-job.org/) -> **Settings** -> **API**.
+2. Run the sync script locally or in CI:
+   ```bash
+   export CRONJOB_ORG_API_KEY="your-api-key"
+   export RENDER_URL="https://your-app.onrender.com"
+   export CRON_SECRET="your-cron-secret"
+
+   python scripts/cronjob_org_sync.py
+   ```
+   This automatically creates/updates all jobs listed in `cron.yaml` on cron-job.org with proper schedule, target URLs, and headers.
+
+---
+
+### Option B: Manual Setup via Dashboard
+
+1. Log in to [cron-job.org](https://cron-job.org).
+2. Click **Create Cronjob**.
+3. Fill in details for each job in `cron.yaml`:
+   - **Title:** `warmup` (or job name)
+   - **URL:** `https://<your-render-app>.onrender.com/cron/warmup`
+   - **Schedule:** Choose matching schedule (e.g. Every 10 minutes for `warmup`)
+   - **HTTP Headers:** Add header:
+     - Header Name: `X-Cron-Secret`
+     - Header Value: `<your-CRON_SECRET>`
+4. Save the job.
+
+---
+
 ## 🛠️ How to Add a New Job
 
 1. **Add an entry to `cron.yaml`:**
@@ -50,12 +82,12 @@ A lightweight, stateless FastAPI application designed to execute scheduled scrip
        sys.exit(main())
    ```
 
-3. **Register on cron-job.org:**
-   - **URL:** `https://<your-render-app>.onrender.com/cron/my-new-job`
-   - **Header:** `X-Cron-Secret: <your-CRON_SECRET>`
-   - **Schedule:** `0 12 * * *`
+3. **Sync to cron-job.org:**
+   Run `python scripts/cronjob_org_sync.py` or register manually in the dashboard.
 
-4. **Deploy / Push to repository.** Zero Python route code edits needed!
+4. **Deploy / Push repository.** Zero FastAPI route code edits needed!
+
+---
 
 ## 🔍 How to Check Logs
 
