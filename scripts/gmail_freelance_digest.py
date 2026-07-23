@@ -49,6 +49,7 @@ SENDER_DOMAINS = [
     "upwork.com", "fiverr.com", "freelancer.com", "linkedin.com",
     "indeed.com", "toptal.com", "guru.com", "peopleperhour.com",
     "simplyhired.com", "flexjobs.com", "wellfound.com",
+    "internshala.com", "truelancer.com",
 ]
 
 # ---------------------------------------------------------------------------

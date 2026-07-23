@@ -2,11 +2,17 @@ jobs:
   - name: warmup
     schedule: "*/10 * * * *"
     secret: "${CRON_SECRET}"
-    timeout_sec: 30
+    timeout_sec: 20
     description: "Keep Render awake 24/7"
 
   - name: freelance-ingest
     schedule: "0 11,17 * * *"
     secret: "${CRON_SECRET}"
-    timeout_sec: 60
-    description: "Scan freelance email alerts & push relevant opportunities to Discord at 11:00 & 5:00 PM"
+    timeout_sec: 120
+    description: "Scan freelance email alerts & push relevant opportunities to Discord"
+
+  - name: backup
+    schedule: "0 3 * * *"
+    secret: "${CRON_SECRET}"
+    timeout_sec: 120
+    description: "Nightly backup to external storage"
