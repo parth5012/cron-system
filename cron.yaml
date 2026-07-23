@@ -9,10 +9,4 @@ jobs:
     schedule: "0 11,17 * * *"
     secret: "${CRON_SECRET}"
     timeout_sec: 60
-    description: "Scan freelance email alerts and push relevant opportunities to Discord at 11:00 AM and 5:00 PM"
-
-  - name: backup
-    schedule: "0 3 * * *"
-    secret: "${CRON_SECRET}"
-    timeout_sec: 120
-    description: "Nightly DB backup to external storage"
+    description: "Scan freelance email alerts & push relevant opportunities to Discord at 11:00 & 5:00 PM"
