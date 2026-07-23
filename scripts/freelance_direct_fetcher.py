@@ -353,10 +353,12 @@ def main():
             print("Cache cleared.")
             
     strong, soft, exclude, threshold = load_filter()
-    webhook = get_env_var("DISCORD_WEBHOOK_URL")
+    webhook = get_env_var("DIRECT_DISCORD_WEBHOOK_URL")
+    if not webhook:
+        webhook = get_env_var("DISCORD_WEBHOOK_URL")
     
     if args.post and not webhook:
-        print("ERROR: --post mode requires DISCORD_WEBHOOK_URL in environment or .env file.")
+        print("ERROR: --post mode requires DIRECT_DISCORD_WEBHOOK_URL or DISCORD_WEBHOOK_URL in environment or .env file.")
         sys.exit(1)
         
     print(f"[{'POST MODE' if args.post else 'DRY RUN'}] threshold={threshold}")
