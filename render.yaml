@@ -7,7 +7,6 @@ services:
     region: oregon
     envVars:
       - key: CRON_SECRET
-        generateValue: true
       - key: RENDER_URL
         fromService:
           type: web
