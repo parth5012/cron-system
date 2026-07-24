@@ -1,0 +1,5 @@
+# Exclude documentation and configs for AST-only extraction without LLM keys
+references/
+*.md
+*.yaml
+*.txt
