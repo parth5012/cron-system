@@ -559,7 +559,7 @@ def main():
             processed.add(mid)
             continue
 
-        link = f"https://mail.google.com/mail/u/0/#inbox/{mid}"
+        link = f"https://mail.google.com/mail/u/0/#all/{mid}"
 
         # Extract individual projects from the email (Freelancer.com digests
         # contain many). If none parsed, fall back to the whole email.
