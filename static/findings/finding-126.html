@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[SIH-1655] Detecting oil spills at marine environment using Automatic Identification System (AIS) and satellite datasets — Findings Report</title>
+  <style>
+    :root {
+      --color-critical: #dc3545;
+      --color-high: #fd7e14;
+      --color-medium: #ffc107;
+      --color-low: #0dcaf0;
+      --color-info: #6c757d;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-card: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --border: #dee2e6;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    [data-theme="dark"] {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --bg-card: #0f3460;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --border: #2a2a4a;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--text-primary); background: var(--bg-secondary); }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
+    .breadcrumb { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; }
+    .breadcrumb a { color: var(--color-low); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .finding-id { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+    .title-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .title-card h1 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
+    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+    .badge.critical { background: rgba(220,53,69,0.15); color: var(--color-critical); }
+    .badge.high { background: rgba(253,126,20,0.15); color: var(--color-high); }
+    .badge.medium { background: rgba(255,193,7,0.15); color: var(--color-medium); }
+    .badge.low { background: rgba(13,202,240,0.15); color: var(--color-low); }
+    .badge.info { background: rgba(108,117,125,0.15); color: var(--color-info); }
+    .category-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); }
+    .source-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); }
+    .location-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 12px; }
+    .location-block code { color: var(--text-primary); }
+    .location-block button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-secondary); cursor: pointer; font-size: 11px; }
+    .location-block button:hover { background: var(--border); }
+    .description { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .description p { margin-bottom: 12px; }
+    .description p:last-child { margin-bottom: 0; }
+    .code-section { margin-bottom: 20px; }
+    .code-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; font-size: 12px; }
+    .code-header button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); cursor: pointer; font-size: 11px; }
+    .code-header button:hover { background: var(--bg-secondary); }
+    pre { margin: 0; padding: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow-x: auto; }
+    code { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
+    .recommendation { background: rgba(13,202,240,0.05); border: 1px solid rgba(13,202,240,0.2); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
+    .recommendation h4 { font-size: 12px; text-transform: uppercase; color: var(--color-low); margin-bottom: 8px; }
+    .recommendation p { font-size: 14px; }
+    .metadata-footer { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .meta { font-size: 11px; color: var(--text-secondary); }
+    .finding-nav { display: flex; justify-content: space-between; padding: 16px 0; }
+    .finding-nav a { color: var(--color-low); text-decoration: none; font-size: 13px; }
+    .finding-nav a:hover { text-decoration: underline; }
+    .theme-toggle { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+    @media print { .theme-toggle { display: none; } body { background: white; } }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">← Back to Dashboard</a>
+      <span class="finding-id">finding-126</span>
+    </div>
+    <div class="title-card">
+      <h1>[SIH-1655] Detecting oil spills at marine environment using Automatic Identification System (AIS) and satellite datasets</h1>
+      <div class="badges">
+        <span class="badge high">high</span>
+        <span class="category-tag">AI/ML & Industrial Analytics</span>
+        <span class="source-tag">SIH software PS analysis</span>
+      </div>
+    </div>
+    <div class="location-block">
+      <code>SIH-1655</code>
+      <button onclick="copyToClipboard('SIH-1655')">Copy</button>
+    </div>
+    <div class="description">
+      <p>**Sponsoring Body:** Ministry of Earth Sciences
+
+**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+
+Background: The impact of oil spills at sea is multifaceted, affecting the environment, economy, public health, and society at large. Preventing spills through stringent regulations, improved technology, and better safety practices is crucial to mitigate these devastating effects. Automatic oil spill detection using Automatic Identification System (AIS) and satellite datasets is essential for environmental protection, public health and safety, economic stability, regulatory enforcement, technological advancement, and operational efficiency. This approach enables timely and effective responses to oil spills, mitigating their impact and promoting sustainable maritime practices. Integrating AIS and satellite datasets significantly enhances the early detection of oil spills at sea by combining real-time vessel tracking with advanced remote sensing capabilities.
+Detailed description:
+The automatic identification of oil leaks and spills from ships and vessels using AIS (Automatic Identification System) and satellite datasets involves integrating real-time tracking and advanced remote sensing technologies to monitor marine environments effectively. AIS provides crucial information such as the vessel's unique identifiers (IMO number, call sign), real-time positional data (latitude, longitude), speed over ground (SOG), course over ground (COG), heading, type of vessel, dimensions, draught, destination, estimated time of arrival (ETA), and cargo details.
+To detect a vessel in distress, AIS data have to be monitored for anomalies, such as sudden changes in speed or course, erratic movements, or unexpected stops. These irregularities can signal potential distress, prompting further investigation. Once detecting the distress, the same location/vessel have to be monitored using space borne satellite datasets for oil leaks, orientation of the vessel and its change in datum. The integration of AIS data with satellite datasets, enhances the ability to detect oil leaks early and can respond to situations efficiently. As far as study area, any of the below options may be considered.
+Option 1 : off Mumbai: https://drive.google.com/file/d/1HUisEfMA20ilODdeoRYVneG2i1ZbRBNB/view?usp=drive_link
+Option 2 :Gulf of Mexico – North American waters:
+https://drive.google.com/file/d/1_iEcojaZNaezOqKwxHtCenjgOW58lPgA/view?usp=drive_link
+Expected solution: Automated oil spill detection system for early detection of oil spills
+A software/tool/system to be developed for detecting oil spills/vessel in distress with suitable methodology that involves programming in python. The tool/system should detect the anomalies in AIS around the vessel. The distress/anomaly zone has to be monitored for oil spills using Satellite datasets. This can help in early detection of oil leak from a ship or vessel. The information can be passed on to the regulatory authorities for quicker and efficient response.</p>
+    </div>
+    
+    <div class="recommendation">
+      <h4>Recommendation</h4>
+      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
+
+**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
+
+**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
+    </div>
+    <div class="metadata-footer">
+      <div class="tags">
+      <span class="badge info">industrial</span> <span class="badge info">earth-sciences</span>
+    </div>
+      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+    </div>
+    <div class="finding-nav">
+    <a href="finding-125.html" class="prev">← Previous</a>
+    <a href="finding-127.html" class="next">Next →</a>
+  </div>
+  </div>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+    const saved = localStorage.getItem('theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = original, 1500);
+      });
+    }
+    function copyCode() {
+      const code = document.querySelector('pre code').textContent;
+      copyToClipboard(code);
+    }
+  </script>
+</body>
+</html>

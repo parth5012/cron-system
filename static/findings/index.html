@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIH 2026 Software Problem Statements - Win Analysis</title>
+  <style>
+    :root {
+      --color-critical: #dc3545;
+      --color-high: #fd7e14;
+      --color-medium: #ffc107;
+      --color-low: #0dcaf0;
+      --color-info: #6c757d;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-card: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --border: #dee2e6;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    [data-theme="dark"] {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --bg-card: #0f3460;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --border: #2a2a4a;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); font-size: 14px; line-height: 1.5; color: var(--text-primary); background: var(--bg-secondary); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .header { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px; box-shadow: var(--shadow); }
+    .header h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+    .header .meta { font-size: 12px; color: var(--text-secondary); }
+    .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .card .count { font-size: 28px; font-weight: 700; }
+    .card .label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; }
+    .card.critical { border-left: 4px solid var(--color-critical); }
+    .card.critical .count { color: var(--color-critical); }
+    .card.high { border-left: 4px solid var(--color-high); }
+    .card.high .count { color: var(--color-high); }
+    .card.medium { border-left: 4px solid var(--color-medium); }
+    .card.medium .count { color: var(--color-medium); }
+    .card.low { border-left: 4px solid var(--color-low); }
+    .card.low .count { color: var(--color-low); }
+    .card.info { border-left: 4px solid var(--color-info); }
+    .card.info .count { color: var(--color-info); }
+    .category-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 24px; margin-bottom: 24px; box-shadow: var(--shadow); }
+    .category-section h3 { font-size: 12px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px; }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; font-size: 12px; cursor: pointer; transition: background 0.15s; }
+    .tag:hover { background: var(--border); }
+    .tag .count { font-weight: 600; }
+    .findings-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .findings-section h3 { font-size: 12px; text-transform: uppercase; color: var(--text-secondary); padding: 16px 24px; border-bottom: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-secondary); padding: 12px 16px; background: var(--bg-secondary); position: sticky; top: 0; }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    tr { cursor: pointer; transition: background 0.1s; }
+    tr:hover { background: var(--bg-secondary); }
+    tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+    .badge.critical { background: rgba(220,53,69,0.15); color: var(--color-critical); }
+    .badge.high { background: rgba(253,126,20,0.15); color: var(--color-high); }
+    .badge.medium { background: rgba(255,193,7,0.15); color: var(--color-medium); }
+    .badge.low { background: rgba(13,202,240,0.15); color: var(--color-low); }
+    .badge.info { background: rgba(108,117,125,0.15); color: var(--color-info); }
+    .file-ref { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+    .theme-toggle { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+    .footer { text-align: center; padding: 24px; font-size: 11px; color: var(--text-secondary); }
+    @media print { .theme-toggle { display: none; } .card { break-inside: avoid; } body { background: white; } }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
+  <div class="container">
+    <div class="header">
+      <h1>SIH 2026 Software Problem Statements - Win Analysis</h1>
+      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · 236 findings</div>
+    </div>
+    <div class="summary-cards">
+      
+    <div class="card critical" onclick="filterBySeverity('critical')">
+      <div class="count">117</div>
+      <div class="label">Critical</div>
+    </div>
+  
+    <div class="card high" onclick="filterBySeverity('high')">
+      <div class="count">86</div>
+      <div class="label">High</div>
+    </div>
+  
+    <div class="card medium" onclick="filterBySeverity('medium')">
+      <div class="count">10</div>
+      <div class="label">Medium</div>
+    </div>
+  
+    <div class="card low" onclick="filterBySeverity('low')">
+      <div class="count">23</div>
+      <div class="label">Low</div>
+    </div>
+  
+    <div class="card info" onclick="filterBySeverity('info')">
+      <div class="count">0</div>
+      <div class="label">Info</div>
+    </div>
+  
+    </div>
+    <div class="category-section">
+      <h3>Categories</h3>
+      <div class="tag-cloud">
+        
+    <span class="tag" onclick="filterByCategory('Miscellaneous Software & Enterprise App')">Miscellaneous Software & Enterprise App <span class="count">23</span></span>
+  
+    <span class="tag" onclick="filterByCategory('Smart Education / Career Analytics')">Smart Education / Career Analytics <span class="count">117</span></span>
+  
+    <span class="tag" onclick="filterByCategory('Open Source & Skill Discovery')">Open Source & Skill Discovery <span class="count">22</span></span>
+  
+    <span class="tag" onclick="filterByCategory('Disaster Management & Early Warning')">Disaster Management & Early Warning <span class="count">3</span></span>
+  
+    <span class="tag" onclick="filterByCategory('AgriTech & Rural Health Tech')">AgriTech & Rural Health Tech <span class="count">6</span></span>
+  
+    <span class="tag" onclick="filterByCategory('AI/ML & Industrial Analytics')">AI/ML & Industrial Analytics <span class="count">24</span></span>
+  
+    <span class="tag" onclick="filterByCategory('LegalTech / Document AI / GovTech')">LegalTech / Document AI / GovTech <span class="count">40</span></span>
+  
+    <span class="tag" onclick="filterByCategory('Cyber Security & Anomaly Detection')">Cyber Security & Anomaly Detection <span class="count">1</span></span>
+  
+      </div>
+    </div>
+    <div class="findings-section">
+      <h3>All Findings</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Severity</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-001.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1524] Innovating for Sustainability: Driving Smart Resource Conservation (Energy & Water) in Home Appliances (Refrigerators, Air Conditioners, Was</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1524</span></td>
+      <td><a href="finding-001.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-002.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1525] Innovating for Sustainability: Driving Smart Resource Conservation (Energy & Water) in Home Appliances (Refrigerators, Air Conditioners, Was</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1525</span></td>
+      <td><a href="finding-002.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-003.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1526] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1526</span></td>
+      <td><a href="finding-003.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-004.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1527] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1527</span></td>
+      <td><a href="finding-004.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-005.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1528] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1528</span></td>
+      <td><a href="finding-005.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-006.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1529] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1529</span></td>
+      <td><a href="finding-006.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-007.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1530] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1530</span></td>
+      <td><a href="finding-007.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-008.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1531] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1531</span></td>
+      <td><a href="finding-008.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-009.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1532] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1532</span></td>
+      <td><a href="finding-009.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-010.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1533] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1533</span></td>
+      <td><a href="finding-010.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-011.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1534] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1534</span></td>
+      <td><a href="finding-011.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-012.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1535] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1535</span></td>
+      <td><a href="finding-012.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-013.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1536] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1536</span></td>
+      <td><a href="finding-013.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-014.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1537] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1537</span></td>
+      <td><a href="finding-014.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-015.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1538] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1538</span></td>
+      <td><a href="finding-015.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-016.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1539] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1539</span></td>
+      <td><a href="finding-016.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-017.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1540] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1540</span></td>
+      <td><a href="finding-017.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-018.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1541] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1541</span></td>
+      <td><a href="finding-018.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-019.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1542] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1542</span></td>
+      <td><a href="finding-019.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-020.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1543] Research and redesign a conventional aerospace component commonly found in air vehicles and utilize Fusion software to reimagine its design.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1543</span></td>
+      <td><a href="finding-020.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-021.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1544] Students are supposed to use Fusion software to generate NC code with machine details & tool library for any industrial component.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1544</span></td>
+      <td><a href="finding-021.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-022.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1545] Development of a non-electrical device for tracking the movement of the sun for movement of the solar panels, increasing their efficiency.</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1545</span></td>
+      <td><a href="finding-022.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-023.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1546] Development of innovative design for flushing systems in western toilet sheets which can be used for deployment in public toilets.</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1546</span></td>
+      <td><a href="finding-023.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="Disaster Management & Early Warning" onclick="window.location.href='finding-024.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1547] Development of an alternative technology to check blockage of blood vessels (an alternative to conventional angiography.</td>
+      <td>Disaster Management & Early Warning</td>
+      <td><span class="file-ref">SIH-1547</span></td>
+      <td><a href="finding-024.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="AgriTech & Rural Health Tech" onclick="window.location.href='finding-025.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1548] Development of a suction based low-cost flush (with less water usage) for deployment in rural areas.</td>
+      <td>AgriTech & Rural Health Tech</td>
+      <td><span class="file-ref">SIH-1548</span></td>
+      <td><a href="finding-025.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-026.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1549] Development of chemical strip (non-electronic) for identification of high temperature exposure in transportation of medicines/vaccines/FMCG </td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1549</span></td>
+      <td><a href="finding-026.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-027.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1550] Development of portable device (non-contact device) for measurement of eye pressure in glaucoma patients for usage at home.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1550</span></td>
+      <td><a href="finding-027.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-028.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1554] Smart Irrigation System for Precision Farming</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1554</span></td>
+      <td><a href="finding-028.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-029.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1555] Create a Virtual Herbal Garden that provides an interactive, educational, and immersive experience to users, showcasing the diverse range of</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1555</span></td>
+      <td><a href="finding-029.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-030.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1556] Develop a Smart Yoga Mat integrated with Artificial Intelligence (AI) capabilities to support smart watch integration for tracking progress </td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1556</span></td>
+      <td><a href="finding-030.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-031.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1557] Development of Tyre Maintenance and Operation App, including fitment of necessary IIoT related hardware in Dumpers</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1557</span></td>
+      <td><a href="finding-031.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-032.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1558] Al-based automated defective exhibit identification system placed in a gallery.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1558</span></td>
+      <td><a href="finding-032.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-033.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1559] Develop a functional solution that demonstrates the hardware enabled root of trust.</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1559</span></td>
+      <td><a href="finding-033.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-034.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1560] Rapid colorimetric and artificial intelligence-based methods for determining the microbial quality of raw milk, processed milk, and milk pro</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1560</span></td>
+      <td><a href="finding-034.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-035.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1561] Affordable, Sustainable, and User-friendly Solutions for Semen Dose Storage and Distribution</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1561</span></td>
+      <td><a href="finding-035.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-036.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1562] Solution for end-to-end tracking of dual use chemicals used in both legitimate industries and illicit drug production from point of manufact</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1562</span></td>
+      <td><a href="finding-036.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-037.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1563] Automatic Change detection in Synthetic Aperture Radar satellite images</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1563</span></td>
+      <td><a href="finding-037.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-038.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1564] Automatic Road Extraction and alert generation for new roads</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1564</span></td>
+      <td><a href="finding-038.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-039.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1565] Target detection by optimizing Anomaly Detection in Hyperspectral Image Processing using AI/ML</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1565</span></td>
+      <td><a href="finding-039.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-040.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1566] Enhancing body detection in CSSR Operations Using Advanced Technology</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1566</span></td>
+      <td><a href="finding-040.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-041.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1567] Grey Water Management (GWM) - Designing low-cost testing kits capable of detecting bacterial, faecal, and microbial contaminants in groundwa</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1567</span></td>
+      <td><a href="finding-041.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-042.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1568] GOBARdhan - Simple control systems and/or instrumentation for small biogas plants that will allow better process control leading to effectiv</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1568</span></td>
+      <td><a href="finding-042.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-043.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1569] Personalized testing kits for testing Residual Chlorine level at delivery points</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1569</span></td>
+      <td><a href="finding-043.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-044.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1570] Designing and development of a pressure transducer based equipment with a well cap for measurement of heads in autoflow wells</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1570</span></td>
+      <td><a href="finding-044.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-045.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1571] Drone-based Intelligent ET sensing system and irrigation water use accounting system for irrigation commands.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1571</span></td>
+      <td><a href="finding-045.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-046.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1572] Design/Development of an efficient Energy Storage System (ESS) to integrate intermittent Renewable Energy sources and to support/stabilize t</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1572</span></td>
+      <td><a href="finding-046.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-047.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1573] Sustainable Utilization of 100% of Ash from Coal based Thermal Power Plants.</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1573</span></td>
+      <td><a href="finding-047.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-048.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1574] Build a detailed concept for an industrial scale green hydrogen (> 50 TPD) production facility, with a levelized cost of hydrogen (LCOH) bel</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1574</span></td>
+      <td><a href="finding-048.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="AgriTech & Rural Health Tech" onclick="window.location.href='finding-049.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1575] Developing innovative solution for efficient management of waste and conversion to valuable products, Waste to Energy- waste recycling</td>
+      <td>AgriTech & Rural Health Tech</td>
+      <td><span class="file-ref">SIH-1575</span></td>
+      <td><a href="finding-049.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-050.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1576] Reducing the carbon emissions from thermal plants, developing ways of Carbon capture and utilisation through value added products</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1576</span></td>
+      <td><a href="finding-050.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-051.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1577] Development of co-electrolyzer : which would synthesize organic chemicals like methanol and inorganic chemicals like ammonia in a single sta</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1577</span></td>
+      <td><a href="finding-051.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-052.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1578] Video call intercom based on analog/IP system with vibration sensor</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1578</span></td>
+      <td><a href="finding-052.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-053.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1579] Developing writing pen and writing pad for children with Specific learning disability.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1579</span></td>
+      <td><a href="finding-053.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="Disaster Management & Early Warning" onclick="window.location.href='finding-054.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1580] Wearable sensor with Artificial Intelligence for prevention of falls in elderly people</td>
+      <td>Disaster Management & Early Warning</td>
+      <td><span class="file-ref">SIH-1580</span></td>
+      <td><a href="finding-054.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-055.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1581] Development of cost-effective myoelectric prosthesis.</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1581</span></td>
+      <td><a href="finding-055.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="AgriTech & Rural Health Tech" onclick="window.location.href='finding-056.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1582] System to check the healthiness of earthing system and alert staff in case of any malfunction;</td>
+      <td>AgriTech & Rural Health Tech</td>
+      <td><span class="file-ref">SIH-1582</span></td>
+      <td><a href="finding-056.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-057.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1583] Condition-based monitoring and maintenance system.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1583</span></td>
+      <td><a href="finding-057.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-058.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1584] Al based acoustic wave monitoring of rail defects like cracks, fracture and prediction for rail wear, quality along with other parameter.</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1584</span></td>
+      <td><a href="finding-058.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-059.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1585] Development of Portable EMI/EMC, induction measurement Instruments.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1585</span></td>
+      <td><a href="finding-059.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-060.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1586] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1586</span></td>
+      <td><a href="finding-060.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-061.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1587] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1587</span></td>
+      <td><a href="finding-061.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-062.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1588] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1588</span></td>
+      <td><a href="finding-062.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-063.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1589] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1589</span></td>
+      <td><a href="finding-063.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-064.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1590] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1590</span></td>
+      <td><a href="finding-064.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-065.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1591] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1591</span></td>
+      <td><a href="finding-065.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-066.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1592] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1592</span></td>
+      <td><a href="finding-066.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-067.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1593] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1593</span></td>
+      <td><a href="finding-067.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-068.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1594] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1594</span></td>
+      <td><a href="finding-068.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-069.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1595] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1595</span></td>
+      <td><a href="finding-069.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-070.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1596] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1596</span></td>
+      <td><a href="finding-070.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-071.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1597] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1597</span></td>
+      <td><a href="finding-071.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-072.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1598] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1598</span></td>
+      <td><a href="finding-072.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-073.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1599] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1599</span></td>
+      <td><a href="finding-073.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-074.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1600] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1600</span></td>
+      <td><a href="finding-074.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-075.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1601] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1601</span></td>
+      <td><a href="finding-075.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-076.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1602] Student Innovation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1602</span></td>
+      <td><a href="finding-076.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-077.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1603] Research and develop a design on “ autonomous water surface cleaning robot “</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1603</span></td>
+      <td><a href="finding-077.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-078.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1604] Conversational Image Recognition Chatbot</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1604</span></td>
+      <td><a href="finding-078.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-079.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1605] Women Safety Analytics – Protecting Women from safety threats</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1605</span></td>
+      <td><a href="finding-079.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-080.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1606] Micro-Doppler based Target Classification</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1606</span></td>
+      <td><a href="finding-080.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-081.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1607] A smart AI based solution for traffic management on routes with heavy traffic from different directions, with real-time monitoring and adapt</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1607</span></td>
+      <td><a href="finding-081.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-082.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1608] Enhancing Monitoring and Management of Research, IPR, Innovation, and Start-ups in Gujarat State</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1608</span></td>
+      <td><a href="finding-082.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-083.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1609] Implementation of the Alumni Association platform for the University/Institute.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1609</span></td>
+      <td><a href="finding-083.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-084.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1610] Learning App for Deaf And Mute and sign language-English/Gujarati converter</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1610</span></td>
+      <td><a href="finding-084.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-085.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1611] Drone-Based Intelligent System for Apple Orchard Management in Himachal Pradesh</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1611</span></td>
+      <td><a href="finding-085.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-086.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1612] Automated Bus Scheduling and Route Management System for Delhi Transport Corporation</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1612</span></td>
+      <td><a href="finding-086.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-087.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1613] Automated System for Career Advancements of the Faculties of Higher Education</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1613</span></td>
+      <td><a href="finding-087.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-088.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1614] Publications summary generator for faculty members profile building</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1614</span></td>
+      <td><a href="finding-088.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-089.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1615] Learning path dashboard for enhancing skills</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1615</span></td>
+      <td><a href="finding-089.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-090.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1616] The technological solutions for capturing AQI values through mobile and other forms of stations</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1616</span></td>
+      <td><a href="finding-090.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-091.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1617] Dynamic route rationalization model based on machine learning/AI would be required based on real-time traffic and road parameters.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1617</span></td>
+      <td><a href="finding-091.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-092.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1618] Online monitoring of Unauthorized construction across the city</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1618</span></td>
+      <td><a href="finding-092.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-093.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1619] Online real-time survey and monitoring of water bodies in Delhi</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1619</span></td>
+      <td><a href="finding-093.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-094.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1620] Queuing models in OPDs/ availability of beds/ admission of patients. A hospital based solution is ideal which can be integrated with city wi</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1620</span></td>
+      <td><a href="finding-094.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-095.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1621] Online testing and monitoring of quality of medicines and consumables</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1621</span></td>
+      <td><a href="finding-095.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-096.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1622] Online issuance of Caste and other certificates by Revenue Department need real-time monitoring</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1622</span></td>
+      <td><a href="finding-096.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-097.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1623] real-time monitoring and evaluation software for application received in Fire Department relating to inspections, follow-ups, issue of NOCs</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1623</span></td>
+      <td><a href="finding-097.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-098.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1624] To develop an Artificial Intelligence (AI) based model for electricity demand projection including peak demand projection for Delhi Power sy</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1624</span></td>
+      <td><a href="finding-098.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-099.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1625] Smart Classroom Management Software for Enhanced Learning Environments</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1625</span></td>
+      <td><a href="finding-099.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-100.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1626] Health Data Information & Management System Mobile Application (HDIMS)</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1626</span></td>
+      <td><a href="finding-100.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-101.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1627] Drug Inventory and supply chain Tracking system</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1627</span></td>
+      <td><a href="finding-101.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-102.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1628] Smart Competency Diagnostic and Candidate Profile Score Calculator</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1628</span></td>
+      <td><a href="finding-102.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-103.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1629] Freelancing Platform</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1629</span></td>
+      <td><a href="finding-103.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-104.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1630] Mentor Connect</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1630</span></td>
+      <td><a href="finding-104.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-105.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1631] AI-Powered Student Assistance Chatbot for Department of Technical Education, Government of Rajasthan.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1631</span></td>
+      <td><a href="finding-105.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-106.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1632] An Interactive Job and Internship Platform for Technical Education Department, Govt. of Rajasthan</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1632</span></td>
+      <td><a href="finding-106.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-107.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1633] Intelligent platform to Interconnect Alumni and Student for Technical Education Department, Govt. of Rajasthan</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1633</span></td>
+      <td><a href="finding-107.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="AgriTech & Rural Health Tech" onclick="window.location.href='finding-108.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1637] Mobile App for Direct Market Access for Farmers</td>
+      <td>AgriTech & Rural Health Tech</td>
+      <td><span class="file-ref">SIH-1637</span></td>
+      <td><a href="finding-108.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-109.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1638] AI-Driven Crop Disease Prediction and Management System</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1638</span></td>
+      <td><a href="finding-109.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-110.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1639] Sustainable Fertilizer Usage Optimizer for Higher Yield</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1639</span></td>
+      <td><a href="finding-110.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="Disaster Management & Early Warning" onclick="window.location.href='finding-111.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1640] Assured Contract Farming System for Stable Market Access</td>
+      <td>Disaster Management & Early Warning</td>
+      <td><span class="file-ref">SIH-1640</span></td>
+      <td><a href="finding-111.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-112.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1641] create an Annual Report Portal for institute where all the departmental reports can be integrated and customized</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1641</span></td>
+      <td><a href="finding-112.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-113.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1642] A comprehensive AYUSH Startup Registration Portal to streamline the registration process for startups in the AYUSH sector, enhancing efficie</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1642</span></td>
+      <td><a href="finding-113.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-114.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1643] Portal for innovation Excellence Indicators</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1643</span></td>
+      <td><a href="finding-114.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-115.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1644] A web application specifically designed for Indian coal mines to quantify their carbon footprint and explore pathways to carbon neutrality.</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1644</span></td>
+      <td><a href="finding-115.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-116.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1645] An app and web based software for Productivity and safety management of coal mines.</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1645</span></td>
+      <td><a href="finding-116.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-117.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1646] App based Project monitoring of S&T/ R&D Projects of Coal Sector</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1646</span></td>
+      <td><a href="finding-117.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-118.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1647] Development of AI-ML based models for predicting prices of agri-horticultural commodities such as pulses and vegetable (onion, potato, onion</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1647</span></td>
+      <td><a href="finding-118.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-119.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1648] Online Chatbot based ticketing system</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1648</span></td>
+      <td><a href="finding-119.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-120.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1649] DDoS Protection System for Cloud: Architecture and Tool</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1649</span></td>
+      <td><a href="finding-120.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-121.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1650] Early Warning System for Glacial Lake Outburst Floods (GLOFs)</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1650</span></td>
+      <td><a href="finding-121.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="AgriTech & Rural Health Tech" onclick="window.location.href='finding-122.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1651] Microphone array-based direction of arrival for gunshot detection</td>
+      <td>AgriTech & Rural Health Tech</td>
+      <td><span class="file-ref">SIH-1651</span></td>
+      <td><a href="finding-122.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-123.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1652] Extraction and Verification of Information from semi-categorised data.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1652</span></td>
+      <td><a href="finding-123.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-124.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1653] Web based Selector-Applicant Simulation Software</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1653</span></td>
+      <td><a href="finding-124.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-125.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1654] Determining expert relevance with respect to interview board subject and candidates’ area of expertise</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1654</span></td>
+      <td><a href="finding-125.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-126.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1655] Detecting oil spills at marine environment using Automatic Identification System (AIS) and satellite datasets</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1655</span></td>
+      <td><a href="finding-126.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-127.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1656] Development of a mobile application to provide recreational suitability information of beach locations across India.</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1656</span></td>
+      <td><a href="finding-127.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-128.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1657] Integrated Geo-Referenced Fish Catch Data Repository and Access System</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1657</span></td>
+      <td><a href="finding-128.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-129.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1658] Development of a versatile and fast algorithm for the optimal ship routing</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1658</span></td>
+      <td><a href="finding-129.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-130.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1659] Data download Duplication Alert System (DDAS)</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1659</span></td>
+      <td><a href="finding-130.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-131.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1660] Interactive gamified approach to Ocean Literacy</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1660</span></td>
+      <td><a href="finding-131.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-132.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1661] Implement Software Solutions to Reduce Student Dropout Rates at Various Educational Stages</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1661</span></td>
+      <td><a href="finding-132.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-133.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1664] Develop Software Solutions to Enhance Educational Infrastructure and Connectivity in Rural Areas</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1664</span></td>
+      <td><a href="finding-133.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-134.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1666] Develop Effective Career Counselling and Guidance Programs in Schools to Enhance Student Career Choices</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1666</span></td>
+      <td><a href="finding-134.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-135.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1667] Integrate Industry-Relevant Vocational Training into Elementary and Secondary Education Curriculum</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1667</span></td>
+      <td><a href="finding-135.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-136.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1668] Creating an application to identify the presence of government issued personally identifiable information (PII) embedded in documents and da</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1668</span></td>
+      <td><a href="finding-136.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-137.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1669] Transformo Docs Application: Empowering Machine-Readable Document Management System.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1669</span></td>
+      <td><a href="finding-137.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-138.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1670] Develop a functional solution that incorporates the security of the ML model.</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1670</span></td>
+      <td><a href="finding-138.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-139.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1671] Develop a functional solution that demonstrates the face liveness detection</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1671</span></td>
+      <td><a href="finding-139.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-140.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1672] Develop a ML Model based solution to refine CAPTCHA.</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1672</span></td>
+      <td><a href="finding-140.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-141.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1673] Farmers Disease Diagnostic/Reporting Portal - Mobile Portal Al Based</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1673</span></td>
+      <td><a href="finding-141.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-142.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1674] Software solutions to identify users behind Telegram, WhatsApp and Instagram based drug trafficking.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1674</span></td>
+      <td><a href="finding-142.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-143.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1675] Software solution to identify the end receiver of a cryptocurrency transaction</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1675</span></td>
+      <td><a href="finding-143.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-144.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1676] Web-scrapping tool to be developed to search and report Critical and High Severity Vulnerabilities of OEM equipment (IT and OT) published at</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1676</span></td>
+      <td><a href="finding-144.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-145.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1677] Developing a tool to provide for real time feeds of cyber incident pertaining to Indian Cyber Space.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1677</span></td>
+      <td><a href="finding-145.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-146.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1678] RE-DACT</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1678</span></td>
+      <td><a href="finding-146.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="Cyber Security & Anomaly Detection" onclick="window.location.href='finding-147.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1679] Development of Audit script for Windows 11 and Linux OS as per CIS (Centre for Internet Security) bench mark</td>
+      <td>Cyber Security & Anomaly Detection</td>
+      <td><span class="file-ref">SIH-1679</span></td>
+      <td><a href="finding-147.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-148.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1680] Few Shot Language Agnostic Key Word Spotting system (FSLAKWS) for audio files.</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1680</span></td>
+      <td><a href="finding-148.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-149.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1681] Identification of algorithm from the given dataset using AI/ML Techniques.</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1681</span></td>
+      <td><a href="finding-149.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-150.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1682] Centralized Automated Solution for Price Estimation & Reasonability.</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1682</span></td>
+      <td><a href="finding-150.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-151.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1683] Development of AI/ML based solution for detection of face-swap based deep fake videos</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1683</span></td>
+      <td><a href="finding-151.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-152.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1684] Agent-less Windows System Vulnerability and Network Scanner</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1684</span></td>
+      <td><a href="finding-152.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-153.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1685] Building Offline Parallel AV Pipeline to cater multiple AVs for CII entities.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1685</span></td>
+      <td><a href="finding-153.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-154.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1686] Tools and techniques for customisation of GPO as per CIS</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1686</span></td>
+      <td><a href="finding-154.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-155.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1687] Real-Time Disaster Information Aggregation Software</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1687</span></td>
+      <td><a href="finding-155.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-156.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1688] Development of handheld device/Mobile based Operation & Maintenance tool for asset & consumables inventories and finance management in conte</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1688</span></td>
+      <td><a href="finding-156.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-157.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1689] Use of Digital Technology to calculate Water Footprints for different Agricultural Products</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1689</span></td>
+      <td><a href="finding-157.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-158.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1690] Use of Digital Knowledge Sharing Platform like Wikis on sharing of water efficient techniques and methods for minimizing water scarcity.</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1690</span></td>
+      <td><a href="finding-158.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-159.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1691] Adaption of 'Existing Command Area in Response to Shifting of Agricultural Practices</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1691</span></td>
+      <td><a href="finding-159.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-160.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1692] Forecasting Future Water Requirements and Assessing Storage Capacities in Reservoirs</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1692</span></td>
+      <td><a href="finding-160.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-161.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1693] Developing a Robust Hydraulic Transient Analysis Model for Hydro Power and Pumped Storage Schemes.</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1693</span></td>
+      <td><a href="finding-161.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-162.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1694] Real-time Ganga river water quality forecasting using AI- enabled DSS, satellite data, IoT, and dynamic models.</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1694</span></td>
+      <td><a href="finding-162.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-163.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1695] A software application for analysis of DWLR data and raise alarms in respect of anomalous values, faulty DWLRs etc</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1695</span></td>
+      <td><a href="finding-163.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-164.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1696] A software application - Ground Water Level Predictor</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1696</span></td>
+      <td><a href="finding-164.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-165.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1697] AI based chatbot for collating and dissemination of information on groundwater.</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1697</span></td>
+      <td><a href="finding-165.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-166.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1698] Development of an educational game (web-based and mobile- based) on groundwater conservation and management</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1698</span></td>
+      <td><a href="finding-166.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-167.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1699] Let’s Learn Constitution in a Simpler Manner-Institution Perspective</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1699</span></td>
+      <td><a href="finding-167.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-168.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1700] Developing an AI based interactive Chatbot or virtual assistant for the Department of Justice’s Website.</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1700</span></td>
+      <td><a href="finding-168.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-169.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1701] AI-Driven Research Engine for Commercial Courts</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1701</span></td>
+      <td><a href="finding-169.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-170.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1702] Bail Reckoner</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1702</span></td>
+      <td><a href="finding-170.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-171.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1703] Let’s Learn Constitution in a Simpler Manner-Citizen Perspective</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1703</span></td>
+      <td><a href="finding-171.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-172.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1704] Gamification for Rural Planning using Drone land survey maps and GIS data.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1704</span></td>
+      <td><a href="finding-172.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-173.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1705] Development and Optimization of Al model for Feature identification/ Extraction from drone orthophotos.</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1705</span></td>
+      <td><a href="finding-173.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-174.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1706] Intelligent Enterprise Assistant: Enhancing Organizational Efficiency through AI-driven Chatbot Integration</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1706</span></td>
+      <td><a href="finding-174.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-175.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1707] Development of a Geolocation-Based Attendance Tracking Mobile Application.</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1707</span></td>
+      <td><a href="finding-175.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-176.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1708] Tool for secure automatic network topology</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1708</span></td>
+      <td><a href="finding-176.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-177.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1709] Comprehensive Automated Document Verification System for Official Documentation</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1709</span></td>
+      <td><a href="finding-177.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-178.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1710] Enhancing Navigation for Railway Station Facilities and Locations</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1710</span></td>
+      <td><a href="finding-178.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-179.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1711] Enhancing Rail Madad with Al-powered Complaint Management</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1711</span></td>
+      <td><a href="finding-179.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-180.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1712] Interactive Skills Enhancer (ISE): A Virtual Reality-Based Learning Tool for Children with ASD and ID</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1712</span></td>
+      <td><a href="finding-180.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-181.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1713] Interactive Skills Enhancer (ISE): A Virtual Reality-Based Learning Tool for Children with ASD and ID</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1713</span></td>
+      <td><a href="finding-181.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-182.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1714] Software for Speech Language Therapy Clinical Services</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1714</span></td>
+      <td><a href="finding-182.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-183.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1715] AI tool/mobile app for Indian Sign language(ISL) generator from audio-visual content in English/Hindi to ISL content and vice-versa</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1715</span></td>
+      <td><a href="finding-183.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-184.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1716] Indian Sing Language to Text/Speech translation</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1716</span></td>
+      <td><a href="finding-184.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-185.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1717] Indian Version of Nagish App</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1717</span></td>
+      <td><a href="finding-185.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-186.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1718] Capturing Non-manual features of Indian Sign Language and converting it into text</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1718</span></td>
+      <td><a href="finding-186.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-187.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1719] Monitoring System for classroom session in skill training programe</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1719</span></td>
+      <td><a href="finding-187.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-188.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1720] Education & Awareness - Effective Use of Technology for Dissemination of Anti-Doping Information</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1720</span></td>
+      <td><a href="finding-188.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-189.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1721] Intelligence and Investigations - Enhancing Anti-Doping Efforts</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1721</span></td>
+      <td><a href="finding-189.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-190.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1722] Gamification of Anti-Doping Information</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1722</span></td>
+      <td><a href="finding-190.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-191.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1723] Prediction of Aluminium wire rod physical properties through AI, ML or any modern technique for better productivity and quality control.</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1723</span></td>
+      <td><a href="finding-191.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-192.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1724] Platform for Inter-departmental cooperation (at city level) in Indian Cities, for sharing data & resources, unified phasing, planning and im</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1724</span></td>
+      <td><a href="finding-192.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-193.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1725] Utilization of images for monitoring of progress of construction activities for building construction projects.</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1725</span></td>
+      <td><a href="finding-193.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-194.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1726] Utilization of aerial/ drone-based images for monitoring of progress of construction activities for building construction projects</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1726</span></td>
+      <td><a href="finding-194.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-195.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1727] Universal Switch Set with Data Encryption and Decryption for Legacy Applications without Cyber Safety Measures</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1727</span></td>
+      <td><a href="finding-195.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-196.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1728] Development of a Paperless Scholarship Disbursement System for PMSSS</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1728</span></td>
+      <td><a href="finding-196.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-197.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1729] AI supported AICTE Approval process portal</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1729</span></td>
+      <td><a href="finding-197.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-198.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1730] AI driven Inspection of Institutions</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1730</span></td>
+      <td><a href="finding-198.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-199.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1731] SolarQuest: Innovate to Capture More Sunlight and Boost Energy</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1731</span></td>
+      <td><a href="finding-199.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-200.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1732] Enhancement of Permanently Shadowed Regions (PSR) of Lunar Craters Captured by OHRC of Chandrayaan-2</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1732</span></td>
+      <td><a href="finding-200.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-201.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1733] SAR Image Colorization for Comprehensive Insight using Deep Learning Model (h)</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1733</span></td>
+      <td><a href="finding-201.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-202.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1734] Downscaling of Satellite based air quality map using AI/ML</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1734</span></td>
+      <td><a href="finding-202.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-203.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1735] On-device semantic segmentation of WMS services with geospatial data export</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1735</span></td>
+      <td><a href="finding-203.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-204.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1736] AI based frame interpolation, video generation and display system for WMS services</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1736</span></td>
+      <td><a href="finding-204.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-205.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1737] Automatic Modulation Recognition software for DVB -S2X waveforms</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1737</span></td>
+      <td><a href="finding-205.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-206.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1738] Innovative applications of cloud-optimized geotiffs for INSAT satellite data</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1738</span></td>
+      <td><a href="finding-206.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-207.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1739] Building Integrated Photo-voltaic (BIPV) potential assessment and visualisation using LOD-1 3D City Model</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1739</span></td>
+      <td><a href="finding-207.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="low" data-category="Miscellaneous Software & Enterprise App" onclick="window.location.href='finding-208.html'">
+      <td><span class="badge low">low</span></td>
+      <td>[SIH-1740] Development of map-matching algorithm using AI-ML techniques to distinguish vehicular movement on highway and service road</td>
+      <td>Miscellaneous Software & Enterprise App</td>
+      <td><span class="file-ref">SIH-1740</span></td>
+      <td><a href="finding-208.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-209.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1741] Centralized application-context aware firewall</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1741</span></td>
+      <td><a href="finding-209.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-210.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1742] Standardizing Odd School Structures to Improve Educational Policy Implementation and</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1742</span></td>
+      <td><a href="finding-210.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-211.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1743] Parsing of Social Media Feeds</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1743</span></td>
+      <td><a href="finding-211.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-212.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1744] Creating a cyber triage tool to streamline digital forensic investigation</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1744</span></td>
+      <td><a href="finding-212.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-213.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1745] De-anonymizing of entities on the onion sites operating on TOR Network</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1745</span></td>
+      <td><a href="finding-213.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-214.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1746] Improving open source software security using Fuzzing</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1746</span></td>
+      <td><a href="finding-214.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-215.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1747] Improving Android security: Application security for mobile app on Android 14 or higher</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1747</span></td>
+      <td><a href="finding-215.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-216.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1748] Creating a Framework for Static Analysis of Vulnerabilities in Android Applications</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1748</span></td>
+      <td><a href="finding-216.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-217.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1749] Recovery of Deleted Data and Associated Metadata from XFS and Btrfs Filesystems</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1749</span></td>
+      <td><a href="finding-217.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-218.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1750] Creating a Comprehensive Web Application Fuzzer</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1750</span></td>
+      <td><a href="finding-218.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-219.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1752] Dashboard for Swachhta and LiFE. Develop a dashboard aimed at maintaining cleanliness and LiFE practices, integrating AI-powered image proce</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1752</span></td>
+      <td><a href="finding-219.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-220.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1753] Measurement and Monitoring of Counter Services</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1753</span></td>
+      <td><a href="finding-220.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-221.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1754] Road Transport Network Telematics</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1754</span></td>
+      <td><a href="finding-221.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-222.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1755] A Digital BRSR Platform for India Post Network</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1755</span></td>
+      <td><a href="finding-222.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-223.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1756] Data Insights and Strategic Unit (DISU) at the Divisional Level for DoP</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1756</span></td>
+      <td><a href="finding-223.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-224.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1757] Bridging the Measurability Gap - A Digital Solution for validated Citizens Charter norms’ adherence across public interfaces and customer to</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1757</span></td>
+      <td><a href="finding-224.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-225.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1758] India Post A Bridge for Indian Diaspora to access things Indian</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1758</span></td>
+      <td><a href="finding-225.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-226.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1759] AI-Powered Delivery Post Office Identification System</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1759</span></td>
+      <td><a href="finding-226.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-227.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1760] DYNAMIC MAIL TRANSMISSION SOLUTION USING BEST CONNECTIVITY ACROSS MODES</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1760</span></td>
+      <td><a href="finding-227.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="LegalTech / Document AI / GovTech" onclick="window.location.href='finding-228.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1761] AI based identification of Financial (Banking & Insurance) needs based on demography and economic / farming Cycle</td>
+      <td>LegalTech / Document AI / GovTech</td>
+      <td><span class="file-ref">SIH-1761</span></td>
+      <td><a href="finding-228.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-229.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1762] AI based Customized time slot Delivery of Articles/Parcels</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1762</span></td>
+      <td><a href="finding-229.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-230.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1763] Building a National Web Community of Philatelists</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1763</span></td>
+      <td><a href="finding-230.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-231.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1764] Grey Water Management (GWM)- Implementing low cost technical solutions to mitigate water contamination, especially removal of contaminants, </td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1764</span></td>
+      <td><a href="finding-231.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="critical" data-category="Smart Education / Career Analytics" onclick="window.location.href='finding-232.html'">
+      <td><span class="badge critical">critical</span></td>
+      <td>[SIH-1765] Grey Water Management (GWM) - Mechanism for treating grey water and black water together in densely populated areas preferably having low la</td>
+      <td>Smart Education / Career Analytics</td>
+      <td><span class="file-ref">SIH-1765</span></td>
+      <td><a href="finding-232.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="Open Source & Skill Discovery" onclick="window.location.href='finding-233.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1766] GOBARdhan - Low-cost kits to measure nutrient content of F/L OM</td>
+      <td>Open Source & Skill Discovery</td>
+      <td><span class="file-ref">SIH-1766</span></td>
+      <td><a href="finding-233.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="medium" data-category="AgriTech & Rural Health Tech" onclick="window.location.href='finding-234.html'">
+      <td><span class="badge medium">medium</span></td>
+      <td>[SIH-1767] GOBARdhan - Low-cost enrichment models for F/L OM (Fermented / Liquied Organic Manure)</td>
+      <td>AgriTech & Rural Health Tech</td>
+      <td><span class="file-ref">SIH-1767</span></td>
+      <td><a href="finding-234.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-235.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1768] Personalized testing kits for testing Bacteriological contamination at delivery points</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1768</span></td>
+      <td><a href="finding-235.html">View →</a></td>
+    </tr>
+  
+    <tr data-severity="high" data-category="AI/ML & Industrial Analytics" onclick="window.location.href='finding-236.html'">
+      <td><span class="badge high">high</span></td>
+      <td>[SIH-1769] Personalized testing kits for testing Residual Silver ion level at delivery points</td>
+      <td>AI/ML & Industrial Analytics</td>
+      <td><span class="file-ref">SIH-1769</span></td>
+      <td><a href="finding-236.html">View →</a></td>
+    </tr>
+  
+        </tbody>
+      </table>
+    </div>
+    <div class="footer">
+      Open in browser → Ctrl+P to save as PDF
+    </div>
+  </div>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+    const saved = localStorage.getItem('theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+    function filterBySeverity(severity) {
+      document.querySelectorAll('tbody tr').forEach(row => {
+        row.classList.toggle('hidden', row.dataset.severity !== severity);
+      });
+    }
+    function filterByCategory(category) {
+      document.querySelectorAll('tbody tr').forEach(row => {
+        row.classList.toggle('hidden', row.dataset.category !== category);
+      });
+    }
+  </script>
+</body>
+</html>

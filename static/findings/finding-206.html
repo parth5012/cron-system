@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[SIH-1738] Innovative applications of cloud-optimized geotiffs for INSAT satellite data — Findings Report</title>
+  <style>
+    :root {
+      --color-critical: #dc3545;
+      --color-high: #fd7e14;
+      --color-medium: #ffc107;
+      --color-low: #0dcaf0;
+      --color-info: #6c757d;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-card: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --border: #dee2e6;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    [data-theme="dark"] {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --bg-card: #0f3460;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --border: #2a2a4a;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--text-primary); background: var(--bg-secondary); }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
+    .breadcrumb { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; }
+    .breadcrumb a { color: var(--color-low); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .finding-id { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+    .title-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .title-card h1 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
+    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+    .badge.critical { background: rgba(220,53,69,0.15); color: var(--color-critical); }
+    .badge.high { background: rgba(253,126,20,0.15); color: var(--color-high); }
+    .badge.medium { background: rgba(255,193,7,0.15); color: var(--color-medium); }
+    .badge.low { background: rgba(13,202,240,0.15); color: var(--color-low); }
+    .badge.info { background: rgba(108,117,125,0.15); color: var(--color-info); }
+    .category-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); }
+    .source-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); }
+    .location-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 12px; }
+    .location-block code { color: var(--text-primary); }
+    .location-block button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-secondary); cursor: pointer; font-size: 11px; }
+    .location-block button:hover { background: var(--border); }
+    .description { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .description p { margin-bottom: 12px; }
+    .description p:last-child { margin-bottom: 0; }
+    .code-section { margin-bottom: 20px; }
+    .code-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; font-size: 12px; }
+    .code-header button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); cursor: pointer; font-size: 11px; }
+    .code-header button:hover { background: var(--bg-secondary); }
+    pre { margin: 0; padding: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow-x: auto; }
+    code { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
+    .recommendation { background: rgba(13,202,240,0.05); border: 1px solid rgba(13,202,240,0.2); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
+    .recommendation h4 { font-size: 12px; text-transform: uppercase; color: var(--color-low); margin-bottom: 8px; }
+    .recommendation p { font-size: 14px; }
+    .metadata-footer { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .meta { font-size: 11px; color: var(--text-secondary); }
+    .finding-nav { display: flex; justify-content: space-between; padding: 16px 0; }
+    .finding-nav a { color: var(--color-low); text-decoration: none; font-size: 13px; }
+    .finding-nav a:hover { text-decoration: underline; }
+    .theme-toggle { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+    @media print { .theme-toggle { display: none; } body { background: white; } }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">← Back to Dashboard</a>
+      <span class="finding-id">finding-206</span>
+    </div>
+    <div class="title-card">
+      <h1>[SIH-1738] Innovative applications of cloud-optimized geotiffs for INSAT satellite data</h1>
+      <div class="badges">
+        <span class="badge high">high</span>
+        <span class="category-tag">AI/ML & Industrial Analytics</span>
+        <span class="source-tag">SIH software PS analysis</span>
+      </div>
+    </div>
+    <div class="location-block">
+      <code>SIH-1738</code>
+      <button onclick="copyToClipboard('SIH-1738')">Copy</button>
+    </div>
+    <div class="description">
+      <p>**Sponsoring Body:** Indian Space Research Organization (ISRO)
+
+**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+
+Description: Design and development of novel applications of Cloud Optimized GeoTIFFs for Efficient Streaming and On-the-Fly processing of INSAT Satellite Data.
+Challenge:
+1. Data Acquisition and Preprocessing: Acquire Level 1 INSAT satellite data from relevant sources. Pre-process the data to ensure compatibility with the COG format.
+2. COG Generation: Develop a pipeline to convert INSAT Level 1 data into Cloud Optimized GeoTIFFs. Ensure the pipeline supports multiple spectral bands and their efficient encoding.
+3. Selective Streaming and Partial Download: Implement selective streaming capabilities to allow users to access specific data regions and bands without downloading entire files. Enable partial downloads for efficient data handling and reduced bandwidth usage.
+4. On-the-Fly Manipulations: Develop tools for real-time manipulations of multiple spectral bands, including band arithmetic, colour adjustments, and custom visualizations. Integrate these tools into a user-friendly interface for seamless interactions.
+5. System Integration and Testing: Integrate the COG generation pipeline and on-the-fly manipulation tools into a cloud-based system. Conduct thorough testing to ensure performance, reliability, and user experience.
+Usage: To make INSAT Data Cloud compatible
+Users: Meteorologist
+Available Solutions (if Yes, reasons for not using them): No ( To be verified if existing tools exist )
+Desired Outcome:
+a. A fully functional system capable of generating and serving Cloud Optimized GeoTIFFs from INSAT data.
+b. Tools for real-time manipulation of multiple spectral bands.
+Enhanced accessibility and usability of INSAT satellite data for various applications</p>
+    </div>
+    
+    <div class="recommendation">
+      <h4>Recommendation</h4>
+      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
+
+**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
+
+**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
+    </div>
+    <div class="metadata-footer">
+      <div class="tags">
+      <span class="badge info">industrial</span> <span class="badge info">isro</span>
+    </div>
+      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+    </div>
+    <div class="finding-nav">
+    <a href="finding-205.html" class="prev">← Previous</a>
+    <a href="finding-207.html" class="next">Next →</a>
+  </div>
+  </div>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+    const saved = localStorage.getItem('theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = original, 1500);
+      });
+    }
+    function copyCode() {
+      const code = document.querySelector('pre code').textContent;
+      copyToClipboard(code);
+    }
+  </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Header, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional, List
 import threading
@@ -7,6 +8,8 @@ import threading
 from cron_engine import CronEngine, RunRecord, get_engine
 
 app = FastAPI(title="Cron System", version="1.0.0")
+
+app.mount("/findings", StaticFiles(directory="static/findings", html=True), name="findings")
 
 
 class RunResponse(BaseModel):
