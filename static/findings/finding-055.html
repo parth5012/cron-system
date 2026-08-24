@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1581] Development of cost-effective myoelectric prosthesis. — Findings Report</title>
+  <title>[SIH-1582] System to check the healthiness of earthing system and alert staff in case of any malfunction; — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,42 +83,57 @@
       <span class="finding-id">finding-055</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1581] Development of cost-effective myoelectric prosthesis.</h1>
+      <h1>[SIH-1582] System to check the healthiness of earthing system and alert staff in case of any malfunction;</h1>
       <div class="badges">
-        <span class="badge low">low</span>
-        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
+        <span class="badge medium">medium</span>
+        <span class="category-tag">AgriTech & Rural Health Tech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1581</code>
-      <button onclick="copyToClipboard('SIH-1581')">Copy</button>
+      <code>SIH-1582</code>
+      <button onclick="copyToClipboard('SIH-1582')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Social Justice and Empowerment
+      <p>**Sponsoring Body:** Ministry of Housing and Urban Affairs
 
-**Recommendation:** MAYBE (6.5/10)
+**Category:** AgriTech & Rural Health Tech
 
-Background: With the loss of an upper limb, activities of daily living (ADL) become more challenging for the affected person. Functional body powered upper limb prosthesis can replace the functions of upper limb for ADL activities up to some extent. But in higher level of upper limb amputation, it becomes difficult for the patient to manage ADL activities. The requirement of externally powered prosthesis such as myoelectric prosthesis plays a vital role in this aspect.
-Description of Problem statement:
-A myoelectric prosthesis is an externally powered prosthesis which is controlled by muscle contraction (muscle action potential). In market, many variants of myoelectric prostheses are available with various features. The most important feature of these prostheses is the grasping pattern types and also it indicates about movement of different fingers in prosthesis. Because it is expensive, access to these high-end prosthesesbecomes challenging for patients with upper limb amputation living in developing nations like India. Even though few myoelectric prostheses are available in market with less cost, but the features are limited and are not working precisely.
-Expected Solutions:
-Experts from different disciplines, such as engineers for creating programs and fabrication of controlling circuits and Prosthetist for fabrication of sockets and fitment of the prostheses are required to design and develop a cost-effective myoelectric prosthesis. Most important feature of the prosthesis is the grasping pattern which is completely dependent on the prosthetic hand. Thus, design and fabrication of prosthetic hand also plays a vital role in the complete working mechanism of the prosthesis. Thus, to get a successful result, it is possible to work collaboratively with experts from different discipline.</p>
+**Recommendation:** MEDIUM PRIORITY (7/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: We have large numbers of Electrical pole lights installed at parking area and station area. Though these lights are equipped with earth leakage protection switch gear but in case of malfunctioning, it may prove to be dangerous for the public. Also, to check all the system earthing, huge manpower is required.
+Description: To address this challenge there is a need of sensor-based system which can continuously monitor the healthiness of earth leakage current, the continuity of the earthing for all electrical system and also alert the maintenance team in case of any malfunction. The sensor-based system can take feedback from the panels and transmit the same to a centralized location. This system shall also monitor the earth resistance value of earth pits/earth grid and shall give audible and visual alert in case of any deviation from the specified value.
+Expected Solution: This system shall monitor the healthiness of earth leakage in switchgear, the continuity of the earthing for all electrical system and generate alert in case of any malfunction in system.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1582</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
+      <p>**Probable Solution:** AI-assisted rural assistant portal providing diagnostic/expert guidance via simple web forms, voice interface, and market/health linkage.
 
-**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
+**Build Plan (your stack):** FastAPI backend + Whisper/Gemini audio parsing + lightweight React PWA interface with offline SQLite caching.
 
-**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
+**Why this rating:** Good application of AI voice/FastAPI, but requires domain field data.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">enterprise-app</span>
+      <span class="badge info">agritech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-054.html" class="prev">← Previous</a>

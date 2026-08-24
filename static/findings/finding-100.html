@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1626] Health Data Information & Management System Mobile Application (HDIMS) — Findings Report</title>
+  <title>[SIH-1645] An app and web based software for Productivity and safety management of coal mines. — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,38 +83,68 @@
       <span class="finding-id">finding-100</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1626] Health Data Information & Management System Mobile Application (HDIMS)</h1>
+      <h1>[SIH-1645] An app and web based software for Productivity and safety management of coal mines.</h1>
       <div class="badges">
         <span class="badge high">high</span>
-        <span class="category-tag">AI/ML & Industrial Analytics</span>
+        <span class="category-tag">LegalTech / Document AI / GovTech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1626</code>
-      <button onclick="copyToClipboard('SIH-1626')">Copy</button>
+      <code>SIH-1645</code>
+      <button onclick="copyToClipboard('SIH-1645')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Government of NCT of Delhi
+      <p>**Sponsoring Body:** Ministry of Coal
 
-**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+**Category:** LegalTech / Document AI / GovTech
 
-Hospitals/Departments shall be able to enter and Update Data in the Mobile Application which can be viewed by the Super Admin dynamically for efficient Implementation of Health and Family Welfare Schemes, other Health programmes and provide key inputs for policy formulation and appropriate programme interventions. This Mobile Application will facilitates the flow of physical performance from the Facility level to the Sub-district, District and State/Union Territory level using Health Data Information & Management System Mobile Application (HDIMS) interface</p>
+**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background:
+Despite the thrust on energy transition from fossil fuel sector to a cost-competitive renewable energy sector, Coal will remain pivotal to energy security of the nation in near future. India is targeting for 1.5 Bt coal production by 2030 to cater to the burgeoning energy needs of the country. To achieve the target, improved productivity and safety in coal mining is pivotal.
+Description:
+The problem statement is divided into two parts: one is Digital shift handover log system and other is safety management plan as per DGMS guidelines.
+A digital shift handover log system is a valuable tool for streamlining and improving the transition of responsibilities and information from one shift to the next within an organization.
+The problem statement envisages that an app based and web based Shift handover log system be developed as per the Statutory and non-statutory log format currently in practice, which is presently being done manually through paper logs. This will ensure sharing of critical information and briefing of the next shift digitally. It will provide supervisors and operators with an immediate, comprehensive overview of the outgoing shift’s activities.
+Manual Shift handover causes loss of time and thus productivity of the mining operation. Also, some important information regarding safety may get skipped in the manual system which can cause serious damage to mining operation or loss of life.
+Digitalised system will ensure that all red flags are properly briefed and major actions which needs to be taken in the next shift is communicated to the shift in charge of next shift beforehand so that he can mentally prepare for the same.
+This will save time in the forthcoming shift and ensure better productivity. It will also ensure better safety and monitoring of the mine.
+Every mine has to prepare a Safety Management Plan (SMP) as per DGMS guidelines. This SMP is based on Hazard identification and devising control and monitoring mechanism and fixing responsibility. This SMP implementation needs to be digitalised in the software for better management of risks.
+Also, this app or web based solution needs to be integrated with ERP software. While designing the software, due care should be given to data security.
+Possible Solution:
+An app and web based application can be developed for every type of log book currently in use by supervisors and operators in mining operation and digitalising the Safety Management Plan currently being implemented by mine owners as per DGMS guidelines.
+Also the application should be able to streamline communication by automatically converting shift logs into organized PDF reports.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1645</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
+      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
 
-**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
+**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
 
-**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
+**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">industrial</span>
+      <span class="badge info">coal</span> <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-099.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1661] Implement Software Solutions to Reduce Student Dropout Rates at Various Educational Stages — Findings Report</title>
+  <title>[SIH-1680] Few Shot Language Agnostic Key Word Spotting system (FSLAKWS) for audio files. — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,62 +83,63 @@
       <span class="finding-id">finding-132</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1661] Implement Software Solutions to Reduce Student Dropout Rates at Various Educational Stages</h1>
+      <h1>[SIH-1680] Few Shot Language Agnostic Key Word Spotting system (FSLAKWS) for audio files.</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge low">low</span>
+        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1661</code>
-      <button onclick="copyToClipboard('SIH-1661')">Copy</button>
+      <code>SIH-1680</code>
+      <button onclick="copyToClipboard('SIH-1680')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Education
+      <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** Miscellaneous Software & Enterprise App
 
-Background: Student dropout rates in India are influenced by socio-economic and educational factors, affecting marginalized communities the most. Addressing dropout rates is essential for equitable education and socio-economic development. The National Education Policy (NEP) 2020 emphasizes the importance of reducing dropout rates and ensuring quality education up to at least the secondary level.
-Description: This solution focuses on creating software tools to address and reduce dropout rates. The tools will help identify at-risk students, provide personalized support, and engage communities. By leveraging technology, the aim is to improve student retention, align with NEP 2020’s goals, and support a holistic approach to education.
-Innovative Software Solutions:
-a) AI-Driven Early Warning System:
-o Description: Develop an AI-powered software platform that analyzes student data (attendance, grades, behaviour) to predict which students are at risk of dropping out. The system will provide alerts to educators and administrators, enabling timely interventions.
-o Features: Predictive analytics, real-time alerts, data visualization, and intervention recommendations.
-b) Community Learning Hub Platform:
-o Description: Create an online platform that supports community learning hubs in rural and underserved areas. This platform will offer digital resources, tutoring sessions, and virtual mentoring, providing additional educational support to students.
-o Features: Online classes, resource library, virtual tutoring, and community forums.
-c) Mobile Learning Application:
-o Description: Develop a mobile application that delivers personalized learning experiences, including interactive lessons, quizzes, and educational games. The app will provide resources for students who have limited access to traditional education.
-o Features: Interactive content, offline access, progress tracking, and personalized learning paths.
-d) Financial Support Management System:
-o Description: Build a software system to manage scholarship and financial aid applications. The platform will streamline the application process, track disbursements, and provide information on available financial support to reduce economic barriers.
-o Features: Application tracking, financial aid management, eligibility assessment, and reporting tools.
-e) Parental Engagement Portal:
-o Description: Develop a web-based portal to engage and educate parents about their child's education. The portal will include resources on supporting learning at home, tracking student progress, and receiving updates from teachers.
-o Features: Parent-teacher communication, educational resources, progress reports, and event notifications.
-f) Flexible Schooling Management System:
-o Description: Create a software system to manage flexible schooling options, such as evening classes and part-time programs. The system will allow students to enrol, track their progress, and manage their schedules.
-o Features: Enrolment management, schedule tracking, progress monitoring, and integration with existing school systems.
-g) Student Support and Engagement App:
-o Description: Develop an app that provides personalized support and engagement for students at risk of dropping out. Features will include counselling support, motivational content, and tools for setting and tracking academic goals.
-o Features: Counselling resources, goal-setting tools, motivational content, and engagement tracking.
-By implementing these software solutions, the goal is to reduce dropout rates significantly by addressing the key factors that contribute to student attrition. These solutions are designed to align with the NEP 2020’s objective of ensuring universal access to education and improving student retention.</p>
+**Recommendation:** MAYBE (6.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Description: The problem statement envisages development of Few Shot Language Agnostic Key Word Spotting system (FSLAKWS) system which would be able to localize and classify the presence of keywords of Interest in a variable duration audio file. The system to be able to function at high performance when very few (Few Shot) examples per keyword are given for training. The key features of the system would be as mentioned below: -
+(a) The system should be language agnostic
+(b) The system should be able to handle audio files at various sample
+rates (8k-48k).
+(c) The system should be able to upgrade to additional keywords.
+Performance Criteria: For creating a system with Few Shot capabilities, the participants may need to do pre-training of their model on a large corpus. This corpus should be obtained by the participants themselves. We will provide few examples per keyword at the training time during the conduct of the hackathon. The participants will be judged on a separate test set having the same keywords as the train set. The performance would be ascertained on the following:
+(a) Metric
+(b) Latency and throughput of the responses.
+(c) Smaller model size.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1680</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">enterprise-app</span> <span class="badge info">ntro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-131.html" class="prev">← Previous</a>

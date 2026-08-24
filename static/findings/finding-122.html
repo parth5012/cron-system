@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1651] Microphone array-based direction of arrival for gunshot detection — Findings Report</title>
+  <title>[SIH-1670] Develop a functional solution that incorporates the security of the ML model. — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,42 +83,70 @@
       <span class="finding-id">finding-122</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1651] Microphone array-based direction of arrival for gunshot detection</h1>
+      <h1>[SIH-1670] Develop a functional solution that incorporates the security of the ML model.</h1>
       <div class="badges">
-        <span class="badge medium">medium</span>
-        <span class="category-tag">AgriTech & Rural Health Tech</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">Open Source & Skill Discovery</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1651</code>
-      <button onclick="copyToClipboard('SIH-1651')">Copy</button>
+      <code>SIH-1670</code>
+      <button onclick="copyToClipboard('SIH-1670')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Defence
+      <p>**Sponsoring Body:** Ministry of Electronics and Information Technology
 
-**Recommendation:** MEDIUM PRIORITY (7/10)
+**Category:** Open Source & Skill Discovery
 
-• Background: The Army of many developed countries has their own gunshot detector system which would alert the troop about the direction from where gun shot has been fired so that troop can take preventive measure to safeguard their soldiers
-• Description:
-The system consists of number of omnidirectional microphones preferably six. The output of microphone will be fed to the analog to digital converter and then this signal is fed to the FPGA . Inside FPGA, each channel will be filtered using Bandpass filter so as to limit the band to approx. 3Khz. After this sound classification and localization algorithm will deduce the direction from where the bullet has been fired and display the result on a Graphical LCD.
-• Expected Solution:
-An FPGA based solution with suitable algorithm for classification and localization of sound. The final result will be displayed on Graphic LCD</p>
+**Recommendation:** YES - HIGH PRIORITY (9/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+1. Background. UIDAI is exploring possibilities to enable Face authentication on the desktop in a browser context. The proposed architecture to provide Face
+Authentication in the browser context,requires AI on the edge to perform liveness check of the face being captured by the webcam or connected camera. UIDAI is considering the injection of ML model by using an appropriate binary code delivery mechanism.
+The security of these models is important for transaction integrity and therefore seeking an innovative solution that will protect the model from any tampering and
+reverse engineering.
+2. Problem Description. As part of the challenge, participating teams to demonstrate model security in a browser context by using either obfuscation or
+cryptography. Models are typically 5~7Mb in size and structured as flatbuffers. These models would be downloaded, when for the first time accessed on a desktop and then cached in the browser context. For subsequent face authentication transactions, a cached model would be preferred, unless otherwise the model has changed or updated.
+To solve the above problem statement, teams are free to choose either ONNX web runtime or Tensor.js or any other innovative model to distribute the model in the
+browser context.
+The proposed solution must meet the following functional objectives.
+1 Model Security. The solution must provide a mechanism to protect the model from any reverse engineering or tampering.
+2 Model Size Optimisation. The solution must not significantly increase the size of the model post-implementation of security frameworks. Models are
+expected to be downloaded in 3G/4G/5G wireless networks and hence any increase in size may lead to deteriorated user experience.
+3 The solution must feature backend components to prepare the ML model either using obfuscation or cryptography. The backend activity can be a one-time
+task during the release of the ML models or a just-in-time approach. In the just-in-time approach, the model would be obfuscated or encrypted before being downloaded to the end user’s desktop.
+
+3. Expected Solution. The expected outcome of this project is a functional solution that incorporates the security of the ML model at the edge. The backend for the proposed solution system must be designed to handle the high volume of transactions that is expected for any population-scale solutions.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1670</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** AI-assisted rural assistant portal providing diagnostic/expert guidance via simple web forms, voice interface, and market/health linkage.
+      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
 
-**Build Plan (your stack):** FastAPI backend + Whisper/Gemini audio parsing + lightweight React PWA interface with offline SQLite caching.
+**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
 
-**Why this rating:** Good application of AI voice/FastAPI, but requires domain field data.</p>
+**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">agritech</span> <span class="badge info">defence</span>
+      <span class="badge info">open-source</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-121.html" class="prev">← Previous</a>

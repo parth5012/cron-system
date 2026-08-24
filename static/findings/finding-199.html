@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1731] SolarQuest: Innovate to Capture More Sunlight and Boost Energy — Findings Report</title>
+  <title>[SIH-1748] Creating a Framework for Static Analysis of Vulnerabilities in Android Applications — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,46 +83,78 @@
       <span class="finding-id">finding-199</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1731] SolarQuest: Innovate to Capture More Sunlight and Boost Energy</h1>
+      <h1>[SIH-1748] Creating a Framework for Static Analysis of Vulnerabilities in Android Applications</h1>
       <div class="badges">
-        <span class="badge low">low</span>
-        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">LegalTech / Document AI / GovTech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1731</code>
-      <button onclick="copyToClipboard('SIH-1731')">Copy</button>
+      <code>SIH-1748</code>
+      <button onclick="copyToClipboard('SIH-1748')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** MathWorks India Private Limited
+      <p>**Sponsoring Body:** National Critical Information Infrastructure Protection Center (NCIIPC)
 
-**Recommendation:** MAYBE (6.5/10)
+**Category:** LegalTech / Document AI / GovTech
 
-As the global shift towards renewable energy intensifies, solar trackers, which adjust solar panels to follow the sun’s path, are crucial for maximizing solar energy efficiency. Consequently, it is essential to design controllers for solar trackers that can optimize the angle of incidence between solar panels and sunlight. This tracking of the sun’s trajectory can be done accurately by managing at least one mechanical axis (azimuth, elevation, roll). As a preliminary step, a simulation-based control system, using tools such as SimscapeTM MultibodyTM and Simulink®, can be designed with a single-axis control based on location-specific solar paths. The workflow would involve integrating an electrical motor model (developed using tools like SimscapeTM ElectricalTM), designing a PID control system, developing an algorithm for optimal axis positioning, and validating the system through simulation. In the subsequent steps after validation, the motor control system can be deployed on low-cost hardware (e.g., using Simulink® Support Package for Arduino) to demonstrate a prototype of this solar tracking mechanism.
-References:
-1. Pre- Requisite: https://matlabacademy.mathworks.com/details/control-design-onramp-with-simulink/controls?s_eid=PSM_33221
-2. Optimizing Solar Array Performance Using MPPT (https://in.mathworks.com/videos/optimizing-solar-array-performance-using-mppt-1657880084126.html?s_tid=srchtitle_site_search_8_solar%20tracker)
-3. Pre- Requisite: Power Systems Simulation Onramp - CHAPTER 4 (System Integration) (https://matlabacademy.mathworks.com/details/power-systems-simulation-onramp/orps?s_eid=PSM_33222)
-4. Using the Worm and Gear Constraint Block - Solar Tracker (https://in.mathworks.com/help/sm/ug/using-the-worm-and-gear-constraint-block-solar-tracker.html)
-5. Program the Device from Simulink | Arduino Light Meter Project, Part 2 (https://in.mathworks.com/videos/arduino-light-meter-project-part-2-program-the-device-from-simulink-106500.html)
+**Recommendation:** YES - HIGH PRIORITY (9.5/10)
 
-Require MATLAB® and Simulink® PRODUCT LICENSE for SIH 2024, please send an email to 'ageethag@mathworks.com'.</p>
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: Android applications are increasingly becoming an integral part of daily life, offering various services and functionalities. However, their widespread use also makes them prime targets for security vulnerabilities. Identifying and mitigating these vulnerabilities during the development phase is crucial for ensuring the security and integrity of these applications. Static analysis provides a method to examine code for vulnerabilities without executing it, allowing developers to catch and fix security issues early.
+Detailed Description: This report outlines a comprehensive framework for conducting static analysis to detect vulnerabilities in Android applications. The framework covers the following key aspects:
+1.Preparation
+â€¢ Gather Requirements: Define the scope and objectives of the static analysis process. Determine which parts of the application will be analyzed and the specific types of vulnerabilities to look for.
+â€¢ Select Tools: Choose appropriate static analysis tools tailored for Android development such as MobSF, SonarQube, Android Lint, FindBugs, and PMD.
+2. Code Review
+â€¢ Manual Code Review: Perform a thorough review of the source code to identify obvious security flaws. This step involves examining the code for insecure coding practices, such as hardcoded credentials, improper exception handling, and insecure data storage.
+â€¢ Automated Static Analysis: Use automated tools to scan the codebase for vulnerabilities. These tools can quickly identify issues such as insecure API usage, improper permissions, and potential injection points.
+3. Configuration Analysis
+â€¢ Manifest File Review: Analyze the AndroidManifest.xml file for insecure configurations, such as exported components that should be private, overly broad permissions, and improper use of intents.
+â€¢ Build Configuration Review: Examine build.gradle files to ensure secure configurations and identify potential issues related to dependency management and build settings.
+4. Dependency Analysis
+â€¢ Third-Party Libraries: Identify and evaluate third-party libraries for known vulnerabilities. Ensure that all dependencies are up-to-date and do not introduce security risks into the application.
+5. Reporting
+â€¢ Document Findings: Prepare a detailed report outlining the identified vulnerabilities, their severity, and potential impact. The report should include specific examples of the code where vulnerabilities were found and explanations of why they pose a risk.
+â€¢ Prioritize Issues: Rank vulnerabilities based on their severity and potential impact on the application. This helps in focusing remediation efforts on the most critical issues first.
+6. Mitigation and Remediation
+â€¢ Propose Fixes: Provide specific recommendations for addressing the identified vulnerabilities. This includes suggesting secure coding practices, configuration changes, and updates to third-party libraries.
+â€¢ Integrate Fixes: Work with the development team to integrate the recommended fixes into the codebase. This step may involve revising the application architecture, modifying code, and updating dependencies.
+Expected Solution:
+1.Early Detection of Vulnerabilities: Identifying security issues early in the development process, allowing for timely remediation.
+2. Improved Code Quality: Encouraging secure coding practices and reducing the likelihood of introducing security flaws.
+3. Increased Security Awareness: Raising awareness among developers about common security issues and how to avoid them.
+4.Enhanced Application Security: Reducing the risk of exploitation by addressing vulnerabilities before the application is deployed to production.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1748</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
+      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
 
-**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
+**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
 
-**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
+**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">enterprise-app</span>
+      <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-198.html" class="prev">← Previous</a>

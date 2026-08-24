@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1648] Online Chatbot based ticketing system — Findings Report</title>
+  <title>[SIH-1667] Integrate Industry-Relevant Vocational Training into Elementary and Secondary Education Curriculum — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,51 +83,63 @@
       <span class="finding-id">finding-119</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1648] Online Chatbot based ticketing system</h1>
+      <h1>[SIH-1667] Integrate Industry-Relevant Vocational Training into Elementary and Secondary Education Curriculum</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">Open Source & Skill Discovery</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1648</code>
-      <button onclick="copyToClipboard('SIH-1648')">Copy</button>
+      <code>SIH-1667</code>
+      <button onclick="copyToClipboard('SIH-1667')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Culture
+      <p>**Sponsoring Body:** Ministry of Education
 
-**Recommendation:** YES - HIGH PRIORITY (9/10)
+**Category:** Smart Education / Career Analytics
 
-Background:
-Visitors to museums often face several significant challenges due to manual ticket booking systems. One prominent issue is the inefficiency and time consumption associated with the process. Long queues are common, especially during peak hours, weekends, or special exhibitions, leading to frustration and impatience among visitors. Besides the wait times, the manual system is prone to errors, such as incorrect ticket issuance, double bookings, or lost records, which can cause further delays and inconvenience. Overall, these challenges associated with manual ticket booking systems significantly detract from the visitor experience, reducing satisfaction and potentially impacting the museum's reputation and visitor numbers.
-Description:
-The implementation of a chatbot for ticket booking in a museum addresses several critical needs, enhancing the overall visitor experience and streamlining museum operations. Here are the key reasons for adopting a chatbot ticket booking system:
-1. Improved Customer Service
-2. Efficient Handling of High Volumes
-3. Cost-Effective Solution
-4. Data Collection and Analysis
-5. Accessibility
-6. Reduced Human Error
-7. Multilingual Support
-8. Enhanced Marketing and Promotion
-Expected Solution:
-An efficient and responsive multilingual chatbot based ticketing system that can handle all kinds of bookings from gate entry to shows. Payment gateway should also be integrated to make it fully free from human intervention. It will also provide analytics to aid in more efficient decision making process.</p>
+**Recommendation:** YES - TOP PRIORITY (10/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: India has a tremendous opportunity to harness the potential of its youth by addressing the skills gap between education and industry requirements. While vocational education programs exist, they are often undervalued compared to traditional academic paths and need enhancement to provide students with the skills demanded by today’s job market. Strengthening vocational education is essential for creating a skilled workforce that aligns with industry needs and supports sustainable economic growth. The National Education Policy (NEP) 2020 emphasizes the importance of vocational education and aims to integrate it into the mainstream education system to prepare students for various career paths.
+Description: The goal is to transform vocational education into a core component of the elementary and secondary education system, as envisioned in NEP 2020. By collaborating with industry experts, we can design a curriculum that is modern and industry-relevant. Investments in infrastructure will ensure schools have the necessary tools and facilities for effective training. Specialized training programs for educators will enhance the quality of vocational teaching. Partnerships with industries will offer students valuable real-world experience through internships and apprenticeships. Awareness campaigns will shift perceptions, highlighting vocational education as a respected and viable career path.
+Innovative Solutions:
+a) Virtual Reality (VR) Training Modules: Develop VR-based training modules to simulate real-world scenarios and provide hands-on experience in a virtual environment.
+b) AI-Powered Career Guidance: Implement AI tools to offer personalized career guidance and skill development pathways for students based on their strengths and industry trends.
+c) Digital Skill Badges: Introduce digital badges and certifications that students can earn upon completing various vocational training modules, making their skills easily verifiable by employers.
+d) Mobile Training Labs: Deploy mobile vocational training labs to reach remote and underserved areas, providing practical training and education on the go.
+e) Online Apprenticeship Platforms: Create online platforms that connect students with apprenticeship opportunities, facilitating easier access to industry partnerships and hands-on experience.
+By leveraging these innovative solutions, we can enhance vocational education and ensure that students are well-prepared to enter the workforce, thus contributing to India's economic growth and development. NEP 2020’s emphasis on vocational education integration will be a guiding framework for these efforts, ensuring alignment with national educational goals.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1667</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">open-source</span> <span class="badge info">reuses-gitscout</span>
+      <span class="badge info">education</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-118.html" class="prev">← Previous</a>

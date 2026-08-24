@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1691] Adaption of 'Existing Command Area in Response to Shifting of Agricultural Practices — Findings Report</title>
+  <title>[SIH-1707] Development of a Geolocation-Based Attendance Tracking Mobile Application. — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,45 +83,74 @@
       <span class="finding-id">finding-159</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1691] Adaption of 'Existing Command Area in Response to Shifting of Agricultural Practices</h1>
+      <h1>[SIH-1707] Development of a Geolocation-Based Attendance Tracking Mobile Application.</h1>
       <div class="badges">
         <span class="badge high">high</span>
-        <span class="category-tag">Open Source & Skill Discovery</span>
+        <span class="category-tag">LegalTech / Document AI / GovTech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1691</code>
-      <button onclick="copyToClipboard('SIH-1691')">Copy</button>
+      <code>SIH-1707</code>
+      <button onclick="copyToClipboard('SIH-1707')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Jal Shakti
+      <p>**Sponsoring Body:** GAIL, Ministry of Petroleum and Natural Gas
 
-**Recommendation:** YES - HIGH PRIORITY (9/10)
+**Category:** LegalTech / Document AI / GovTech
 
-Background
-Many existing Dams and Reservoirs are built several decades ago with certain intended purposes. However, due to increasing population, change in extreme climatic conditions, improvement in agricultural practices there is a necessity for re-evaluation of the current infrastructure and water management practices.
-Description
-It is likely that existing dams get silted up over time and are unable to store sufficient water. Due to which there will be a shift in the command area or the cropping pattern. It is also a known fact that changing climate issues is also posing a problem, due to which there is need to review the agricultural requirement. The existing dams and reservoirs are increasingly vulnerable to the adverse climate change and shifts in agricultural practices. These changes can lead to structural stress, altered water availability and inefficiencies in water distribution and usage. There is an urgent need to develop and implement new monitoring and water management models to ensure the safety, efficiency, and sustainability of these critical infrastructures.
-Expected Solution
-This problem will address the safety and resilience of dams and reservoirs against climate - induced risks, enhance water resources management and optimally support the agricultural needs and environmental sustainability. There will also be a long-term planning of water
-infrastructure in the face of climate and agricultural changes.
-This needs work on the Hydrological impact due to changes in the climatic conditions, which in turn effect the water demand in the command area. The changing technology, and adaption of new agricultural practices should be taken into account. It is essential to implement a decision support system along with predictive analysis that provide insights to the water managers and policy makers on real-time data.</p>
+**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Description:
+A mobile application needs to be developed to streamline and automate the attendance tracking of its employees across multiple office locations. This application will leverage geolocation technology to record employee check-in and check-out times along with geo-location as they enter and leave the office premises.
+Aim of this App is to enhance operational efficiency, reduce manual attendance tracking errors, and provide a seamless experience for employees to manage their work-related movements.
+
+Key Requirements:
+1) Geolocation-Based Check-In and Check-Out:
+Automatically record check-in time and geo-location when an employee enters within a 200-meter radius of his office.
+Record check-out time when the employee leaves the 200-meter radius.
+Ensure that each check-in is paired with a corresponding check-out, regardless of the frequency of entries and exits.
+2) Manual Location Check-In / Check-Out for Offsite Work:
+Provide a manual check-in and check-out feature for employees working at locations other than his offices.
+Automatically suggest relevant locations based on real-time longitude and latitude data, allowing employees to confirm their check-in and check-out at these suggested locations.
+3) Calculate the employees total working hours.
+4) Data Accuracy and Integrity:
+Ensure the application maintains accurate and tamper-proof records of all check-in and check-out events.
+Enable real-time data synchronization and secure storage to prevent data loss and ensure reliability.
+Youtube Link/Video Link (3 Minute video explaining the Problem Statement):
+https://youtu.be/bmw8unoxA7U
+
+NOTE : GAIL (INDIA) LTD will not provide any hardware, software, license, data or any other resource to SIH hackathon Teams. The teams should use free and/or open-source resources, as applicable, for the entire project.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1707</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
+      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
 
-**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
+**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
 
-**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
+**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">open-source</span> <span class="badge info">reuses-gitscout</span>
+      <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-158.html" class="prev">← Previous</a>

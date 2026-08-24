@@ -9,7 +9,7 @@ from cron_engine import CronEngine, RunRecord, get_engine
 
 app = FastAPI(title="Cron System", version="1.0.0")
 
-app.mount("/findings", StaticFiles(directory="static/findings", html=True), name="findings")
+app.mount("/findings/sih", StaticFiles(directory="static/findings", html=True), name="findings-sih")
 
 
 class RunResponse(BaseModel):

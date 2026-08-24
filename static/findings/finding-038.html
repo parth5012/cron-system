@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1564] Automatic Road Extraction and alert generation for new roads — Findings Report</title>
+  <title>[SIH-1565] Target detection by optimizing Anomaly Detection in Hyperspectral Image Processing using AI/ML — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,40 +83,57 @@
       <span class="finding-id">finding-038</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1564] Automatic Road Extraction and alert generation for new roads</h1>
+      <h1>[SIH-1565] Target detection by optimizing Anomaly Detection in Hyperspectral Image Processing using AI/ML</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">AI/ML & Industrial Analytics</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1564</code>
-      <button onclick="copyToClipboard('SIH-1564')">Copy</button>
+      <code>SIH-1565</code>
+      <button onclick="copyToClipboard('SIH-1565')">Copy</button>
     </div>
     <div class="description">
       <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
 
-**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+**Category:** Smart Education / Career Analytics
 
-Background: Department of Space has made available its medium resolution satellite images through Boonidhi portal. Resourcesat satellite images (LISS IV sensor) are useful to extract roads with width of 20 feet and above due to its resolution.
-Description Roads: are linear features on satellite images and quite clearly visible for human interpretation because of their linearity. Automated road extraction is required in view of very large volume of imagery available nowadays. The roads extracted must be saved to a GIS database. When there is a change or new road development compared to previous image of the same area, there should be an alert generated.
-Expected Solution: A software based solution is expected that has a GUI to specify the area of interest for road extraction and alerts generation. Output should be in the form of shapefiles with geographical references. It should make use of ISRO’s Boonidhi images. The alert should be sent to configured email ids.</p>
+**Recommendation:** YES - TOP PRIORITY (10/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: Hyperspectral imaging acquires images with very narrow continuous wavelength ranging from UV to LWIR which is beyond the visible spectrum. Using this continuous spectral information classification of diverse material of interest can be done accurately. The availability of huge information due to continuous spectral information improves data information content but causing challenges in processing of hyperspectral images. An unsupervised learning mechanism for detection of targets by optimizing Anomaly Detection in Hyperspectral Image Processing using AI/ML can be used for it.
+Description: The above problem statement envisages, that Hyperspectral data to be processed in such a way that to find spectrally distinct and most informative pixels in the data to identify anomalies in the data. Before processing of data, data correction methods, to improve interpretation of pixel spectra and better result to analyse data can be done. Different approaches for de-noising to remove noise from data, fusion approach through sharpening or pan sharpening can be implemented. The calibration of data using radiometric and atmospheric correction methods can be implemented to optimize the result. An anomaly detection model based on deep learning with best performance to be implemented to process hyperspectral data which can provide clear identification of anomalies in the data with sufficient spectral clarity. Subsequently, the same can be created as spectral signatures of the objects. A suitable target detection methodology for identifying target of interest is also to be developed.
+Expected Solution: A deep learning models for processing of hyperspectral data based on anomaly detection to be optimized that can be used for target detection in that data using available open source hyperspectral data of Hyperion, AVIRIS etc. to be developed.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1565</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">industrial</span> <span class="badge info">ntro</span>
+      <span class="badge info">education</span> <span class="badge info">ntro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-037.html" class="prev">← Previous</a>

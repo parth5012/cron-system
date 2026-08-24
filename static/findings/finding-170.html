@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1702] Bail Reckoner — Findings Report</title>
+  <title>[SIH-1719] Monitoring System for classroom session in skill training programe — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,69 +83,57 @@
       <span class="finding-id">finding-170</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1702] Bail Reckoner</h1>
+      <h1>[SIH-1719] Monitoring System for classroom session in skill training programe</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1702</code>
-      <button onclick="copyToClipboard('SIH-1702')">Copy</button>
+      <code>SIH-1719</code>
+      <button onclick="copyToClipboard('SIH-1719')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Law & Justice
+      <p>**Sponsoring Body:** Ministry of Social Justice and Empowerment
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+**Category:** Smart Education / Career Analytics
 
-Objective
-The objective is to develop an innovative digital solution, termed the "Bail Reckoner," designed to assist undertrial prisoners, legal aid providers, and judicial authorities in streamlining the bail process. The Bail Reckoner aims to simplify and expedite the bail application and evaluation process by considering various legal and procedural parameters.
-Parameters to Consider for integration in the Tool:
-1. Nature of the Offense and Penal Provisions:
-o Seek the inputs for the charges framed (can be multiple charges, and if they are compoundable etc). In this regard Statutes like Indian Penal Code,1860 and the upcoming Bhartiya Nyaya Sanhita 2023; Bhartiya Suraksha Sanhita 2023; and Bhartiya Saakshya Adhiniyam 2023; should be covered. Special statutes on the following under-mentioned areas should also be covered:
-1. Cyber Crimes
-2. Crimes Against SCs and STs:
-3. Crimes Against Women
-4. Crimes Against Children
-5. Offences Against the State
-6. Economic Offence
-7. Crimes Against Foreigners
-a. Develop a comprehensive backend database to map penalties with sections of various Acts/Laws.
-b. Link and provide detailed information on the nature of offenses and corresponding legal provisions.
-2. Duration of Imprisonment Already Served:
-a. Track the duration of imprisonment undertrial prisoner has served.
-b. Highlight the eligibility timeline for bail based on the time already served.
-3. Considerations of Judge’s Discretion:
-a. Evaluate the risk of the undertrial prisoner escaping the judicial process, such as leaving the country.
-b. Assess the potential influence the prisoner may have on evidence or witnesses.
-4. Procedural Pre-requisites:
-a. Outline requirements such as surety bonds, personal bonds, fines (if applicable), and identity verification.
-b. Ensure compliance with procedural aspects under IPC/CrPC.
-5. Judicial Pronouncements on Bail Eligibility:
-a. Integrate key judicial pronouncements regarding bail eligibility.
-b. Automatically identify undertrial prisoners who are eligible for bail if they have served half the term during the undertrial stage, based on the prescribed sentence for their charges.
-Solution Requirements
-. The Bail Reckoner should be a user-friendly, plug-and-play tool that can be integrated into existing software systems. It must provide a clear and accessible interface for:
-1. Undertrial Prisoners: To understand their eligibility and process for applying for bail.
-2. Legal Aid Providers: To assist in preparing and submitting accurate bail applications.
-3. Judicial Authorities: To streamline the evaluation process and ensure timely decisions.
-By leveraging technology and innovation, the Bail Reckoner aims to make the bail process more transparent, efficient, and just, contributing to a more equitable legal system.</p>
+**Recommendation:** YES - TOP PRIORITY (10/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: In the context of the skill development training program, there is a need to establish a robust automated monitoring system to assess and enhance effectiveness of classroom training so as early detection of below average training institutions can be done.
+Description: The above problem requires a system capable of analyzing classroom images thus can help identify the types of activites and interactions taking place during training sessions. Undestanding these activites can shed light on the quality and relevance of the training content. A dataset consisting of classroom pictures can be provided for various job roles along with course curriculam, infra requirements etc required for the skill development training programme.
+Expected Solution: System should be able to analyze the images and flag cases which need enhanced monitoring or cancellation.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1719</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">law</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">education</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-169.html" class="prev">← Previous</a>

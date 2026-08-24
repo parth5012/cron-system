@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1657] Integrated Geo-Referenced Fish Catch Data Repository and Access System — Findings Report</title>
+  <title>[SIH-1676] Web-scrapping tool to be developed to search and report Critical and High Severity Vulnerabilities of OEM equipment (IT and OT) published at — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,7 +83,7 @@
       <span class="finding-id">finding-128</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1657] Integrated Geo-Referenced Fish Catch Data Repository and Access System</h1>
+      <h1>[SIH-1676] Web-scrapping tool to be developed to search and report Critical and High Severity Vulnerabilities of OEM equipment (IT and OT) published at</h1>
       <div class="badges">
         <span class="badge critical">critical</span>
         <span class="category-tag">Smart Education / Career Analytics</span>
@@ -91,28 +91,51 @@
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1657</code>
-      <button onclick="copyToClipboard('SIH-1657')">Copy</button>
+      <code>SIH-1676</code>
+      <button onclick="copyToClipboard('SIH-1676')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Earth Sciences
+      <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
+
+**Category:** Smart Education / Career Analytics
 
 **Recommendation:** YES - TOP PRIORITY (10/10)
 
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
 Background:
-INCOIS provides fishery advisory services to fishermen through potential fishing zone (PFZ) advisories that proven to benefit fishing communities by making fishing more economical and reducing fuel consumption, as fishermen can directly target areas with abundant fish. Current research is focused on advancing the fisheries forecasting services through developing species-specific advisory services. However, predicting species-specific abundance requires a deep understanding of the habitat suitability of commercially important species. This requires analyzing fish catch data alongside environmental variables at the locations of fish occurrence and abundance, identifying the most important variables contributing to their abundance, and ultimately fitting these data to appropriate prediction models. INCOIS is striving to collect geo-referenced fish catch data from various sources, including data from other research Institutions, industry collaborators, research cruises, and a dedicated app that captures fisheries information through images from fish catch locations. However, at present there is no systematic mechanism to aggregate and store these information from multiple channels to a single data base. As a result, the data is highly scattered and disaggregated, leading to wastage of time and confusion among scientific personnel developing species-specific habitat suitability models, since this disorganization makes it difficult to access all available datasets for analysis.
-Detailed Description:
-Considering the difficulties in collecting georeferenced fish catch data, each single dataset is highly crucial for habitat suitability models. Therefore, there is a need for a comprehensive database to store all available georeferenced fish catch information with appropriate filters and visualization tools. This would enable dedicated personnel to easily access and download all data available for a particular species. Such a dataset would also be highly beneficial for new scientists interested in working on different species, resulting in species specific advisory services for more species in future.
-Data input, classification and arrangement
-The software solution for the portal should handle input data in Excel format and organize it by date, location, depth, and species. Some datasets provide the weight of individual species, while others are only the aggregate weight of the catch with only the information on presence of individual species, not their catch weights. Therefore, there should be separate modules for occurrence and abundance of species. The module for abundance should store data that includes catch weight of individual species, while the module for occurrence should store data with and without catch weight.
-Users, Data output and visualization
-The users of the portal will primarily be scientific personnel working on specific species or multiple species, interested in visualizing and downloading data for their target species. Therefore, the portal should display search results for a species using appropriate maps and graphical formats, and also allow users to download the data in Excel/CSV format with columns for Date, Species, Latitude, Longitude, Catch Weight, and Depth.
--In some instances, scientific personnel may also be interested in studying the fish assemblage patterns of multiple species within a particular geographical area over time. Thus, the output filters should also allow users to filter data by area (using latitude and longitude bounds) and display the occurrences and abundances of all available species over different time scales, along with relevant data on their depth of occurrence.
-Data Accessibility
-The Data repository should have an admin page to continuously update the database, and users should be able to login with appropriate credentials to access the data.
-Expected Solution: A comprehensive data base to feed, arrange, store and visualize disaggregated data on fish catch. This would make research towards species-specific fisheries forecasts hassle-free and smooth, saving time and effort in collecting and compiling information, allowing researchers to focus on more productive tasks.</p>
+ Critical Sector organisations uses a number of IT and OT equipment (e.g. Networking and hardware device, Operating Systems, Applications, Firmware etc.). These devices/application come with vulnerabilities from time to time. There should be timely information sharing mechanism by which the concerned equipment users at critical sector orgs should be altered regarding any critical / high severity vulnerabilities in their equipment within the shortest possible time.
+ Detailed description:
+ The ICT components (HW/SW) being used by Critical Sector Organisations become vulnerable from time to time. These vulnerabilities can be categorised as Critical, High, Medium and Low. Any exploitation of these vulnerabilities can cause havoc in multiple Critical Sector Organisations where such vulnerable equipment are being used.
+ Keeping in view of the above, there is a need to monitor all such vulnerability information published at the equipment’s OEM websites and also other relevant websites. Once a critical or high severity vulnerability information is published at OEM website or any other relevant website, the ‘to be developed scrapper’ will immediately take that vulnerability input along with possible mitigating strategy published in the website and send the information to predefined email id(s).
+ Note: The NVD website publishes such OEM vulnerable information. But the same comes with a time lag. It is therefore needed to get such information directly from OEM websites and /or from other relevant websites where such vulnerable information is published almost in real time.
+ Expected Outcome:
+ An automatic script using open source tools to be developed for the OEM vulnerability information scrapping and reporting. Tool should know various vulnerability information published data formats/syntax at OEM websites (both for IT and OT hardware and application) and come up with optimum solution for monitoring and reporting of such vulnerability information.
+
+ The output of the tool that will be emailed to pre-designated email id(s) is as per following (shared with example; all fields may not be available at the time of reporting):
+ * Product Name: Chrome
+ * Product Version: - NA
+ * OEM name: Google
+ * Severity Level (Critical/High): High
+ * Vulnerability: The N-able PassPortal extension before 3.29.2 for Chrome inserts sensitive information into a log file.
+ * Mitigation Strategy: Install patch from https://me.n-able.com/s/security-advisory/aArHs000000M8CCKA0/cve202347131-passportal-browser-extension-logs-sensitive-data
+ * Published Date: Jan 2024
+ * Unique ID: CVE-2023-47131</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1676</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
       <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
@@ -123,9 +146,9 @@ Expected Solution: A comprehensive data base to feed, arrange, store and visuali
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">earth-sciences</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">education</span> <span class="badge info">ntro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-127.html" class="prev">← Previous</a>

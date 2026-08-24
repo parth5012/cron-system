@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1644] A web application specifically designed for Indian coal mines to quantify their carbon footprint and explore pathways to carbon neutrality. — Findings Report</title>
+  <title>[SIH-1660] Interactive gamified approach to Ocean Literacy — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,59 +83,61 @@
       <span class="finding-id">finding-115</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1644] A web application specifically designed for Indian coal mines to quantify their carbon footprint and explore pathways to carbon neutrality.</h1>
+      <h1>[SIH-1660] Interactive gamified approach to Ocean Literacy</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">AI/ML & Industrial Analytics</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1644</code>
-      <button onclick="copyToClipboard('SIH-1644')">Copy</button>
+      <code>SIH-1660</code>
+      <button onclick="copyToClipboard('SIH-1660')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Coal
+      <p>**Sponsoring Body:** Ministry of Earth Sciences
 
-**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+**Category:** Smart Education / Career Analytics
 
-Background: India faces a complex challenge in balancing its reliance on coal for energy with its climate change commitments. Coal mining is a major source of carbon emissions, a greenhouse gas contributing to global warming. To achieve carbon neutrality, the Indian coal sector needs to offset its emissions. This can be done through a combination of strategies like reducing emissions from mining activities, adopting cleaner technologies, and offsetting remaining emissions by planting trees that absorb carbon dioxide. A web-based application can be a powerful tool in this journey by helping quantify a mine's carbon footprint and evaluate potential pathways to carbon neutrality.
-Description:
-The web based application will have following objectives:
-Activity wise quantification of Carbon emission in Coal Mines
-Estimation of existing Carbon Sinks
-Gap analysis between C emission and sinks and suggesting pathways to carbon neutrality
+**Recommendation:** YES - TOP PRIORITY (10/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: The 2030 Agenda for Sustainable Development, adopted by all United Nations members in 2015, created 17 world Sustainable Development Goals (SDGs). It was also accepted that these SDGs are not possible to achieve without changing humanity’s relationship with the oceans. To realize that, in 2017, it was decided that the decade of 2021-30 is to be observed as UN Decade of Ocean Sciences for Sustainable Development (or UN Ocean Decade). INCOIS is identified as UN Ocean Decade Collaborative Centre for the Indian Ocean Region to help address all the ten UN Ocean Decade challenges (https://oceandecade.org/challenges/).
+
+Description: The creative solution proposed herein will address mainly (but not limited to) challenge-10. The gamified way of creating ocean related awareness is aimed for all age-groups and diverse education levels. Considering popularity of online gaming (multi-role playing to conventional games such as ludo) and affordable devices along with data plans, this approach is promising option for ocean literacy. For a starter, one such solution (but very limited/basic in nature) can be found at: https://www.outreachgames.org/OceanProtector/main.html.
+
 Expected Solution:
-A comprehensive software solution that includes:
-Emission estimation: The app would allow users to input data on various mining activities (e.g., excavation, transportation, equipment usage) and estimate the associated carbon emissions based on establishd emission factors. Estimation of Per Capita emissions of a Mine.
-Carbon Neutrality Pathways: The app could offer features for simulating different emission reduction strategies like:
-Clean technologies: Assessing the impact of adopting electric vehicles, methane capture systems, and renewable energy sources for mine operations.
-Afforestation offsets: Calculating the amount of land required for tree plantation to offset remaining emissions based on state specific afforestation plan and Carbon emission reduction.
-Other Renewables: explore alternative use of energy to reduce direct electricity consumption.
-Any other pathways:
-Carbon Credits: Estimation of potential Carbon credit earned as per present market rates.
-Data visualization: The app should present results visually, using charts and graphs to track emission trends and the effectiveness of implemented strategies.
-Scalability: Design the app to accommodate different mine sizes and types (underground vs open-cast).
-Benefits:
-Transparency: Providing a clear picture of a mine's carbon footprint.
-Decision support: Helping mine operators make informed choices for emission reduction.
-Cost savings: Identifying opportunities to optimize operations and potentially reduce costs associated with emissions.
-Sustainability goals: Aiding Indian coal mines in their journey towards carbon neutrality and supporting the country's overall climate goals.</p>
+The user will be able to chose from a variety of sea-going roles e.g. but not limited to, fishermen, captain of a ship, tourism operator etc. Based on the role, one needs to choose the correct sea conditions to be at a location (or move away) with the help of available/applicable ocean information services form INCOIS (simulated for the game). Correct decision (e.g. going for fishing to PFZ zone or moving away from the shore when tsunami is detected) will add to the points and help player achieve next level. Wrong decision may result in loosing points and add other gaming penalties (e.g. start over or wait till certain time etc etc). Users goal would be to advance and maintain gains at the daily, weekly etc leaderboards so in that way it would be competitive among the users even though their game decisions are not affecting to the others directly.
+The solution should be suitable for windows and android environments (web and browser based) and scalable over the time by the host institute independently post-SIH</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1660</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">industrial</span> <span class="badge info">coal</span>
+      <span class="badge info">earth-sciences</span> <span class="badge info">education</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-114.html" class="prev">← Previous</a>

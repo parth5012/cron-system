@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1618] Online monitoring of Unauthorized construction across the city — Findings Report</title>
+  <title>[SIH-1637] Mobile App for Direct Market Access for Farmers — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,38 +83,57 @@
       <span class="finding-id">finding-092</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1618] Online monitoring of Unauthorized construction across the city</h1>
+      <h1>[SIH-1637] Mobile App for Direct Market Access for Farmers</h1>
       <div class="badges">
-        <span class="badge low">low</span>
-        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
+        <span class="badge medium">medium</span>
+        <span class="category-tag">AgriTech & Rural Health Tech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1618</code>
-      <button onclick="copyToClipboard('SIH-1618')">Copy</button>
+      <code>SIH-1637</code>
+      <button onclick="copyToClipboard('SIH-1637')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Government of NCT of Delhi
+      <p>**Sponsoring Body:** Ministry of Agriculture and Farmers Welfare
 
-**Recommendation:** MAYBE (6.5/10)
+**Category:** AgriTech & Rural Health Tech
 
-MCD is working on monitoring of unauthorized construction across th ecity. A viable and low cost solution is required e.g. Drone based surveys of swathes of land/areas as per defined time intervals will help real-time detection of unauthorized construction</p>
+**Recommendation:** MEDIUM PRIORITY (7/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: Farmers often face challenges in accessing markets, leading to lower income due to middlemen. This gap restricts their ability to sell produce at fair prices.
+Description: Create a mobile application that connects farmers directly with consumers and retailers. The app should include features for listing produce, negotiating prices, and managing transactions, thereby reducing dependence on intermediaries.
+Expected Solution: A user-friendly mobile platform that enables farmers to showcase their products and connect with buyers directly, enhancing their income potential.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1637</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
+      <p>**Probable Solution:** AI-assisted rural assistant portal providing diagnostic/expert guidance via simple web forms, voice interface, and market/health linkage.
 
-**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
+**Build Plan (your stack):** FastAPI backend + Whisper/Gemini audio parsing + lightweight React PWA interface with offline SQLite caching.
 
-**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
+**Why this rating:** Good application of AI voice/FastAPI, but requires domain field data.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">enterprise-app</span>
+      <span class="badge info">agritech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-091.html" class="prev">← Previous</a>

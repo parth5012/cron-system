@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1724] Platform for Inter-departmental cooperation (at city level) in Indian Cities, for sharing data & resources, unified phasing, planning and im — Findings Report</title>
+  <title>[SIH-1741] Centralized application-context aware firewall — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,51 +83,65 @@
       <span class="finding-id">finding-192</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1724] Platform for Inter-departmental cooperation (at city level) in Indian Cities, for sharing data & resources, unified phasing, planning and im</h1>
+      <h1>[SIH-1741] Centralized application-context aware firewall</h1>
       <div class="badges">
         <span class="badge high">high</span>
-        <span class="category-tag">Open Source & Skill Discovery</span>
+        <span class="category-tag">AI/ML & Industrial Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1724</code>
-      <button onclick="copyToClipboard('SIH-1724')">Copy</button>
+      <code>SIH-1741</code>
+      <button onclick="copyToClipboard('SIH-1741')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Housing and Urban Affairs
+      <p>**Sponsoring Body:** Indian Space Research Organization (ISRO)
 
-**Recommendation:** YES - HIGH PRIORITY (9/10)
+**Category:** AI/ML & Industrial Analytics
 
-Background: Multiplicity of authorities and implementing agencies in Indian Urban landscape is one of the biggest challenges for urban governance. Not only does it lead to underutilization of resources available with various departments, execution of multiple projects at same site may also lead to interference and delays due to miscoordination. A digital platform for interdepartmental cooperation can potentially resolve these issues and make inter-departmental cooperation more streamlined.
- Example- A road developed by one agency, may get damaged due to installation of gas pipelines or utility ducts on road 2 months later. This can be resolved with preemptive collaboration between both implementing agencies.
- Description: The digital platform can provide solutions for-
- 1. Exchange of data and resources (technical expertise, machinery, technology etc.), and list of ongoing and upcoming projects between various agencies.
- 2. Scheduling of tasks, reports, and work distribution between agencies for projects categorized as "Inter-departmental"
- 3. Identification of projects in different departments which share the project site, and tools for assistance in organizing meetings of various departments, unified project phasing (to reduce costs incurred), planning and execution of projects.
- 4. Training and capacity building exercises, workshops & seminars.
- 5. Discussion forum with (Intra department, inter department, and public form sections.
- Expected Solution- A digital platform for interdepartmental cooperation which allows functions of-
- a. Registering departments, employees, officers, technical experts etc. with their accounts.
- b. Sharing data, ongoing projects with location, and inventory of available resources between departments/agencies.
- c. Creation of tasks, scheduling, reporting and work distribution across departments for inter-departmental and multi-departmental projects.
- d. Identification, unified phasing, planning, and implementation of projects on same site
- e. Discussion forum, with different forum sections allowing access to specific groups of users.</p>
+**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Description: Develop an application firewall for end-points that can identity and restrict access of application to external network/hosts. The application firewall should provide further granular control of restricting domains, IP addresses and protocols for each application. The firewall should be manageable through a centralized web console where policies for each end-point and application can be centrally deployed. Firewall agent should also be able to monitor network usage behaviour of each application and generate alerts on central dashboard for any traffic anomaly using AI/ML.
+Challenge: Applying separate firewall policies for each application running on the end-point and managing them through a central web console.
+Usage: End-point security, network security
+Users: Cyber security teams
+Available Solutions (if Yes, reasons for not using them): Individual components are available
+Desired Outcome: The solution should provide following components:
+1. Solution should identify the domains and protocols that any application is trying to access. Further, it should enable allowing of any such network traffic which is not already allowed via centralized console.
+2. Context-aware application firewall agent that shall manage firewall policies for each application running on end-point. The agent shall also collect network usage logs of each application and send it to central server.
+3. Central web management console that shall be able to manage all end-points and applications
+4. Solution should work for Windows end-points. Bonus points for Linux
+5. Solution should also detect abnormal network behaviour of applications</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1741</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
+      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
 
-**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
+**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
 
-**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
+**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">open-source</span> <span class="badge info">reuses-gitscout</span>
+      <span class="badge info">industrial</span> <span class="badge info">isro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-191.html" class="prev">← Previous</a>

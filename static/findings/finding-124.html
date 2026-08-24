@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1653] Web based Selector-Applicant Simulation Software — Findings Report</title>
+  <title>[SIH-1672] Develop a ML Model based solution to refine CAPTCHA. — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,45 +83,67 @@
       <span class="finding-id">finding-124</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1653] Web based Selector-Applicant Simulation Software</h1>
+      <h1>[SIH-1672] Develop a ML Model based solution to refine CAPTCHA.</h1>
       <div class="badges">
-        <span class="badge low">low</span>
-        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">Open Source & Skill Discovery</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1653</code>
-      <button onclick="copyToClipboard('SIH-1653')">Copy</button>
+      <code>SIH-1672</code>
+      <button onclick="copyToClipboard('SIH-1672')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Defence
+      <p>**Sponsoring Body:** Ministry of Electronics and Information Technology
 
-**Recommendation:** MAYBE (6.5/10)
+**Category:** Open Source & Skill Discovery
 
-Background:
-Recruitment and Assessment Centre (RAC) under DRDO, Ministry of Defence carries out interviews for applications received against advertised vacancies and for promotion to next higher grade for scientific manpower inducted within DRDO.
-Description:
-The process of interviewing is a challenging task. An unbiased objective interviewing process helps identify the right talent. The basic process of an interview involves posing a set of questions by an interviewer and thereafter
-evaluating responses from candidates. Thus, the questions asked should be relevant and match the area/ expertise of the applicant and the responses should also be of relevance w.r.t. the question asked.
-Expected Solution:
-The proposed solution should provide experts as well as candidates a real life Board Room experience, starting with initial ice-breaking questions leading to in-depth techno-managerial (depending on the level of candidate) questions.
-It shall also be able to provide a quantifiable score for experts as well as the candidate for the relevancy of questions w.r.t. the area/ expertise of the applicant. Similarly, candidate responses should also be graded for relevancy w.r.t. the question asked, finally assisting in arriving at an overall score for the subject knowledge of the candidate and thus his/ her suitability against the advertised post.</p>
+**Recommendation:** YES - HIGH PRIORITY (9/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+1. Background. UIDAI has multiple portals on the Internetfor resident engagement and back office operations. These portals are protected with CAPTCHA for denial of service- related attacks. UIDAI believes that CAPTCHA is a barrier to smooth resident engagement with the aadhaar portals and therefore intends to remove it soon. Instead of
+active CAPTCHA, UIDAI is looking for a passive solution that can differentiate between a bot and a human operator.
+2. Problem Description. As part of the challenge, participating teams to develop a solution, mostly following a passive approach through collection of environmental parameters and using AI/ML to analyze it in the backend to differentiate between bot and human-being. The passive solution may capture environmental details
+through the browser context and analyze the same with the help of ML models deployed in the backend. This solution, once accepted would be used by the UIDAI to protect all backend APIs from DoS/DDoS based vulnerabilities.
+The solution must meet the following requirements:-
+3. The proposed solution must meet the following objectives.
+
+3.1 Feature Requirements. The solution must define the list of environmental parameters that need to be captured to differentiate between a bot and a human being. If passive parameter analysis is unable to differentiate, then
+the user may be asked to do a few minimal interactions with the portal. User experience is important to UIDAI and hence human interaction is to be limited.
+3.2 Frontend code to capture environmental or human interaction data must be compliant with the javascript framework. Participating teams may choose to use any framework like React/TypeScript/Flutter to demonstrate the solution.
+3.3 As part of the solution, the required backend ML model to analyze the front- end capture of environment parameters or human interaction data must be developed to demonstrate the solution. The ML model must be pluggable so that it can be integrated with the UIDAI application stack to protect the APIs.
+3.4 The solution must adhere to the core privacy policies of UIDAI.
+5. Expected Solution. The solution must be complete with both frontend and backend design, corresponding code and ML model to demonstrate the solution.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1672</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
+      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
 
-**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
+**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
 
-**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
+**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">enterprise-app</span> <span class="badge info">defence</span>
+      <span class="badge info">open-source</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-123.html" class="prev">← Previous</a>

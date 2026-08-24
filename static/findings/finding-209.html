@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1741] Centralized application-context aware firewall — Findings Report</title>
+  <title>[SIH-1759] AI-Powered Delivery Post Office Identification System — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,48 +83,57 @@
       <span class="finding-id">finding-209</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1741] Centralized application-context aware firewall</h1>
+      <h1>[SIH-1759] AI-Powered Delivery Post Office Identification System</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">AI/ML & Industrial Analytics</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1741</code>
-      <button onclick="copyToClipboard('SIH-1741')">Copy</button>
+      <code>SIH-1759</code>
+      <button onclick="copyToClipboard('SIH-1759')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Indian Space Research Organization (ISRO)
+      <p>**Sponsoring Body:** Ministry of Communication
 
-**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+**Category:** Smart Education / Career Analytics
 
-Description: Develop an application firewall for end-points that can identity and restrict access of application to external network/hosts. The application firewall should provide further granular control of restricting domains, IP addresses and protocols for each application. The firewall should be manageable through a centralized web console where policies for each end-point and application can be centrally deployed. Firewall agent should also be able to monitor network usage behaviour of each application and generate alerts on central dashboard for any traffic anomaly using AI/ML.
-Challenge: Applying separate firewall policies for each application running on the end-point and managing them through a central web console.
-Usage: End-point security, network security
-Users: Cyber security teams
-Available Solutions (if Yes, reasons for not using them): Individual components are available
-Desired Outcome: The solution should provide following components:
-1. Solution should identify the domains and protocols that any application is trying to access. Further, it should enable allowing of any such network traffic which is not already allowed via centralized console.
-2. Context-aware application firewall agent that shall manage firewall policies for each application running on end-point. The agent shall also collect network usage logs of each application and send it to central server.
-3. Central web management console that shall be able to manage all end-points and applications
-4. Solution should work for Windows end-points. Bonus points for Linux
-5. Solution should also detect abnormal network behaviour of applications</p>
+**Recommendation:** YES - TOP PRIORITY (10/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: The Department of Post in India boasts the world's largest postal network, with over 165,000 post offices. Through nearly 19,000 pin codes across the country the postal network manages the delivery of postal items across its network. One common issue is the mismatch between the specified Delivery Post Office name and the area PIN code on mail items, leading to delays and customer dissatisfaction.The delivery network design keeps on evolving as Nodal Delivery Centres and Delivery Hubs are introduced to bring in more efficiency in operations. From the perspective of the customer, the challenge is two fold: (a)  to know the correct Pin Code, which is itself a challeng; (b) the dynamic nature of operations inside with merged pin codes etc for all or certain categories of mail is also a challenge. Though the customer does not need to bother about (b), the internal system of India Post needs to take care of both issues (a) and (b) for efficient and correct delivery at all times.
+Description: Postal services are essential for various government, financial, educational, corporate, and public entities, both in urban and rural areas. Despite the widespread use of postal services, inaccurate addressing persists, hampering efficient delivery. Each mail item must clearly indicate the recipient's Delivery Post Office name and area Pin Code. However, inconsistencies in this information often result in misrouted mail, with approximately 5% of articles handled daily at distribution hubs containing incorrect Pin Codes. Even if correct Pincodes are provided as per information available with the customer, there is a mismatch in the internal operations as the constant upgradation of delivery network with Nodal Delivery Centres with merged pincodes etc makes it too dynamic for internal operators to keep pace with the changes. This leads to mistakes, delays and wasteful movement of mail pieces in the system.
+Expected Solution: An AI-based scanning solution is proposed to identify the correct delivery location for mail items with unclear or mismatched addresses. This system will utilize advanced machine learning algorithms to analyze and interpret address information, determining the appropriate Delivery Post Office based on available data. By automating the identification process, this solution aims to improve last-mile delivery efficiency, reducing delays and enhancing customer satisfaction. Having taken care of the first problem, the system is also expected to align with internal operational databases for clubbing and mapping of different pincodes for delivery purpose and thereby suggest the right destination for dispatch and delivery of the articles.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1759</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">industrial</span> <span class="badge info">isro</span>
+      <span class="badge info">education</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-208.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1562] Solution for end-to-end tracking of dual use chemicals used in both legitimate industries and illicit drug production from point of manufact — Findings Report</title>
+  <title>[SIH-1563] Automatic Change detection in Synthetic Aperture Radar satellite images — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,40 +83,58 @@
       <span class="finding-id">finding-036</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1562] Solution for end-to-end tracking of dual use chemicals used in both legitimate industries and illicit drug production from point of manufact</h1>
+      <h1>[SIH-1563] Automatic Change detection in Synthetic Aperture Radar satellite images</h1>
       <div class="badges">
         <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
+        <span class="category-tag">Open Source & Skill Discovery</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1562</code>
-      <button onclick="copyToClipboard('SIH-1562')">Copy</button>
+      <code>SIH-1563</code>
+      <button onclick="copyToClipboard('SIH-1563')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Narcotics Control Bureau (NCB)
+      <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+**Category:** Open Source & Skill Discovery
 
-Background: Dual use precursor chemicals are substances that have legitimate industrial and commercial applications but can also be used in the illicit manufacture of drugs. For e.g. Opium is converted to Heroin using Acetic Anhydride and manufacturing of Methamphetamine is done using Ephedrine or Pseudoephedrine. Precursor chemicals are essential in various legal industries such as pharmaceuticals, agriculture, manufacturing etc., but their potential for misuse necessitates strict regulation and monitoring. Appreciating this, Government of India has put different levels of regulations on some of the precursor chemicals in India under the Regulation of Controlled Substances Order, 2013. 7 widely misused precursor chemicals are put under strictest of the controls, where in any firm dealing in any of these 7 chemicals are required to maintain records and file quarterly reports with jurisdictional NCB Zonal Unit. Any activity undertaken with respect to these chemicals like manufacture, possession, storage, sale, purchase, distribution, export, consumption etc are to be reported to NCB. Further, NCB also issues Unique Registration Number (URN) to the firms indulged in the said activities. If any individual or firm is found to be involved in any of the activities without a valid URN are punishable under the Narcotic Drugs and Controlled Substances Act, 1985.
-Description: It is observed that some of the firms with valid URN to be handling any of the 7 domestically controlled precursor chemical, divert the same from licit channel and traffic it for manufacturing of narcotic drugs or psychotropic substances. Further, the investigations conducted also reveal that the firms usually create documentation of the movement of precursor to a licit firm for a licit activity and divert the same for illicit activities. Therefore, there is a need for end-to-end tracking of the 7 domestically controlled precursor chemicals (controlled substances)
-Expected Solution: A hardware/software/chemical solution for end-to-end tracking of dual use chemicals used in both legitimate industries and illicit drug production from point of manufacture to point of end use/export</p>
+**Recommendation:** YES - HIGH PRIORITY (9/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: Synthetic Aperture Radar satellite images have the capability for night time imaging as well as imaging without being affected by clouds. Automatic change detection on such images have wider application for various use cases.
+Description: Change detection between two SAR (Synthetic Aperture Radar) satellite images are straight forward if they are co-registered as the difference or ratio of corresponding pixels of the two images itself will give the change map. But such change maps will invariably have many natural changes as well like water body extent, flood extent, snow cover and forest cover changes etc. Our interest is to detect only man made changes and avoid natural changes.
+The solution can make use of Sentinel 1 SAR Open source satellite images and Google Earth Engine platform to access them. These images are co-registered by default. The GRD (Ground Range Detected) intensity image version of the Sentinel 1 SAR is to be used. Please note that images with same viewing geometry are better suited for change detection purposes. The solution should give the option for the user to vary the thresholds if any used for filtering change results. The change output should be in the form of polygons in a geographically referenced vector file. The solution should be scalable, means should be able to run on huge areas of interest and generate change alerts. The criteria for winning solution would be minimum false alarms with regard to man made changes.
+Expected Solution: A software based solution is expected that has a GUI to specify the area of interest for change detection and threshold controls to filter changes and output changes in the form of shapefiles/geojson with geographical references. It shall run above Google Earth Engine.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1563</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
+**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">ntro</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">ntro</span> <span class="badge info">open-source</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-035.html" class="prev">← Previous</a>

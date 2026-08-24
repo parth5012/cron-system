@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1709] Comprehensive Automated Document Verification System for Official Documentation — Findings Report</title>
+  <title>[SIH-1726] Utilization of aerial/ drone-based images for monitoring of progress of construction activities for building construction projects — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,42 +83,64 @@
       <span class="finding-id">finding-177</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1709] Comprehensive Automated Document Verification System for Official Documentation</h1>
+      <h1>[SIH-1726] Utilization of aerial/ drone-based images for monitoring of progress of construction activities for building construction projects</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1709</code>
-      <button onclick="copyToClipboard('SIH-1709')">Copy</button>
+      <code>SIH-1726</code>
+      <button onclick="copyToClipboard('SIH-1726')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Power
+      <p>**Sponsoring Body:** Ministry of Housing and Urban Affairs
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+**Category:** Smart Education / Career Analytics
 
-Background: The current manual process of verifying documents for various official purposes is time-consuming, error-prone, and lacks efficiency. This process involves verification of numerous documents such as birth certificates, academic transcripts, identification cards, and experience certificates. There is a pressing need for an online solution that automates and secures the document verification process.
+**Recommendation:** YES - TOP PRIORITY (10/10)
 
-Description: This problem statement addresses the urgent requirement for an online platform, empowered by artificial intelligence (AI) and blockchain technology, to automate document verification for all official purposes. The proposed solution aims to establish a user-friendly portal accessible to issuing authorities (e.g., schools, universities, employers), verifying authorities (government offices, banks, legal entities), and individuals. Issuing authorities will generate digital certificates for individuals, including birth certificates, academic transcripts, and experience certificates. These certificates will be securely stored on the blockchain for tamper-proof authenticity. Individuals will have access to the portal to view all documents issued in their name.
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
 
-Expected Solution: Participants are tasked with developing a comprehensive portal that facilitates the generation, verification, and accessibility of essential documents for any official purpose. The platform should utilize Al algorithms to efficiently verify the authenticity of uploaded documents. Verifying authorities will have access to a secure interface to validate submitted documents against predefined criteria. Individuals will be able to access the portal to view all documents issued to their name. The implementation of blockchain technology will ensure the immutability and integrity of the verified certificates. Ultimately, the solution aims to streamline the document verification process, reducing time and resources required for all stakeholders involved in official documentation.</p>
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: The monitoring of physical progress of construction activities requires a technical expert to visit and observe the site. Due to large number of projects in Indian cities, field visits by technical experts for weekly/daily monitoring becomes non-feasible. A machine learning based solution, which can identify the status of construction activities based on images, can allow the ULBs, stage agencies, and central agencies to monitor physical progress daily, or even in real time.
+ Description: The problem requires a machine learning based software solution in which aerial/drone-based images from sites of ongoing road construction projects can be processed, to identify the stage of construction.
+ As the road construction activities include multiple components and stages in construction; the software can take inputs regarding (type of activity, exact road stretch (from which location to which location) etc.), to identify the type of algorithm to be used to analyze the images.
+ For different components of construction activities, different machine learning algorithms will need to be developed with training using images from road construction site.
+ While similar monitoring solutions are required for all types of projects, the current problem statement only includes "road construction projects", to keep scope of problem statement limited and assess the feasibility of similar solutions in future.
+ Expected Solution: A software solution utilizing machine learning algorithm to identify stage of road construction works or progress of construction activities from uploaded site images, which should be able to:
+ - Allow users to upload images and provide information regarding type of activity to be assessed (installation of utility ducts, macadamization, road construction, installment of pedestrian infrastructure, etc.)
+ -Analyze the images and describe the construction activity, stage of construction, and road lengths for which different components have been completed.
+ -Compare status of road construction with previous site images and provide data regarding progress of work.
+ -Raise error in case of incorrect image/details have been uploaded and ask the user for necessary corrections.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1726</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">education</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-176.html" class="prev">← Previous</a>

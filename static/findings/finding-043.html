@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1569] Personalized testing kits for testing Residual Chlorine level at delivery points — Findings Report</title>
+  <title>[SIH-1570] Designing and development of a pressure transducer based equipment with a well cap for measurement of heads in autoflow wells — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,38 +83,58 @@
       <span class="finding-id">finding-043</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1569] Personalized testing kits for testing Residual Chlorine level at delivery points</h1>
+      <h1>[SIH-1570] Designing and development of a pressure transducer based equipment with a well cap for measurement of heads in autoflow wells</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">AI/ML & Industrial Analytics</span>
+        <span class="badge low">low</span>
+        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1569</code>
-      <button onclick="copyToClipboard('SIH-1569')">Copy</button>
+      <code>SIH-1570</code>
+      <button onclick="copyToClipboard('SIH-1570')">Copy</button>
     </div>
     <div class="description">
       <p>**Sponsoring Body:** Ministry of Jal Shakti
 
-**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+**Category:** Miscellaneous Software & Enterprise App
 
-Background and Description: The Jal Jeevan Mission (JJM) is a flagship initiative of the Government of India aimed at ensuring safe and sustainable drinking water to all rural households in the country. An essential aspect of the mission's success is not only ensuring access to water but also guaranteering its quality. Residual chlorine/Silver ion levels indicate the efficacy of water disinfection, bacteriological contamination poses significant health risks. Existing methods for testing water quality at the household level often lack reliability, accessibility, and affordability. The main aim of the technology challenge is to develop three distinct personalised testing kits (For measuring Residual chlorine, residual silver ion and/or for Bacteriological contamination) that are cost-effective, easy to use, and could measure both residual chlorine levels and bacteriological contamination at the household level. Thse devices are intented to empower rural communities to conduct their own assessments of water quality, enabling prompt action to ensure safe drinking water. Expected Solutions: i. The device should be portable and accurate in detecting low levels of residual chlorine (As per BIS 10500: 2012, acceptable limit: 0.2 mg/liter), residual silver ions and/or bacteriological contamination (E. coli & Total coliform- As per BIS 10500: 2012, it shall not be detectable in any 100 ml of sample), ensuring reliable results comparable to laboratory-grade equipment. ii. The detected value indicates the level of chlorine/silver ion/bacteria (E.Coli) present in 100 ml water. The output of the test should be in digital mode; iii. The personalized testing kits should be affordable for rural households, easy to carry & use and requiring minimal training for operation by individuals. iv. The personalized testing kits should be robust and able to withstand harsh environmental conditions prevalent in rural India, suhc as temperature fulctuations and humidity. v. Quick turnaround time for obtaining results, allowing households to promptly assess water safety; vi. The personalized testing kits should easy to calibrate; vii. Low operation and maintenance; viii. Ensure compliance with relevant regulatory requirments and standards for water quality testing in India; ix. The personalized testing kits should be charged by lithium (should work for minimum 24 hrs aftr getting fully charged) or another type of battery; x. Poses no risks to users or the environment during operation and disposal.</p>
+**Recommendation:** MAYBE (6.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Autoflow wells tap aquifers in which groundwater occurs in pressurised condition. As a result of this water flows from such well automatically and pumping devices are not required. Such autoflow wells are observed mostly in the Terai region of India. As shown by the aquifer mapping studies, the extents of autoflow areas are shrinking in parts of Uttarakhand and elsewhere.
+Many private wells in these terrains are without any cap or tap and water flows continuously leading to huge groundwater losses.
+Further, measurement of head (water level) in these wells is a challenge as water flows automatically from these wells. Usually an additional pipe is attached above the ground level and the water level in such a pipes is measured manually.
+The proposal is to develop a device that can serve two purposes- i) it will work as a safe cap for the well with a tap for regulating water flow and ii) a pressure transducer based sensor that can sense the pressure and translate it in terms of height (in m) above ground level</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1570</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
+      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
 
-**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
+**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
 
-**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
+**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">industrial</span>
+      <span class="badge info">enterprise-app</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-042.html" class="prev">← Previous</a>

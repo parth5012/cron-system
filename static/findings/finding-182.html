@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1714] Software for Speech Language Therapy Clinical Services — Findings Report</title>
+  <title>[SIH-1731] SolarQuest: Innovate to Capture More Sunlight and Boost Energy — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,40 +83,63 @@
       <span class="finding-id">finding-182</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1714] Software for Speech Language Therapy Clinical Services</h1>
+      <h1>[SIH-1731] SolarQuest: Innovate to Capture More Sunlight and Boost Energy</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge low">low</span>
+        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1714</code>
-      <button onclick="copyToClipboard('SIH-1714')">Copy</button>
+      <code>SIH-1731</code>
+      <button onclick="copyToClipboard('SIH-1731')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Social Justice and Empowerment
+      <p>**Sponsoring Body:** MathWorks India Private Limited
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** Miscellaneous Software & Enterprise App
 
-Background: The rehabilitation institutes involved in this activity face high therapy cases load and more number of student therapists with less number of therapy supervisors. Following this system in manual mode impedes providing prompt services.
-Description: Clinical services with respect to speech language therapy begins with patient allocation to the therapist. The therapist then prepares therapy plan with goals and activities. The respective case supervisor needs to check the therapy plan and provide the inputs for further continuation of regular therapy sessions. At least post ten therapy sessions the therapist writes the progress report of the therapy case. Further, it is evaluated by the supervisor. This Cycle of speech language therapy clinical services in continuous until the therapy case has completely improved or discontinued due to various reasons. The supervisor based on overall handling of therapy sessions gives clinical ratings.
-Expected Solution: The process needs to become digitized with the use of software where in right from the allocation of cases, therapy related documentation by both therapist and supervisor, clinical evaluation of therapy, feedback and clinical rating can be performed.</p>
+**Recommendation:** MAYBE (6.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+As the global shift towards renewable energy intensifies, solar trackers, which adjust solar panels to follow the sun’s path, are crucial for maximizing solar energy efficiency. Consequently, it is essential to design controllers for solar trackers that can optimize the angle of incidence between solar panels and sunlight. This tracking of the sun’s trajectory can be done accurately by managing at least one mechanical axis (azimuth, elevation, roll). As a preliminary step, a simulation-based control system, using tools such as SimscapeTM MultibodyTM and Simulink®, can be designed with a single-axis control based on location-specific solar paths. The workflow would involve integrating an electrical motor model (developed using tools like SimscapeTM ElectricalTM), designing a PID control system, developing an algorithm for optimal axis positioning, and validating the system through simulation. In the subsequent steps after validation, the motor control system can be deployed on low-cost hardware (e.g., using Simulink® Support Package for Arduino) to demonstrate a prototype of this solar tracking mechanism.
+References:
+1. Pre- Requisite: https://matlabacademy.mathworks.com/details/control-design-onramp-with-simulink/controls?s_eid=PSM_33221
+2. Optimizing Solar Array Performance Using MPPT (https://in.mathworks.com/videos/optimizing-solar-array-performance-using-mppt-1657880084126.html?s_tid=srchtitle_site_search_8_solar%20tracker)
+3. Pre- Requisite: Power Systems Simulation Onramp - CHAPTER 4 (System Integration) (https://matlabacademy.mathworks.com/details/power-systems-simulation-onramp/orps?s_eid=PSM_33222)
+4. Using the Worm and Gear Constraint Block - Solar Tracker (https://in.mathworks.com/help/sm/ug/using-the-worm-and-gear-constraint-block-solar-tracker.html)
+5. Program the Device from Simulink | Arduino Light Meter Project, Part 2 (https://in.mathworks.com/videos/arduino-light-meter-project-part-2-program-the-device-from-simulink-106500.html)
+
+Require MATLAB® and Simulink® PRODUCT LICENSE for SIH 2024, please send an email to 'ageethag@mathworks.com'.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1731</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">enterprise-app</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-181.html" class="prev">← Previous</a>

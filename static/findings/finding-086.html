@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1612] Automated Bus Scheduling and Route Management System for Delhi Transport Corporation — Findings Report</title>
+  <title>[SIH-1628] Smart Competency Diagnostic and Candidate Profile Score Calculator — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,53 +83,79 @@
       <span class="finding-id">finding-086</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1612] Automated Bus Scheduling and Route Management System for Delhi Transport Corporation</h1>
+      <h1>[SIH-1628] Smart Competency Diagnostic and Candidate Profile Score Calculator</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1612</code>
-      <button onclick="copyToClipboard('SIH-1612')">Copy</button>
+      <code>SIH-1628</code>
+      <button onclick="copyToClipboard('SIH-1628')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Government of NCT of Delhi
+      <p>**Sponsoring Body:** Government of Punjab
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+**Category:** Smart Education / Career Analytics
 
-Background:
- Efficient bus scheduling and route planning are essential for the smooth operation of public bus transport services. Currently, the Delhi Transport Corporation (DTC) relies on manual methods for scheduling and planning, which are time-consuming and resource-intensive. To improve operational efficiency, reduce errors, and enhance service reliability, DTC needs an automated software solution capable of handling both linked and unlinked duty scheduling. Additionally, the solution should facilitate route management by mapping all existing routes and highlighting overlaps with proposed new routes. This project aims to develop a comprehensive software solution to streamline bus scheduling, optimize resource utilization, and improve route planning.
- Detailed Description:
- The Automated Bus Scheduling and Route Management System will utilize lgorithms, data analytics, and geographic information system (GIS) technologies to automate various aspects of bus scheduling and route management. The system will potentially include (but not limited to) features such as:
- Linked Duty Scheduling:
- Assign a specific crew to a bus at the start of their duty, ensuring they remain with the bus throughout their shift.
- Provide tools to manage and monitor crew and bus assignments for better familiarity and accountability.
- Unlinked Duty Scheduling:
- Allow crews to hand over buses to other crew members after assigned completing their trips.
- Manage rest periods for crew menbers and after their reassign them to different buses rest period.
- Route Management:
- Map all existing routes and provide a visual representation of the bus network.
- Enable users to draw new routes and automatically highlight overlaps with existing routes.
- Optimize route planning to reduce congestion and improve service coverage.
- Expected Output:
- A fully functional prototype of the Automated Bus Scheduling and Route Management System demonstrating the above features through the integration of algorithms, data analytics, and GIS technologies. The system will offer a user-friendly interface for schedulers, planners, and managers to interact with the system, manage schedules, plan routes, and access real-time data and reports.</p>
+**Recommendation:** YES - TOP PRIORITY (10/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Project Concept: Comprehensive Employment Platform/Portal
+The current employment portal lacks a personalized and adaptive approach to job matching and skill development. There is a need for an intelligent system that not only matches job seekers with potential employers but also identifies and suggests training courses to bridge skill gaps. We wish to design a competency diagnostic which would ask a series of questions to students to test their competence and based on their scores in the test, recommend jobs to them and also appropriate training courses to them to cover the gaps in their skill curve.
+Requirements:
+1. AI-Powered Job/Training Recommendation System:
+• Implement an AI-based recommendation system trained on multiple data points (e.g., skills, experience, preferences) to analyze job seekers' profiles and recommend suitable job opportunities.
+• Training Course Recommendations: Suggest relevant online courses, workshops, and training programs based on the desired job roles.
+2. Skill Gap Analysis and Recommendations:
+• Gap Identification: The recommendation System should assess job seekers' competencies against the requirements of their desired job roles to identify areas for improvement.
+• Personalized Suggestions: Provide tailored recommendations for online courses, workshops, and training programs to help job seekers upskill and close identified gaps.
+3. Adaptive Learning Pathways:
+• Personalized Learning: Develop adaptive learning pathways based on the job seeker's progress and feedback.
+• Content Variety: Offer a mix of micro-courses, webinars, and hands-on projects relevant to the job market to enhance learning and skill development.
+4. Real-Time Job Market Insights based on candidate’s skills and competencies:
+• Dashboard: Create a dashboard displaying real-time data on trending jobs, skills in demand, and salary benchmarks.
+• Data Analytics: Use data analytics to provide insights into job market trends and forecast future skill requirements.
+5. Skills Verification and Certification:
+• Skill Assessments: Implement a system for verifying skills and certifying competencies through assessments and tests.
+• Badges and Certifications: Offer badges and certifications that candidates can display on their profiles and share on social media platforms like LinkedIn.
+6. Resume Wizard
+• Automated Resume Building: Develop a resume wizard to help candidates automatically build their resumes based on their profiles, ensuring a professional and comprehensive presentation of their skills and experiences.
+7. Community and Peer Support:
+• Community Forum: Integrate a community forum where individuals can share experiences, ask questions, and receive support from peers and mentors.
+• Virtual Events: Organize virtual events, workshops, and webinars focused on employment and career development, including special sessions for people with special needs.
+Expected Outcome: The system will facilitate a personalized job matching process and offer targeted skill development recommendations, helping job seekers become more competitive in the job market.
+NOTE : This is an innovation opportunity and students are encouraged to think out of the box to develop solutions which can be presented in newer ways + which can address the needs in out of the box ways for a certain industry OR makes the platform generic. Above description serves as a guide to specify essential needs that can be satisfied for the developed solution and is not limited only to the scope described</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1628</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">education</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-085.html" class="prev">← Previous</a>

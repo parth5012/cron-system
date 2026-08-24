@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1692] Forecasting Future Water Requirements and Assessing Storage Capacities in Reservoirs — Findings Report</title>
+  <title>[SIH-1708] Tool for secure automatic network topology — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,43 +83,59 @@
       <span class="finding-id">finding-160</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1692] Forecasting Future Water Requirements and Assessing Storage Capacities in Reservoirs</h1>
+      <h1>[SIH-1708] Tool for secure automatic network topology</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1692</code>
-      <button onclick="copyToClipboard('SIH-1692')">Copy</button>
+      <code>SIH-1708</code>
+      <button onclick="copyToClipboard('SIH-1708')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Jal Shakti
+      <p>**Sponsoring Body:** GAIL, Ministry of Petroleum and Natural Gas
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+**Category:** Smart Education / Career Analytics
 
-Background
-Water resources are fundamental to sustaining human life, agriculture, industry and ecosystem. Accurate forecasting of future water requirements along with the assessment of current storage capacities are crucial for effective water resources management and planning. With growing population. The domestic, Industrial, Agricultural and ecological demands increase, which in turn leads to strain on existing water Infrastructure.
-Description
-Analyzing the storage capabilities of the reservoirs in the country is essential. It is also essential for the policy makers to plan for a sustainable water resource management. The challenge involves in creating a predictive model, that can accurately forecast the future water requirements and evaluate the current and future storage capabilities. The model must integrate various data sources, including historic water usage, climate projections, population growth trends, and agricultural practices. It should also account for variability in climate conditions, demographic shifts and changes in land use. A strategic planning and decision-making support system can to provide clear insights into future water demand and storage needs, by identifying potential risks.
-Expected Solution
-It is expected to assess the existing and future storage capabilities, identify the anticipated conditions and impact on the storage capabilities. Identify the potential gaps where additional storage and infrastructure capabilities are needed. It is also required to create a scenario taking into account the extreme weather events and population demands. The Policy makers should have an insight of water management issues for providing sustainable water management. A strategy should be evolved for enhancing water storage capacities, optimizing water usage and mitigating identifying risks.</p>
+**Recommendation:** YES - TOP PRIORITY (10/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+BACKGROUND:
+In a SCADA system, for a pipeline network spanning thousands of kilometres, the network devices (both layer 2 and layer 3) are spread all along the geographical area. With such a large network, it becomes crucial, from both the maintenance and security point of view, to continuously monitor the complete network topology. Automatic topology discovery provides a complete and up-to-date map of all devices, connections, and pathways within the SCADA network. This comprehensive overview is essential for network administrators to understand the network's structure and dynamics. It ensures that any changes in the network, such as new devices being added or existing ones being removed, are automatically detected and documented in real time. When issues arise, knowing the exact layout and connections within the network helps in pinpointing problems more quickly, reducing downtime and improving response times. More significantly, automatic topology discovery helps in identifying unauthorized devices or unexpected changes in the network, which could indicate security breaches or cyber-attacks and allows for better network segmentation and implementation of access controls, limiting the spread of potential threats and protecting critical assets. Conventionally, automatic topology discovery tools utilize Cisco Discovery Protocol (CDP) or Link Layer Discovery Protocol (LLDP). However, these protocols are vulnerable due to lack of authentication, broadcast of sensitive information, etc. and hence are not suitable for use in a critical pipeline SCADA network.
+Problem Statement Details:
+“Develop a tool for automatic network topology discovery, for a network using EIGRP routing protocol, that does not rely on CDP or LLDP protocols. The tool may use secure SNMPv3 polls/traps, ARP/MAC tables, NetFlow, routing protocol or syslog data for creating the automatic network topology. The challenge is accurate device identification without relying on the broadcast capabilities of CDP/LLDP and determining the physical and logical connections between devices. It must have a provision to keep the topology map updated with real-time changes in the network along with scalability to ensure that the solution works efficiently across small to large-scale networks. The most important component is to maintain network security to prevent unauthorized access or data leakage during the discovery process.”
+NOTE : GAIL (INDIA) LTD will not provide any hardware, software, license, data or any other resource to SIH hackathon Teams. The teams should use free and/or open-source resources, as applicable, for the entire project.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1708</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">education</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-159.html" class="prev">← Previous</a>

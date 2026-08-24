@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1670] Develop a functional solution that incorporates the security of the ML model. — Findings Report</title>
+  <title>[SIH-1686] Tools and techniques for customisation of GPO as per CIS — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,53 +83,68 @@
       <span class="finding-id">finding-138</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1670] Develop a functional solution that incorporates the security of the ML model.</h1>
+      <h1>[SIH-1686] Tools and techniques for customisation of GPO as per CIS</h1>
       <div class="badges">
         <span class="badge high">high</span>
-        <span class="category-tag">Open Source & Skill Discovery</span>
+        <span class="category-tag">LegalTech / Document AI / GovTech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1670</code>
-      <button onclick="copyToClipboard('SIH-1670')">Copy</button>
+      <code>SIH-1686</code>
+      <button onclick="copyToClipboard('SIH-1686')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Electronics and Information Technology
+      <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
 
-**Recommendation:** YES - HIGH PRIORITY (9/10)
+**Category:** LegalTech / Document AI / GovTech
 
-1. Background. UIDAI is exploring possibilities to enable Face authentication on the desktop in a browser context. The proposed architecture to provide Face
-Authentication in the browser context,requires AI on the edge to perform liveness check of the face being captured by the webcam or connected camera. UIDAI is considering the injection of ML model by using an appropriate binary code delivery mechanism.
-The security of these models is important for transaction integrity and therefore seeking an innovative solution that will protect the model from any tampering and
-reverse engineering.
-2. Problem Description. As part of the challenge, participating teams to demonstrate model security in a browser context by using either obfuscation or
-cryptography. Models are typically 5~7Mb in size and structured as flatbuffers. These models would be downloaded, when for the first time accessed on a desktop and then cached in the browser context. For subsequent face authentication transactions, a cached model would be preferred, unless otherwise the model has changed or updated.
-To solve the above problem statement, teams are free to choose either ONNX web runtime or Tensor.js or any other innovative model to distribute the model in the
-browser context.
-The proposed solution must meet the following functional objectives.
-1 Model Security. The solution must provide a mechanism to protect the model from any reverse engineering or tampering.
-2 Model Size Optimisation. The solution must not significantly increase the size of the model post-implementation of security frameworks. Models are
-expected to be downloaded in 3G/4G/5G wireless networks and hence any increase in size may lead to deteriorated user experience.
-3 The solution must feature backend components to prepare the ML model either using obfuscation or cryptography. The backend activity can be a one-time
-task during the release of the ML models or a just-in-time approach. In the just-in-time approach, the model would be obfuscated or encrypted before being downloaded to the end user’s desktop.
+**Recommendation:** YES - HIGH PRIORITY (9.5/10)
 
-3. Expected Solution. The expected outcome of this project is a functional solution that incorporates the security of the ML model at the edge. The backend for the proposed solution system must be designed to handle the high volume of transactions that is expected for any population-scale solutions.</p>
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: Group Policy Objects (GPOs) are powerful tools in Windows environments, used to centrally manage and enforce system settings, security configurations, and user preferences across a network of computers. The Center for Internet Security (CIS) provides detailed guidelines and benchmarks for securing various operating systems, including Windows 10 and 11. Implementing CIS benchmarks through
+customized GPOs ensures that systems adhere to industry best hardening practices, reducing vulnerabilities and enhancing overall security posture.
+Detailed Description :
+a) Deploying customized GPOs, based on CIS guidelines or user requirements is essential for hardening Windows systems. It will help in ensuring robust security and maintaining compliance with industry standards.
+(b) The guidelines contain multiple system configurations in terms of registry settings and group policy settings. Deploying of these settings as per user requirement is a daunting task, considering the availability of limited tools and human-intensive efforts.
+(c) Present problem statement is an attempt to explore the possible tools and techniques to automate the task of generating and managing the GPOs as per user requirements for various types of systems including airgapped/standalone machine.
+Expected Solution: Following functionalities have been envisaged for the expected solution: -
+(a) To create, edit and manage GPOs as per CIS guidelines and user requirements, if needed.
+(b) The customised GPOs generated should be deployable on airgapped / standalone system.
+(c) To maintain multiple group / category of system hardening settings with appropriate documentation to define the configuration details for each of the group / category.
+(d) Import / Export of configuration details for catering to user requirement to maintain multiple group / category of system configurations.
+(e) Tool should be able to import documentation from CIS guidelines available in PDF format.
+(f) Envisaged tool should support in deploying GPOs on the target machine.
+(g) Envisaged tool should support in testing and auditing of system configurations on the target machine</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1686</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
+      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
 
-**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
+**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
 
-**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
+**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">open-source</span> <span class="badge info">reuses-gitscout</span>
+      <span class="badge info">govtech</span> <span class="badge info">legaltech</span> <span class="badge info">ntro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-137.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1669] Transformo Docs Application: Empowering Machine-Readable Document Management System. — Findings Report</title>
+  <title>[SIH-1685] Building Offline Parallel AV Pipeline to cater multiple AVs for CII entities. — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,7 +83,7 @@
       <span class="finding-id">finding-137</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1669] Transformo Docs Application: Empowering Machine-Readable Document Management System.</h1>
+      <h1>[SIH-1685] Building Offline Parallel AV Pipeline to cater multiple AVs for CII entities.</h1>
       <div class="badges">
         <span class="badge critical">critical</span>
         <span class="category-tag">Smart Education / Career Analytics</span>
@@ -91,24 +91,46 @@
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1669</code>
-      <button onclick="copyToClipboard('SIH-1669')">Copy</button>
+      <code>SIH-1685</code>
+      <button onclick="copyToClipboard('SIH-1685')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Electronics and Information Technology
+      <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
+
+**Category:** Smart Education / Career Analytics
 
 **Recommendation:** YES - TOP PRIORITY (10/10)
 
-Background:
-In today's digital age, the ability to efficiently manage documents is crucial for organizations. However, a significant challenge arises when dealing with non-machine-readable documents such as PDFs or Word documents. These formats hinder automation and make it difficult to extract meaningful insights from the data they contain. Therefore, there is a pressing need for a solution that can both restrict the ingestion of non-machine-readable documents and facilitate the creation of machine-readable documents seamlessly.
-Description:
-The above problem statement envisages:
-1. To develop an application that can restrict software applications from ingesting any non-machine-readable document format such as PDFs, DOCs, or any other document types.
-2. To create a mechanism within the application to generate machine-readable documents automatically whenever a new document is created, regardless of its source - scanned, generated through a software application, or otherwise.
-Expected Solution:
-The TransformoDocs application aims to address the challenges associated with managing non-machine-readable documents by developing a comprehensive document transformation application. It will help in realizing the benefits of search-ability, artificial intelligence, accessibility to persons with disability, machine translation and access to data across applications and data exchanges. This application may offer efficient data extraction, standardized processing, workflow automation, data quality improvement, scalability, integration with external systems, advanced analytics, and compliance with regulatory requirements ultimately unlocking the value of their data.</p>
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: No single Antivirus is perfect, however each AV product has its own strength and weaknesses, and is more efficient at detecting some threats than others. In addition, one important requirement of Critical Information Infrastructure (CII) is that solution should be “offline and on-premise” and should be “updated with latest definition on regular basis”. Therefore, the reliable and effective solution can be developed by creating a pipeline combining multiple AV engines working parallelly offline.
+Description: To develop a scanning pipeline in which the data residing in “Target Folder” will be scanned automatically by multiple antiviruses and accordingly the cleaned files will be in same folder and the infected files will be segregated and transferred in a specific folder i.e. “Infected Folders” with their analysis report. In addition, the path of each infected file will also be recorded in a separate doc file in same Infected folders.
+The functional block diagram is depicted below:
+Target Folder -> Offline Parallel -> Infected Files
+One VM may be used for one AV which will be updated regularly (as per respective AV update policy) with latest definition of respective AV. The free/trail version of AVs can be used for building and testing the features of parallel AV pipeline. Atleast following three AVs should be included in AV pipeline:
+1. Window Defender
+2. Trend Micro Maximum Security
+3. Eset Internet Security
+Expected Solution: The details of expected outcomes are given below:
+(a). Raw Data will be kept at “Target folder” and available multiple antiviruses should recognize the presence of data and start scanning automatically.
+(b). Cleaned file will be in same folders and Infected files & its Analysis Report should be move to a dedicated defined “Infected folder”. The path of each infected file will also be recorded in one doc file.
+(c). The scanning process shall be continued till all infected files are segregated. After successful completion by multiple AVs, a popup message of “Scanning Completed” should be displayed. The solution should have dashboard like VirusTotal where the results with each AV should be displayed.
+(d). The scanning shall be started simultaneously by all the multiple AVs (Parallel Processing) for efficient processing.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1685</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
       <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
@@ -119,9 +141,9 @@ The TransformoDocs application aims to address the challenges associated with ma
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">education</span> <span class="badge info">ntro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-136.html" class="prev">← Previous</a>

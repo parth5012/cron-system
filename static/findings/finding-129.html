@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1658] Development of a versatile and fast algorithm for the optimal ship routing — Findings Report</title>
+  <title>[SIH-1677] Developing a tool to provide for real time feeds of cyber incident pertaining to Indian Cyber Space. — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,40 +83,64 @@
       <span class="finding-id">finding-129</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1658] Development of a versatile and fast algorithm for the optimal ship routing</h1>
+      <h1>[SIH-1677] Developing a tool to provide for real time feeds of cyber incident pertaining to Indian Cyber Space.</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">Open Source & Skill Discovery</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1658</code>
-      <button onclick="copyToClipboard('SIH-1658')">Copy</button>
+      <code>SIH-1677</code>
+      <button onclick="copyToClipboard('SIH-1677')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Earth Sciences
+      <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
 
-**Recommendation:** YES - HIGH PRIORITY (9/10)
+**Category:** Smart Education / Career Analytics
 
-Background: Most of the goods are transported around the world by shipping which relies heavily on fossil fuels for powering. Given the expenditure of the shipping industry on the fuel, a main objective of a shipping company is to optimize the ship route for the least fuel consumption. Depending on the type and purpose of the voyage, it is also desirable to optimize several other parameters such as, the travel time, passenger comfort and route safety, to avoid any damage to the ship, cargo, crew and passengers. Optimization of each of these parameters serves a purpose. For instance, an energy efficient route may not be safe in terms of weather. Therefore, to avoid loss of life and property, route weather safety needs to be considered. An application suggesting the optimal route based on the chosen set of optimal parameters for any voyage between two ports in the Indian Ocean, will immensely benefit the Indian shipping industry.
-Description: At the heart of any optimal ship routing application lies the optimization algorithm. Although scientific literature is available on various methods of optimizing the ship routes, given the commercial potential, there are no applications available publicly which can be customized for the Indian Ocean region. The optimization methods reported in literature range in complexity, computation time, versatility, etc. Various factors, such as, the forcings (surface winds, currents and waves), design of the ship and ship drift characteristics, impact the ship’s motion at sea. The optimal route must be continually evolving because the weather conditions keep changing as a ship proceeds on its voyage. Therefore, it is crucial to choose a suitable optimization method that can optimize several parameters for a range of ships (with varying type, dimensions, drift characteristics of a ship) and develop an algorithm to return an optimal route within a reasonable computational time. The algorithm can optimize for the voyage time and safety to begin with but with a scope for addition of more optimization parameters. To get an idea of the problem, please visit: https://www.youtube.com/watch?v=ct9v-mQgYqE ii) https://www.youtube.com/watch?v=wCTdHRTWtNI
-Expected Solution: Identification of a versatile optimization method and development of a reasonably fast algorithm, preferably written in an open-source programming language such as Python</p>
+**Recommendation:** YES - TOP PRIORITY (10/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background:
+NCIIPC shares detail of cyber incidents to corresponding stakeholders in order to inform them about cyber activities related to their IT/OT infrastructure. This empowers them to take necessary actions to mitigate further risk.
+Description:
+In order to achieve objective of protecting Critical Information Infrastructure (CIIs) of the Nation, it is very vital to have real time information related to cyber threats and incidents specific to Indian Cyber space. This may enhance the Threat Assessment potential based on the incidents that have already happened or the ones that currently exists. Therefore, a framework to crawl/scrap/collect the cyber incident activities reported anywhere on the web related to Indian cyber space is required to be developed.
+Expected Solution:
+1. Using Machine Learning, find platforms that publish or works as intermediate platform for sharing cyber incident activities related to cyber incidents.
+2. Design a model framework for the cyber incidents feed generator which collects data from various forums, paste sites, social media, developer or any other platforms as identified by Machine learning model generated in accordance to point 1 above.
+3. Creation of well-structured database of cyber incidents extracted by framework developed in accordance with point 2 above.
+4. Generation of valuable insights from the data collected and its visual representation of cyber incidents specific to sectors, APTs and strategic issues.
+Note: Students are encouraged not to use paid APIs for solving the problem.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1677</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">open-source</span> <span class="badge info">earth-sciences</span> <span class="badge info">reuses-gitscout</span>
+      <span class="badge info">education</span> <span class="badge info">ntro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-128.html" class="prev">← Previous</a>

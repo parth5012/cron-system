@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1668] Creating an application to identify the presence of government issued personally identifiable information (PII) embedded in documents and da — Findings Report</title>
+  <title>[SIH-1684] Agent-less Windows System Vulnerability and Network Scanner — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,45 +83,102 @@
       <span class="finding-id">finding-136</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1668] Creating an application to identify the presence of government issued personally identifiable information (PII) embedded in documents and da</h1>
+      <h1>[SIH-1684] Agent-less Windows System Vulnerability and Network Scanner</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1668</code>
-      <button onclick="copyToClipboard('SIH-1668')">Copy</button>
+      <code>SIH-1684</code>
+      <button onclick="copyToClipboard('SIH-1684')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Electronics and Information Technology
+      <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+**Category:** Smart Education / Career Analytics
 
-Background:
-In today’s digital age, a wide variety of services and processes take place online. Users of these digital facilities are required to upload government-issued containing documents or provide data for successfully availing the services. However, the uploaded documents or data which are required to facilitate these digital services and processes contain personally identifiable information (PII), i.e. any data that can be used to identify an individual uniquely. These documents can be like Aadhaar card, PAN, Credit Card, Driving License etc and can include data like names, address, phone number, email address, and financial information, among others of the user. The handling of PII is crucial as its exposure can lead to privacy breaches, identity theft, and financial fraud among other cyber related issues.
-Detailed Description:
-The above problem statement envisages that an application be developed to identify whether PII, in the form of government-issued documents such as Aadhaar, Driving license, MHA-issued ID Cards, etc. is embedded in the uploaded document or provided data. Notable, the PII may be included inadvertently as well. PII, by its nature, is sensitive data, and its exposure must be protected against in order to safeguard users’ privacy. Entities and organizations handling documents or data containing users’ PII must be mindful of the complex challenges that arise with it – they have to balance data storage, encryption, access controls, data retention policies, data management processes with users’ knowledge and consent, notification of breaches by users, grievance redressal, etc. Such an application will aid in alerting individual users to verify whether it is necessary to upload or provide PII-containing document. Simultaneously, it will allow the personal data processing entity to check whether such PII document or data is required, and in case not necessary, help in removing, redacting or masking the PII
-document or data from the uploaded or provided document or alerting the individual user regarding the same. This application would be useful for the purposes of data protection compliance, risk mitigation, enhanced security, improved data quality, operational efficiency, and legal and regulatory compliance.
+**Recommendation:** YES - TOP PRIORITY (10/10)
 
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: It has been observed that most individuals are hasty when it comes to upgrade or update their Windows systems to mitigate any adversary actions. Henceforth, a system vulnerability detector and scanner should be in place to audit and verify the system and network based vulnerabilities (if exist) to rectify the misconfigurations and mitigate any prominent threats to the individual or organization.
+Description: The above problem statement envisions a blue team approach to identify and map potential vulnerabilities of a Windows OS subsystem to better secure and mitigate against various threats (System Level and Network Level).
 Expected Solution:
-A software application or library package to detect and alert users when there is personally identifiable information (PII) related to identified government-issued identification documents (Aadhaar card, PAN, Driving License to start with) embedded in the uploaded documents or providing data, while uploading or reviewing. In addition, the software application may be placed in public domain and shall allow the receiver of the document in removing, redacting or masking the PII from the document and data, if required.</p>
+• The problem statement should result in a solution which can provide possible vulnerabilities of the underlined Windows OS
+• The AV/EDR friendly solution should have an agent-less mechanism to find the vulnerabilities and must be able to search and crawl for the related available open-source exploits and their patches
+• Some of the key information at the system level that must be promptly identified by the proposed solution should fall under the following categories:
+? System Information:
+? Basic OS info
+? DotNet versions
+? Providers registered for AMSI
+? Registered antivirus (via WMI)
+? Classic and Advanced audit policy settings present in registry keys
+? Auto run executable/scripts/programs
+? Standard and Non-standard firewall rules
+? Windows Defender settings ? User and machine personal certificate files
+? Current environment PATH folders, environment variables and SDDL information
+? Lists files/folders. By default, lists users' downloads, documents, and desktop folders
+? Information about a file (version information, AMSIProvidersProviders registered for AMSI)
+? Installed hotfixses (via WMI)
+? Installed products via the registry
+? Local Group Policy settings applied to the machine/local users
+? Non-empty local groups, displays all groups
+? Local users, whether they're active/disabled
+? All Microsoft updates (via COM, WMI)
+? NTLM authentication settings
+? Saved RDP connections stored in the registry
+? Current incoming RDP sessions
+? Remote Desktop Server/Client Settings
+? Secure Boot configuration
+? Sysmon configuration from the registry
+? UAC system policies via the registry
+? Windows Defender settings (including exclusion locations)
+? Searches PowerShell console history files for sensitive regex matches
+? Network Information:
+? Lists the current ARP table and adapter information
+? DNS cache entries (via WMI)
+? Windows network profiles
+? Network shares exposed by the machine
+? Current TCP and UDP connections and their associated processes and services
+? Current RPC endpoints mapped
+? Open ports status
+• Additionally, the underlined solution should have the capability to provide information at the network level that must fall under the following categories:
+? System interface connectors
+? LLDP / CDP connections (to infrastructure devices)
+? Attached network vectors (systems connected within the VLAN)
+? And the capability to formulate network diagram using these information
+• Should be able to work with latest Windows 10/11 builds
+• The proposed solution should be able to consolidate its findings into a report file (pdf and/or html format)</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1684</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">education</span> <span class="badge info">ntro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-135.html" class="prev">← Previous</a>

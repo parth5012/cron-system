@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1643] Portal for innovation Excellence Indicators — Findings Report</title>
+  <title>[SIH-1659] Data download Duplication Alert System (DDAS) — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,73 +83,60 @@
       <span class="finding-id">finding-114</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1643] Portal for innovation Excellence Indicators</h1>
+      <h1>[SIH-1659] Data download Duplication Alert System (DDAS)</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">LegalTech / Document AI / GovTech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1643</code>
-      <button onclick="copyToClipboard('SIH-1643')">Copy</button>
+      <code>SIH-1659</code>
+      <button onclick="copyToClipboard('SIH-1659')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of AYUSH
+      <p>**Sponsoring Body:** Ministry of Earth Sciences
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** LegalTech / Document AI / GovTech
 
-Problem Overview
-Innovation is a key driver of growth and success in educational institutions. Tracking and measuring innovation excellence is essential for fostering a culture of continuous improvement, recognizing achievements, and guiding strategic decisions. However, identifying, quantifying, and presenting innovation indicators can be challenging due to the diverse nature of activities, projects, and contributions across different departments.
-Challenge
-Design and develop a comprehensive and user-friendly portal that tracks, measures, and showcases innovation excellence within an educational institute. The portal should aggregate data from various sources, provide insightful analytics, and present key innovation indicators in an intuitive and visually appealing manner. The goal is to create a dynamic system that encourages participation, facilitates data-driven decision-making, and highlights the institute's innovative achievements.
-Key Features and Requirements
-User Authentication and Role Management:
-Secure login for different user roles (administrators, faculty, students, etc.).
-Role-based access control to ensure data privacy and security.
-Data Collection and Integration:
-Import data from various sources (research projects, grants, publications, patents, competitions, etc.).
-Integration with existing systems (research management systems, funding databases, project management tools, etc.).
-Support for manual data entry where necessary.
-Innovation Indicators:
-Define and track key innovation indicators (e.g., number of research papers published, patents filed, grants received, startups incubated, awards won).
-Customizable indicators to cater to different departments and areas of innovation.
-Data Analysis and Visualization:
-Tools for analyzing innovation data and identifying trends.
-Customizable dashboards for visualizing key innovation indicators.
-Graphs, charts, and other visual aids for presenting data trends and insights.
-Recognition and Incentives:
-Mechanisms for recognizing and rewarding outstanding innovation contributions.
-Highlighting top-performing individuals, teams, and departments.
-Generating reports and certificates of achievement.
-Collaboration and Feedback:
-Features for collaborative data entry and review.
-Mechanisms for collecting feedback from stakeholders.
-Version control to track changes and maintain data integrity.
-User Experience:
-Intuitive and user-friendly interface.
-Responsive design for accessibility on various devices (desktop, tablet, mobile).
-Multilingual support for institutes with diverse language needs.
-Compliance and Standards:
-Adherence to relevant educational and reporting standards.
-Data security and privacy compliance with regulations (GDPR, FERPA, etc.).
-Expected Outcomes
-Participants are expected to deliver a functional prototype of the innovation excellence indicators portal that demonstrates the core features and addresses the outlined requirements. The solution should be scalable, adaptable to different types of educational institutes, and capable of handling large volumes of data.</p>
+**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: In an institute environment, multiple users often require access to the same datasets for various purposes. However, due to lack of communication or visibility, these users may unknowingly download duplicate copies of the same data. This leads to unnecessary consumption of resources, including bandwidth and storage, and complicates data management. The DDAS (Data download Duplication Alert System) addresses this issue by notifying users with an alert if a potential duplicate download is identified. This system helps optimize resource usage, save time, and streamline data management processes.
+Description: Managing data downloads efficiently is crucial for optimizing resources and maintaining order in any organization. A DDAS addresses the issue of multiple users inadvertently downloading duplicate copies of the same datasets across various fields.
+The DDAS operates by maintaining a repository or database that records metadata of all downloaded datasets. This metadata includes details such as file names, sizes, timestamps, and download locations. When a user initiates a download request, the system checks the database to determine if the dataset has already been downloaded by any user. To identify duplicates accurately, the system uses file history or unique identifiers, ensuring duplicates are detected even if file names differ.
+If a potential duplicate is detected, the system prompts the user with an alert. This alert provides comprehensive information about the existing dataset, including its location and the timestamp of the original download. By doing so, the DDAS helps users avoid unnecessary downloads, thereby optimizing resource usage, saving time, and streamlining data management processes.
+This system is designed to be flexible and applicable across various fields and industries, including academic institutions, research facilities, and any other domain where efficient data management is critical. By preventing duplicate downloads, the DDAS ensures that resources are used effectively, contributing to overall organizational efficiency.
+Expected Solution: To mitigate this issue, a robust solution is needed to design and develop a system that generates alerts when users attempt to download data already available within the institute's repository or any of the user accounts. The alert system should promptly notify users about the existence, properties (such as the period, spatial domain, and other relevant data attributes), and location of the required data, thereby preventing unnecessary duplication and promoting efficient resource utilization. Implementing this solution allows organizations to streamline data access processes and reduce redundancy. This system has to be applicable across various fields and industries, including academic institutions, research facilities, government agencies, and more.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1659</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">earth-sciences</span> <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-113.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1736] AI based frame interpolation, video generation and display system for WMS services — Findings Report</title>
+  <title>[SIH-1754] Road Transport Network Telematics — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,47 +83,60 @@
       <span class="finding-id">finding-204</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1736] AI based frame interpolation, video generation and display system for WMS services</h1>
+      <h1>[SIH-1754] Road Transport Network Telematics</h1>
       <div class="badges">
         <span class="badge high">high</span>
-        <span class="category-tag">Open Source & Skill Discovery</span>
+        <span class="category-tag">AI/ML & Industrial Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1736</code>
-      <button onclick="copyToClipboard('SIH-1736')">Copy</button>
+      <code>SIH-1754</code>
+      <button onclick="copyToClipboard('SIH-1754')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Indian Space Research Organization (ISRO)
+      <p>**Sponsoring Body:** Ministry of Communication
 
-**Recommendation:** YES - HIGH PRIORITY (9/10)
+**Category:** AI/ML & Industrial Analytics
 
-Description: Develop a system that automatically generates videos using frame interpolation techniques given a WMS service that provides satellite imagery at regular intervals (e.g. every 30 minutes) and a bounding box. The AI based video generator should interpolate frames (for e.g. at every minute between 30 minutes) for smooth visualization of moving objects. This video should be displayed on an interactive browser based map (using openlayers or leaflet).
-Challenge: Frame interpolation of objects such as clouds which are deformable and even appear disappear between frames.
-Overlaying videos on web based map visualization libraries is straightforward on commercial libraries such as mapbox. Developing the same functionality for modern open-source webgis libraries will be an added effort.
-Usage: Can be implemented for visualization on VEDAS/MOSDAC/BHUVAN
-Users: WebGIS application developers and the end users of these applications.
-Available Solutions (if Yes, reasons for not using them): Individual components are available, comprehensive and proven solution does not exist.
-Desired Outcome:
-The tool should be compatible with and OGC compatible WMS service.
-Should demonstrate video visualization overlay on an OpenLayers (> version 6) web map.
-Bonus points for utilisation of on-device GPUs/NPUs available in modern desktop/mobile devices. (not mandatory)</p>
+**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: The Department of Posts operates 76 national routes under All India Road Transport Network (RTN). Commercial trucks of 5-14 tonnes capacity ply on these routes carrying parcels and mail. There are also state or intra-circle routes operated through a combination of commercial and departmental trucks for carrying parcels and mail.
+Description: The RTN trucks, operating on various routes, touch intermediate points, where parcels and mail are off-loaded and loaded. The capacity utilization of the trucks fluctuates depending upon the volume of parcels/mail being carried by it [illustration: On the Ahmedabad-Ajmer-Jaipur route, Ahmedabad loads the truck up to 80% capacity for Ajmer. At Ajmer, 20 % of the volume is offloaded, and 30% loaded, bringing total loading to 90% capacity (80-20+30 = 90). Similarly, at Jaipur, 40% volume is offloaded and 50 % loaded, bringing total loading to 100% (90-40+50= 100)]. Real time data is required for optimal utilization of truck capacity and adequate planning. In order to monetize spare capacity, integration with 3PL partners for capacity sharing through API (as described in the previous point) is also required.
+RTN trucks traverse a fixed route with specific touch points. The trucks may be delayed due to various factors, such as vehicle breakdown, poor traffic conditions, detours, detention at one or more touch points etc. GPS, geofenced locking should be enabled for any detours or delays so that alerts may immediately be triggered for verification and corrective action in time. Live tracking of trucks, with points of delay is required for efficient and timely movement of parcels and mail in the value chain.
+There should be a system for dispatch and schedule management as per live data automatically populated and analyzed in real time. Any changes or deviations should automatically flow into the system so that schedules, which are downstream, automatically get updated and adjusted to the delay in real time.
+All data should be captured and populated automatically, and relevant MIS reports generated automatically with visualization where relevant.
+Expected Solution: As described above the expected solution is based of GPS leading to a strong GIS for the network for it to send alerts and prompt necessary adjustments on the interlinked parts of the supply chain for every run of the truck.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1754</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
+      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
 
-**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
+**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
 
-**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
+**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">open-source</span> <span class="badge info">isro</span> <span class="badge info">reuses-gitscout</span>
+      <span class="badge info">industrial</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-203.html" class="prev">← Previous</a>

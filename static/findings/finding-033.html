@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1559] Develop a functional solution that demonstrates the hardware enabled root of trust. — Findings Report</title>
+  <title>[SIH-1560] Rapid colorimetric and artificial intelligence-based methods for determining the microbial quality of raw milk, processed milk, and milk pro — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,45 +83,59 @@
       <span class="finding-id">finding-033</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1559] Develop a functional solution that demonstrates the hardware enabled root of trust.</h1>
+      <h1>[SIH-1560] Rapid colorimetric and artificial intelligence-based methods for determining the microbial quality of raw milk, processed milk, and milk pro</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">AI/ML & Industrial Analytics</span>
+        <span class="badge low">low</span>
+        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1559</code>
-      <button onclick="copyToClipboard('SIH-1559')">Copy</button>
+      <code>SIH-1560</code>
+      <button onclick="copyToClipboard('SIH-1560')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Electronics and Information Technology
+      <p>**Sponsoring Body:** Ministry of Fisheries, Animal Husbandry and Dairying
 
-**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+**Category:** Miscellaneous Software & Enterprise App
 
-1. Background. UIDAI has implemented app-based face authentication solution. This solution uses the support of the backend service to secure the captured image using PKI technology, so that it can be used by the authentication system. UIDAI intends to avoid this network call for encryption and implement an in-device solution to enable PKI implementation.
-2. Problem Description. As part of the challenge, participating teams to develop a solution that is platform agnostic i.e applicable for both Android and IOS platforms, and will derive the root of trust from the hardware of the device. The key pair so generated with the help of hardware is to identify the device uniquely and must connect it with IMEI number or any such unique number of the mobile device. The solution must meet the following requirements:-
-3. The proposed solution must meet the following objectives.
-3.1 Feature Requirement. The solution must use hardware to generate a key pair to uniquely identify the device. The private key of the certificate par must remain in the hardware and must not be extractable. All encryption must be performed within the hardware enclave (i.e in hardware) to protect the private key.
-3.2 The solution must support key lifecycle management i.e key expiry or revocation.
-3.3 The solution must be completely offline i.e. should not use any backend component for implementation of the PKI security.
-3.4 The solution must enable UIDAI to use RSA PKCS or OAEP encryption protocols.
-4. Expected Solution. The expected outcome of this project is a functionalsolution that demonstrates the PKI encryption of blob data in the mobile device using a key pair that is linked to the device hardware.</p>
+**Recommendation:** MAYBE (6.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background:
+Milk is perishable product, it requires immediate processing after few hours (2-4Hrs) of production, otherwise, bacterial load increases and milk gets deteriorate. At present Methytene Blue Dye Reduction Test, commonly known as MBRT test is used as a quick method to assess the microbiological quality of raw and pasteurized milk. This test is based on the fact that the blue colour of the dye solution added to the milk get decolourized when the oxygen present in the milk get exhausted due to microbial activity. The sooner the decolourization, more inferior is
+the bacteriological quality of milk assumed to be. This test is widely used at the dairy reception dock, processing units and milk chilling centres where it is followed as acceptance/rejection criteria for the raw and processed milk. Further, processed dairy products may also get spoiled in the supply chain for microbiological reasons.
+Description: The above mentioned MBRT has to be done under sterile conditions. Take 10 ml milk sample in sterile MBRT test tube. Add 1 ml MBRT dye solution (dye concentration 0.005%). Stopper the tubes with sterilized rubber stopper and carefully place them in a test tube stand dipped in a serological water bath maintained at 37t1oC. Record this time as the beginning of the incubation period. Decolourization is considered complete when only a faint blue ring (about 5mm) persists at the top. However, for processed dairy products, the enumeration of bacterial load is time-consuming and requires different methods.
+Expected solution: The above mentioned MBRT takes 4 to 6 Hours for completion of the test. Therefore, it is proposed to develop cost effective, rapid and portable method/Machine to deduct microbial load in Raw and Pasteurized Milk as compared to present Methylene blue reduction test (MBRT).Meanwhile, smart packaging tools such as freshness indicators could be a solution for processed dairy products.ln this context, artificial intelligence, machine vision, systems, etc. could be explored.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1560</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
+      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
 
-**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
+**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
 
-**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
+**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">industrial</span>
+      <span class="badge info">enterprise-app</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-032.html" class="prev">← Previous</a>

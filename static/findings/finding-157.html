@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1689] Use of Digital Technology to calculate Water Footprints for different Agricultural Products — Findings Report</title>
+  <title>[SIH-1705] Development and Optimization of Al model for Feature identification/ Extraction from drone orthophotos. — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,7 +83,7 @@
       <span class="finding-id">finding-157</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1689] Use of Digital Technology to calculate Water Footprints for different Agricultural Products</h1>
+      <h1>[SIH-1705] Development and Optimization of Al model for Feature identification/ Extraction from drone orthophotos.</h1>
       <div class="badges">
         <span class="badge high">high</span>
         <span class="category-tag">LegalTech / Document AI / GovTech</span>
@@ -91,23 +91,56 @@
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1689</code>
-      <button onclick="copyToClipboard('SIH-1689')">Copy</button>
+      <code>SIH-1705</code>
+      <button onclick="copyToClipboard('SIH-1705')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Jal Shakti
+      <p>**Sponsoring Body:** Ministry of Panchayati Raj
+
+**Category:** LegalTech / Document AI / GovTech
 
 **Recommendation:** YES - HIGH PRIORITY (9.5/10)
 
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
 Background
-The water footprint measures the amount of water used to produce each of the goods and services we use. The water footprint helps us understand for what purposes our limited freshwater resources are being consumed. The impact of it depends on where the water is taken from and when, if it comes from a place where water is already scarce, the consequences can be significant and require action.
-Detailed Description
-The increase in the amount of non-available water due to pollution and scarce groundwater level has added more water footprints, at the community as well as at the personal levels. An increased
-· water footprint directly affects the health and future of the citizens. Preventing severe drought in water-stressed areas is only going to be possible if water is used with more care and efficiency, this can be achieved if we have readily available data of water footprints.
+1. The Hon’ble Prime Minister launched the SVAMITVA Scheme on the National Panchayati Raj Day, 24th April 2020 with a resolve to enable the economic progress of Rural India by providing “Record of Rights” to every rural household owner. The scheme aims to demarcate inhabited (Abadi) land in rural areas through the latest surveying drone technology, Continuous Operating Reference System (CORS), and Geographic Information System (GIS) technology. The scheme covers multifarious aspects viz. facilitating monetization of properties and enabling bank loan; reducing property-related disputes; comprehensive village-level planning
+2. With the use latest drone technology and CORS technology for the Abadi land survey, the high resolution and accurate image base maps of 50 cm have facilitated creation of the most durable record of property holdings in these areas with no legacy revenue records. Such accurate image-based maps provide a clear demarcation of land holdings in a very short frame of time compared to on ground physical measurement and mapping of the land parcels.
+Description
+i. Develop an AI model capable of identifying key features in orthophotos with high precision: Use of AI/ML techniques for extraction of the following features from SVAMITVA Drone Imagery using a cloud-based solution: -
+a. Building footprint extraction (built-up area from the drone image and classified roof-top based on observation on the imagery as RCC, Tiled, Tin, and Others. These built up area can be used for various service such as solar energy calculation, property tax calculation, etc.)
+b. Road feature extraction
+c. Waterbodies extraction, etc
+ii. Achieve a target accuracy of 95% in feature identification.
+iii. Optimize the model for efficient processing and deployment.
+
+The broad scope of work includes:-
+i. Data Preparation: Utilize the SVAMITVA Scheme drone-labeled datasets for 10 villages to train and validate the AI model.
+ii. Model Development: Employ Convolutional Neural Networks (CNNs) or other suitable AI/ML models for image segmentation and feature identification.
+iii. Model Training: Efficient training of the model ensures it learns to identify the desired features accurately.
+iv. Model Optimization: Fine-tune the model to achieve the target accuracy of 95%, optimizing for speed and resource utilization.
+v. Testing and Validation: Rigorously test the model on a separate dataset to ensure its accuracy and reliability.
+vi. Deployment and Integration: Prepare the model for deployment and integration into the Ministry of Panchayati Raj’s existing systems for practical application.
+
 Expected Solution
-Hence, by using digital technologies like AI, Big Data, Block chain etc. and computer languages, a user friendly app or website may be developed which can provide the water footprints of different items/ final products we eat by feeding little inputs like name, or just by scanning through camera like Google lens. The app should support local languages; this will ensure the pan India usage and sensitize the people about water footprints of items they use in daily life.</p>
+i. A fully trained and optimized AI model for feature identification in orthophotos.
+ii. Documentation detailing the model architecture, training process, and deployment guidelines.
+iii. A final report summarizing the project outcomes, including accuracy metrics and recommendations for future improvements.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1705</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
       <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
@@ -118,9 +151,9 @@ Hence, by using digital technologies like AI, Big Data, Block chain etc. and com
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-156.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1743] Parsing of Social Media Feeds — Findings Report</title>
+  <title>[SIH-1761] AI based identification of Financial (Banking & Insurance) needs based on demography and economic / farming Cycle — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,41 +83,57 @@
       <span class="finding-id">finding-211</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1743] Parsing of Social Media Feeds</h1>
+      <h1>[SIH-1761] AI based identification of Financial (Banking & Insurance) needs based on demography and economic / farming Cycle</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">LegalTech / Document AI / GovTech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1743</code>
-      <button onclick="copyToClipboard('SIH-1743')">Copy</button>
+      <code>SIH-1761</code>
+      <button onclick="copyToClipboard('SIH-1761')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** National Investigation Agency (NIA)
+      <p>**Sponsoring Body:** Ministry of Communication
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** LegalTech / Document AI / GovTech
 
-During investigation when the social media accounts of accused/suspect are opened for examination or creating Panchnamas, it would be better if some tool is designed which can automatically parse the data and provide the screenshot of the posts, messages, timeline, friend list, following, followers, account info, etc and provide screenshots in a documented form.
- * The examiner may choose to print the screenshots as per requirements. This will omit any human error during the process and also help to thoroughly reviewing the data found for the said social media account.
- * Separate options for Facebook, Twitter, Instagram, Telegram, WhatsApp, Google account etc may be provided in the tool.
- * Many a times, the social media accounts do not open in Desktops even if we have the right credentials and the examiner have to use a dummy android phone. So, two separate versions (Android and windows) of this tool will be helpful.</p>
+**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: The Department of Posts has implemented various Post Office Savings Bank (POSB) Schemes in All over India uniformly. However, each socio-geographic formation at the state, district, block and village level has its own demographic realities that require a customised thrust for making the relevant financial and insurance services available to the served population around each post office.  For example,  in West Bengal, there are some villages where percentage of females are higher where if Melas for Sukanya Samriddhi Accounts ( SSA) and Mahila Samriddhi Samman Patras (MSSC) can be arranged, the effectiveness of the sales effort and the conversion rate will be higher. Similarly, in some villages the number of senior citizens are higher and higher  number of Senior Citizen Social Security (SCSS) accounts can be opened for their benefit to justify presence of post offices in these areas. But there is no such report from where it can be identified, where and when the need of which product is higher. All melas like SSA, MSSC, Postal Life Insurance (PLI) , Rural Postal Life Insurance ( RPLI)  have been arranged in villages without the knowledge of percentage of male/female/child and senior citizens resulting in moderate to mediocre success for the efforts.
+Description: The Department of Posts has implemented various POSB Schemes in All over India uniformly. Actual demographic location-wise population is to be identified. In West Bengal, for example, there are some villages where percentage of females are higher, in some villages the number of senior citizens are higher. In some sectors demand young generation and service holders are much higher. The need of the youth and service holders are very different from the demands of other sector of people. Density of farmers and business-oriented people are higher in some areas.  All melas like SSA, MSSC, Public Provident Fund (PPF), Recurring Deposits (RD), Time Deposit ( TD)  PLI, RPLI have been arranged in every city and villages without the knowledge of percentage of male/female/child/senior citizens and other sectors of people and as a result the success of all the melas are found not satisfactory.
+Expected Solution: The expected solution is pictorial data and actual demographic and economic location-wise population is to be identified.  The demographic and location-wise population data is to be taken as a fundamental data towards improvement of financial (banking & insurance) services.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1761</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-210.html" class="prev">← Previous</a>

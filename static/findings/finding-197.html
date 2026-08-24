@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1729] AI supported AICTE Approval process portal — Findings Report</title>
+  <title>[SIH-1746] Improving open source software security using Fuzzing — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,77 +83,69 @@
       <span class="finding-id">finding-197</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1729] AI supported AICTE Approval process portal</h1>
+      <h1>[SIH-1746] Improving open source software security using Fuzzing</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">LegalTech / Document AI / GovTech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1729</code>
-      <button onclick="copyToClipboard('SIH-1729')">Copy</button>
+      <code>SIH-1746</code>
+      <button onclick="copyToClipboard('SIH-1746')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** AICTE
+      <p>**Sponsoring Body:** National Critical Information Infrastructure Protection Center (NCIIPC)
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** LegalTech / Document AI / GovTech
 
-Background:
+**Recommendation:** YES - HIGH PRIORITY (9.5/10)
 
-The All India Council for Technical Education (AICTE) is the primary body responsible for the accreditation and approval of technical education institutions across India. This process, which includes application submissions, document verification, and detailed evaluations by multiple stakeholders, is currently burdened by inefficiencies. The existing system relies heavily on manual processes and paperwork, leading to delays, administrative overhead, and limited visibility into the approval process.
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
 
-Problem Statement:
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
 
-The AICTE approval process involves numerous steps and interactions among educational institutions, regulatory authorities, and evaluators. There is a need for an innovative AI-supported portal that can modernize and streamline the approval workflow, enhance transparency, and significantly reduce processing times.
+---
 
+Background: Fuzzing is an automated process of identifying software vulnerabilities by supplying unexpected and faulty inputs to the software. The main aim of fuzzing is to identify the crucial edge cases where a software might fail. Therefore, fuzzing provides a crucial insight into the stability and security of the software. The process of fuzzing can be divided into following broad steps –
+1. Identification of Target Function(s) – Target function(s) are typically those functions that act as entry points for processing input data. They use various APIs to perform operation on the input data.
+2. Developing harness – Harnesses are small code stubs whose sole purpose is to invoke the target function by using mutated data inputs. A harness bridges the gap between how the fuzzer generates input and how the target application receives and processes the input.
+3. Fuzzing - In this step, a fuzzer is used to generate numerous data inputs which are then passed to the target function using the harness. The fuzzer checks whether the application crashes by processing a certain input. If a crash occurs, then it saves the input and the memory state of the crash to file for later analysis.
 Description:
-
-1. Automate and Optimize Workflow: Design an AI-driven portal that automates and refines the submission, verification, and evaluation stages, reducing manual intervention and expediting the approval process.
-
-2. Enhance Document Verification:Deploy AI technologies to facilitate automatic verification and validation of documents, ensuring compliance with AICTE standards and improving accuracy.
-
-3. Improve Transparency and Communication: Develop an intuitive interface that offers real-time tracking of application status, deadlines, and feedback, fostering better communication between institutions and evaluators.
-
-4. Efficient Resource Allocation:Utilize AI to forecast and allocate resources effectively, ensuring optimal distribution of workload among evaluators and reducing process bottlenecks.
-
-5. Strengthen Security and Compliance: Integrate advanced AI-based security features to safeguard sensitive information and ensure adherence to data privacy regulations and compliance standards.
-
-Scope:
-
-Application Processing: Automate the intake and preliminary review of applications to streamline the workflow.
-Document Verification: Implement AI tools for authenticating and validating documents, checking for completeness and adherence to guidelines.
-Evaluator Matching: Use AI algorithms to match applications with suitable evaluators based on expertise and current workload.
-Real-Time Tracking: Create a system for tracking application progress, providing timely updates, and facilitating communication.
-Analytics and Reporting: Offer AI-powered insights and reporting tools to monitor process efficiency and identify areas for continuous improvement.
-Digital Dimension Tracking of the Infrastructure: Develop a system to digitally track and verify the dimensions of the infrastructure provided by the applicants. Utilize AI and computer vision to analyze photographs, videos, and other documents to ensure the physical infrastructure meets AICTE standards.
-
-Expected Benefits:
-
-- Accelerated processing times and reduced administrative burden.
-- Enhanced accuracy and reliability in document validation.
-- Improved transparency and communication between all parties involved.
-- Better resource management and a balanced workload for evaluators.
-- Robust security measures and compliance with data privacy regulations.
-
-By developing this AI-supported AICTE Approval Process Portal, the goal is to revolutionize the approval process, making it more efficient, transparent, and user-centric, thereby benefiting educational institutions, regulatory authorities, and the broader educational ecosystem.
-Process Document:
- https://aicte-india.org/sites/default/files/approval/APH%20Final.pdf</p>
+Fuzzing has proven its effectiveness in discovering thousands of vulnerabilities in file-processing and stateless applications. In fuzzing, and automated testing in general, designing test oracles is crucial. In this challenge the team is supposed to fuzz an open source software namely the Windows variant of Sumatra PDF Reader software (version 3.5.2 or later). Sumatra PDF Reader is a very popular open source and widely used PDF viewing software. In this challenge, teams are required to develop a working harness for fuzzing of the latest version (version 3.5.2 or later) of Windows Sumatra PDF Reader software solution, fuzzed on any fuzzer of their choice.
+The submission will be evaluated on the following criteria –
+1. Target functions identified
+2. Live demonstration of fuzzing harness developed
+3. Code Coverage achieved
+4. Technical report submitted by the team.
+Expected Solution: Each team must provide a fuzzing harness that is capable of fuzzing the windows software solution of the Sumatra PDF Reader (version 3.5.2 or later). This fuzzing harness must identify target functions and supply appropriate arguments for the invocation of such functions. The fuzzing harness will be run using a fuzzer (preferably WinAFL). Each team must submit a working harness along with a technical report stating –
+1. Reversing steps undertaken
+2. Target functions identified
+3. Dependencies identified</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1746</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">aicte</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-196.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1582] System to check the healthiness of earthing system and alert staff in case of any malfunction; — Findings Report</title>
+  <title>[SIH-1583] Condition-based monitoring and maintenance system. — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,40 +83,58 @@
       <span class="finding-id">finding-056</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1582] System to check the healthiness of earthing system and alert staff in case of any malfunction;</h1>
+      <h1>[SIH-1583] Condition-based monitoring and maintenance system.</h1>
       <div class="badges">
-        <span class="badge medium">medium</span>
-        <span class="category-tag">AgriTech & Rural Health Tech</span>
+        <span class="badge critical">critical</span>
+        <span class="category-tag">Smart Education / Career Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1582</code>
-      <button onclick="copyToClipboard('SIH-1582')">Copy</button>
+      <code>SIH-1583</code>
+      <button onclick="copyToClipboard('SIH-1583')">Copy</button>
     </div>
     <div class="description">
       <p>**Sponsoring Body:** Ministry of Housing and Urban Affairs
 
-**Recommendation:** MEDIUM PRIORITY (7/10)
+**Category:** Smart Education / Career Analytics
 
-Background: We have large numbers of Electrical pole lights installed at parking area and station area. Though these lights are equipped with earth leakage protection switch gear but in case of malfunctioning, it may prove to be dangerous for the public. Also, to check all the system earthing, huge manpower is required.
-Description: To address this challenge there is a need of sensor-based system which can continuously monitor the healthiness of earth leakage current, the continuity of the earthing for all electrical system and also alert the maintenance team in case of any malfunction. The sensor-based system can take feedback from the panels and transmit the same to a centralized location. This system shall also monitor the earth resistance value of earth pits/earth grid and shall give audible and visual alert in case of any deviation from the specified value.
-Expected Solution: This system shall monitor the healthiness of earth leakage in switchgear, the continuity of the earthing for all electrical system and generate alert in case of any malfunction in system.</p>
+**Recommendation:** YES - TOP PRIORITY (10/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: There are a large number of tunnel booster fans (TBF) of different capacity installed in tunnel area at underground metro stations. These IBFs have different maintenance schedules and frequency prescribed by OEM. The TBF's are not operated regularly but are tested during mock drills. The exercise of scheduled preventive maintenance of this equipment involves a large number of manpower and risk of working at height. The Condition-based maintenance in place of scheduled preventive maintenance would be very helpful in optimizing the maintenance and manpower cost involved.
+Description: To optimize the maintenance and manpower cost there is a great need of developing a condition-based monitoring and maintenance system. The historical data pertaining to failures along with the symptoms, the permissible limits of different parameters. the previous maintenance records of TBF shall be fed into the Al based condition monitoring system.
+The Al based system shall analyze and compare this historical data with parameter obtained at the time of operation during the testing/mock drill to predict any maintenance requirement based on the condition of TBF and the system shall also alert in case of any deviation from specified values.
+Expected Solution: Condition-based monitoring and maintenance system which can use machine learning & behavioural analytics to predict any maintenance requirement based on the condition of a particular system.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1583</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** AI-assisted rural assistant portal providing diagnostic/expert guidance via simple web forms, voice interface, and market/health linkage.
+      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
 
-**Build Plan (your stack):** FastAPI backend + Whisper/Gemini audio parsing + lightweight React PWA interface with offline SQLite caching.
+**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
 
-**Why this rating:** Good application of AI voice/FastAPI, but requires domain field data.</p>
+**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">agritech</span>
+      <span class="badge info">education</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-055.html" class="prev">← Previous</a>

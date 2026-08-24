@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1707] Development of a Geolocation-Based Attendance Tracking Mobile Application. — Findings Report</title>
+  <title>[SIH-1724] Platform for Inter-departmental cooperation (at city level) in Indian Cities, for sharing data & resources, unified phasing, planning and im — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,57 +83,68 @@
       <span class="finding-id">finding-175</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1707] Development of a Geolocation-Based Attendance Tracking Mobile Application.</h1>
+      <h1>[SIH-1724] Platform for Inter-departmental cooperation (at city level) in Indian Cities, for sharing data & resources, unified phasing, planning and im</h1>
       <div class="badges">
         <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
+        <span class="category-tag">Open Source & Skill Discovery</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1707</code>
-      <button onclick="copyToClipboard('SIH-1707')">Copy</button>
+      <code>SIH-1724</code>
+      <button onclick="copyToClipboard('SIH-1724')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** GAIL, Ministry of Petroleum and Natural Gas
+      <p>**Sponsoring Body:** Ministry of Housing and Urban Affairs
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+**Category:** Open Source & Skill Discovery
 
-Description:
-A mobile application needs to be developed to streamline and automate the attendance tracking of its employees across multiple office locations. This application will leverage geolocation technology to record employee check-in and check-out times along with geo-location as they enter and leave the office premises.
-Aim of this App is to enhance operational efficiency, reduce manual attendance tracking errors, and provide a seamless experience for employees to manage their work-related movements.
+**Recommendation:** YES - HIGH PRIORITY (9/10)
 
-Key Requirements:
-1) Geolocation-Based Check-In and Check-Out:
-Automatically record check-in time and geo-location when an employee enters within a 200-meter radius of his office.
-Record check-out time when the employee leaves the 200-meter radius.
-Ensure that each check-in is paired with a corresponding check-out, regardless of the frequency of entries and exits.
-2) Manual Location Check-In / Check-Out for Offsite Work:
-Provide a manual check-in and check-out feature for employees working at locations other than his offices.
-Automatically suggest relevant locations based on real-time longitude and latitude data, allowing employees to confirm their check-in and check-out at these suggested locations.
-3) Calculate the employees total working hours.
-4) Data Accuracy and Integrity:
-Ensure the application maintains accurate and tamper-proof records of all check-in and check-out events.
-Enable real-time data synchronization and secure storage to prevent data loss and ensure reliability.
-Youtube Link/Video Link (3 Minute video explaining the Problem Statement):
-https://youtu.be/bmw8unoxA7U
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
 
-NOTE : GAIL (INDIA) LTD will not provide any hardware, software, license, data or any other resource to SIH hackathon Teams. The teams should use free and/or open-source resources, as applicable, for the entire project.</p>
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: Multiplicity of authorities and implementing agencies in Indian Urban landscape is one of the biggest challenges for urban governance. Not only does it lead to underutilization of resources available with various departments, execution of multiple projects at same site may also lead to interference and delays due to miscoordination. A digital platform for interdepartmental cooperation can potentially resolve these issues and make inter-departmental cooperation more streamlined.
+ Example- A road developed by one agency, may get damaged due to installation of gas pipelines or utility ducts on road 2 months later. This can be resolved with preemptive collaboration between both implementing agencies.
+ Description: The digital platform can provide solutions for-
+ 1. Exchange of data and resources (technical expertise, machinery, technology etc.), and list of ongoing and upcoming projects between various agencies.
+ 2. Scheduling of tasks, reports, and work distribution between agencies for projects categorized as "Inter-departmental"
+ 3. Identification of projects in different departments which share the project site, and tools for assistance in organizing meetings of various departments, unified project phasing (to reduce costs incurred), planning and execution of projects.
+ 4. Training and capacity building exercises, workshops & seminars.
+ 5. Discussion forum with (Intra department, inter department, and public form sections.
+ Expected Solution- A digital platform for interdepartmental cooperation which allows functions of-
+ a. Registering departments, employees, officers, technical experts etc. with their accounts.
+ b. Sharing data, ongoing projects with location, and inventory of available resources between departments/agencies.
+ c. Creation of tasks, scheduling, reporting and work distribution across departments for inter-departmental and multi-departmental projects.
+ d. Identification, unified phasing, planning, and implementation of projects on same site
+ e. Discussion forum, with different forum sections allowing access to specific groups of users.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1724</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
+**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">open-source</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-174.html" class="prev">← Previous</a>

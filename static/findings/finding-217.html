@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1749] Recovery of Deleted Data and Associated Metadata from XFS and Btrfs Filesystems — Findings Report</title>
+  <title>[SIH-1767] GOBARdhan - Low-cost enrichment models for F/L OM (Fermented / Liquied Organic Manure) — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,47 +83,57 @@
       <span class="finding-id">finding-217</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1749] Recovery of Deleted Data and Associated Metadata from XFS and Btrfs Filesystems</h1>
+      <h1>[SIH-1767] GOBARdhan - Low-cost enrichment models for F/L OM (Fermented / Liquied Organic Manure)</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge medium">medium</span>
+        <span class="category-tag">AgriTech & Rural Health Tech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1749</code>
-      <button onclick="copyToClipboard('SIH-1749')">Copy</button>
+      <code>SIH-1767</code>
+      <button onclick="copyToClipboard('SIH-1767')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** National Critical Information Infrastructure Protection Center (NCIIPC)
+      <p>**Sponsoring Body:** Ministry of Jal Shakti
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** AgriTech & Rural Health Tech
 
-Background : Digital evidence has become increasingly crucial in forensic investigations. The recovery of deleted data from storage devices is essential for reconstructing timelines, identifying suspects, and uncovering critical information. Traditional file systems like FAT and NTFS have been extensively studied, and tools for recovering deleted data from them are relatively mature. However, modern file systems like XFS and Btrfs, designed for performance and reliability, employ complex data structures that pose signifycant challenges for data recovery.
-Forensic investigations often involve recovering various file types, including documents files, log files, and system files. These files contain valuable information about system activities, user behaviour, and potential criminal activities. The ability to recover deleted files along with their complete metadata, such as creation, access, modification, and deletion timestamps, is crucial for establishing timelines and corroborating evidence.
-Detailed Description :XFS and Btrfs file systems offer advanced features like journaling, copy-on-write, and efficient data allocation. While these features enhance system performance and data integrity, they also complicate the process of recovering deleted data. When a file is deleted in these file systems, the data itself is not immediately erased; instead, the file system marks the allocated blocks as free for reuse. This delayed overwriting of data presents an opportunity for recovery, but it also requires specialized techniques to extract and analyse the deleted data.
-Moreover, recovering accurate metadata associated with deleted files is equally challenging. Metadata is critical for establishing the context of the recovered data and determining its relevance to the investigation. Extracting metadata from XFS and Btrfs file systems requires a deep understanding of their internal structures and data allocation mechanisms.
-Expected Solution: An ideal solution would be a comprehensive data recovery technique specifically designed for XFS and Btrfs file systems. These techniques should able to:
-1. Efficiently recover deleted data: Develop algorithms and techniques to identify and extract deleted files from the complex data structures of XFS and Btrfs.
-2. Support a wide range of file types: Recover Text-Based Document Formats(doc,docx, rtf, pdf, txt, odt, html, xml, ppt, odp, xls, ods, log, csv, tsv, txt, conf, ini, cfg etc), archives file(zip, tar, rar, iso, rpm, deb etc), Image-Based Document Formats(jpg, jpeg, png, gif, tif etc), executables binaries(.elf, .so, .a, exe, dll, bat, cmd) scripts files(ps, ps1, sh, bash, zsh, py etc), database file(.db etc) and other relevant data formats.
-3. Extract complete metadata: Recover accurate creation, access, modification, and deletion timestamps, file names, and other essential metadata associated with deleted files.
-4. Provide user-friendly interface: Offer an intuitive interface (GUI/CLI) for easily navigate recovered data and generate reports.
-5. Ensure data integrity: Implement robust data validation and verification mechanisms to maintain the integrity of recovered data.</p>
+**Recommendation:** MEDIUM PRIORITY (7/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background and Description: Fermented/Liquid Organic Manure (F/L OM) is a valuable resource for improving soil fertility and crop production at the village level. However, the nutrient content of F/L OM can vary widely, often being insufficient to meet the needs of various crops. Enrichment of F/L OM with additional nutrients or through enhanced fermentation processes can significantly improve its efficacy as an organic fertilizer. Despite this potential, current enrichment methods are often too costly or complex for small farmers to implement, limiting their ability to fully benefit from F/L OM.
+
+ Expected Solution: The creation of low-cost, scalable enrichment models for F/L OM that can be easily adopted by small farmers. These models should focus on enhancing the nutrient content of F/L OM through affordable additives or optimized fermentation techniques. The goal is to produce a more potent and consistent organic fertilizer that can boost crop yields while remaining accessible and practical for village-level production.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1767</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** AI-assisted rural assistant portal providing diagnostic/expert guidance via simple web forms, voice interface, and market/health linkage.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** FastAPI backend + Whisper/Gemini audio parsing + lightweight React PWA interface with offline SQLite caching.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** Good application of AI voice/FastAPI, but requires domain field data.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">agritech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-216.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1679] Development of Audit script for Windows 11 and Linux OS as per CIS (Centre for Internet Security) bench mark — Findings Report</title>
+  <title>[SIH-1695] A software application for analysis of DWLR data and raise alarms in respect of anomalous values, faulty DWLRs etc — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,56 +83,56 @@
       <span class="finding-id">finding-147</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1679] Development of Audit script for Windows 11 and Linux OS as per CIS (Centre for Internet Security) bench mark</h1>
+      <h1>[SIH-1695] A software application for analysis of DWLR data and raise alarms in respect of anomalous values, faulty DWLRs etc</h1>
       <div class="badges">
-        <span class="badge medium">medium</span>
-        <span class="category-tag">Cyber Security & Anomaly Detection</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">AI/ML & Industrial Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1679</code>
-      <button onclick="copyToClipboard('SIH-1679')">Copy</button>
+      <code>SIH-1695</code>
+      <button onclick="copyToClipboard('SIH-1695')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
+      <p>**Sponsoring Body:** Ministry of Jal Shakti
 
-**Recommendation:** YES - MEDIUM PRIORITY (8/10)
+**Category:** AI/ML & Industrial Analytics
 
-Background:
-Organisations across various industries face significant challenges in maintaining robust cyber security posture. Compliance with industry standard bench marks and guidelines, such as those provided by Center for Internet Security (CIS), is crucial for ensuring the security and integrity of their IT Infrastructure. However, manually auditing and ensuring adherence to these benchmarks and guidelines can be time- consuming, error prone, and resource intensive. Current practises often involve manual checks. To address these challenges, there is a critical need to develop automated auditing scripts tailored to CIS benchmarks.
-Detailed description:
-This software solution aimed to list out the control guidelines as per CIS benchmark for the following operating systems: -
-Windows (Reference
-www.cisecurity.org/benchmark/Microsoft_winodws_desktop)
-i. Windows 11 (Enterprise version)
-ii. Windows 11 (Standalone version)
-Linux (Reference:www.cisecurity.org/benchmark/red_hat_linux, www.cisecurity.org/benchmark/ubuntu_linux)
-i. Redhat Enterprise (8 and 9)
-ii. Ubuntu desktop (20.04 LTS, 22.04 LTS)
-iii. Ubuntu server (12.04LTS and 14.04 LTS)
-Preferable scripting language (PowerShell for Windows, bash/python for Linux).
-Expected solution:
-i. A user-friendly GUI based solution with capability to generate a report of findings.
-ii. Should be customizable as per organizational needs and scale to audit large and diverse IT environments effectively.
-iii. Scripts should be reliable and accurate in identifying the deviations from
-iv. best practices outlined in CIS benchmarks.
-v. Should facilitate easy update and maintenance to accommodate changes in benchmarks over time.</p>
+**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Central Ground Water Board is in the process of installing Digital Water Level Recorders (DWLRs) across the country. CGWB will be monitoring 14,000 DWLRs by 2026, which will generate high-frequency water level measurements. Each DWLR will record 4 ground water level data per day, generating 1460 measurements per year.
+Analysing all the 14,000 wells will be an enormous task. Accordingly, a software application is proposed to analyse and flag anomalous data. Input to the application will be high frequency water level data collected through the telemetry systems. The application should be able to identify DWLRs recording no data/abnormal data or DWLRs with low battery level. The application will raise alarms and send messages to the concerned officer and vendors to initiate immediate action.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1695</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Automated security telemetry aggregator with AI log anomaly detection, IOC tracking, and incident escalation queue.
+      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
 
-**Build Plan (your stack):** FastAPI log ingestion endpoint + scikit-learn Isolation Forest / Gemini Flash classifier + Celery task queue for alert notifications.
+**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
 
-**Why this rating:** Utilizes FastAPI, Celery, and security concepts documented in Django security notes.</p>
+**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">cybersecurity</span> <span class="badge info">ntro</span>
+      <span class="badge info">industrial</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-146.html" class="prev">← Previous</a>

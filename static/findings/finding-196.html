@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1728] Development of a Paperless Scholarship Disbursement System for PMSSS — Findings Report</title>
+  <title>[SIH-1745] De-anonymizing of entities on the onion sites operating on TOR Network — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,54 +83,57 @@
       <span class="finding-id">finding-196</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1728] Development of a Paperless Scholarship Disbursement System for PMSSS</h1>
+      <h1>[SIH-1745] De-anonymizing of entities on the onion sites operating on TOR Network</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">LegalTech / Document AI / GovTech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1728</code>
-      <button onclick="copyToClipboard('SIH-1728')">Copy</button>
+      <code>SIH-1745</code>
+      <button onclick="copyToClipboard('SIH-1745')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** AICTE
+      <p>**Sponsoring Body:** National Critical Information Infrastructure Protection Center (NCIIPC)
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** LegalTech / Document AI / GovTech
 
-Background:
-The Prime Minister's Special Scholarship Scheme (PMSSS) aims to support the education of students across India. Traditionally, the process of disbursing scholarships involves significant paperwork, including the submission and verification of documents, which can be time-consuming and prone to delays. The SAG Bureau seeks to streamline this process by developing an online mechanism that allows students to submit their documents digitally. This initiative will facilitate quicker verification and disbursement of scholarships without the need for hard copies, promoting efficiency and reducing the environmental impact of paper usage.
-Description:
-The proposed system will allow students to upload their required documents through a secure online portal. Upon submission, the documents will be automatically sent to the SAG Bureau for verification. Once verified, the SAG Bureau will forward the approved documents to the Finance Bureau for the release of payments. The system will ensure that the entire process, from document submission to scholarship disbursement, is conducted digitally, eliminating the need for any hard copy submissions.
-Key features of the system should include:
-• A user-friendly interface for students to upload and manage their documents.
-• Secure authentication and verification mechanisms to ensure the authenticity of the submitted documents.
-• An automated workflow to route the documents from the SAG Bureau to the Finance Bureau after verification.
-• Real-time tracking and notification system to keep students informed about the status of their submissions and payments.
-• Compliance with data privacy and security standards to protect the personal information of the students.
-Expected Solution:
+**Recommendation:** YES - HIGH PRIORITY (9.5/10)
 
-The expected solution is a comprehensive, fully digital system for the submission, verification, and disbursement of PMSSS scholarships. The solution should:
-• Enable students to upload their documents digitally and track their submission status.
-• Allow the SAG Bureau to verify the uploaded documents without the need for physical copies.
-• Facilitate the automatic forwarding of verified documents to the Finance Bureau for payment processing.
-• Ensure a seamless, paperless process that enhances efficiency, reduces processing time, and minimizes the risk of document loss or misplacement.</p>
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: Dark web is being used for illegal purposes and number of market places are being operated by the underground operators which facilitate illegal buying/selling of drugs/weapons/data leaks/counterfeit moneys/documents etc. Platforms, being anonymise to the LEA, make it difficult to identify the market place running on dark web mainly TOR Network.
+Description: Running the illegal sites on dark web network only requires the access of TOR Browser and TORRC file to run the market from local system. For hosting the services, people may utilise the paid or freely available hosting servers. Being on TOR network (V3), it is very difficult to identify the underground operator running the market. Amid running market on TOR network, the underground operator provides the access of his portal though his ISP/VPN services which has been taken from the respective ISP of his country and the VPN service provider.
+Expected Solution: It is expected that any solution like tool or technique may be developed the underground operator running the market may be identified. The participants may target finding the actual IP/VPN IP being used by the players of the onion sites. The participants may also try to find out other personally identifiable information (PII) regarding the underground operators active on the onion sites.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1745</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">aicte</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-195.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1621] Online testing and monitoring of quality of medicines and consumables — Findings Report</title>
+  <title>[SIH-1640] Assured Contract Farming System for Stable Market Access — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,38 +83,57 @@
       <span class="finding-id">finding-095</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1621] Online testing and monitoring of quality of medicines and consumables</h1>
+      <h1>[SIH-1640] Assured Contract Farming System for Stable Market Access</h1>
       <div class="badges">
-        <span class="badge low">low</span>
-        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
+        <span class="badge medium">medium</span>
+        <span class="category-tag">Disaster Management & Early Warning</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1621</code>
-      <button onclick="copyToClipboard('SIH-1621')">Copy</button>
+      <code>SIH-1640</code>
+      <button onclick="copyToClipboard('SIH-1640')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Government of NCT of Delhi
+      <p>**Sponsoring Body:** Ministry of Agriculture and Farmers Welfare
 
-**Recommendation:** MAYBE (6.5/10)
+**Category:** Disaster Management & Early Warning
 
-Suitable technological module for testing and monitoring of quality of medicines and consumables being received in hospitals would be required so that the system ensures necessary compilance and rejection of low quality supplies without manual intervention</p>
+**Recommendation:** YES - MEDIUM PRIORITY (7.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: Farmers often face uncertainties in market access, leading to fluctuating incomes. Contract farming can provide stability by ensuring farmers have guaranteed buyers for their produce.
+Description: Develop a comprehensive platform that facilitates assured contract farming agreements between farmers and buyers. This platform will enable transparent communication, secure contracts, and timely payments, ensuring farmers have a reliable market for their crops.
+Expected Solution: An online marketplace that connects farmers with potential buyers, offering tools for contract management, price negotiation, and secure payment processing, thereby enhancing income stability and reducing market risks</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1640</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
+      <p>**Probable Solution:** Real-time alert dashboard aggregating weather/sensor feeds, calculating risk scores, and generating evacuation route notifications.
 
-**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
+**Build Plan (your stack):** FastAPI backend with WebSockets for real-time sensor updates, time-series forecasting (Prophet/ARIMA from profile), and mobile web GIS display.
 
-**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
+**Why this rating:** Aligns with time-series ML and FastAPI WebSocket backend experience in vault.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">enterprise-app</span>
+      <span class="badge info">disaster-mgmt</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-094.html" class="prev">← Previous</a>

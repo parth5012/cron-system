@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1556] Develop a Smart Yoga Mat integrated with Artificial Intelligence (AI) capabilities to support smart watch integration for tracking progress  — Findings Report</title>
+  <title>[SIH-1557] Development of Tyre Maintenance and Operation App, including fitment of necessary IIoT related hardware in Dumpers — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,7 +83,7 @@
       <span class="finding-id">finding-030</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1556] Develop a Smart Yoga Mat integrated with Artificial Intelligence (AI) capabilities to support smart watch integration for tracking progress </h1>
+      <h1>[SIH-1557] Development of Tyre Maintenance and Operation App, including fitment of necessary IIoT related hardware in Dumpers</h1>
       <div class="badges">
         <span class="badge high">high</span>
         <span class="category-tag">LegalTech / Document AI / GovTech</span>
@@ -91,27 +91,48 @@
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1556</code>
-      <button onclick="copyToClipboard('SIH-1556')">Copy</button>
+      <code>SIH-1557</code>
+      <button onclick="copyToClipboard('SIH-1557')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of AYUSH
+      <p>**Sponsoring Body:** Ministry of Coal
+
+**Category:** LegalTech / Document AI / GovTech
 
 **Recommendation:** YES - HIGH PRIORITY (9.5/10)
 
-Background: Yoga has gained global recognition for its numerous health benefits, including physical fitness, mental well-being, and stress reduction. As part of India's ancient heritage, yoga is a key component of the AYUSH (Ayurveda, Yoga & Naturopathy, Unani, Siddha, and Homoeopathy) systems of medicine, promoting holistic health practices.
-In today's digital age, there is a growing demand for innovative solutions that combine traditional practices with modern technology. A smart yoga mat equipped with AI and smart watch integration presents an opportunity to enhance the yoga experience, making it more interactive, personalized, and accessible.
-Detailed Description: The objective of this challenge is to design and develop a Smart Yoga Mat that leverages AI capabilities to:
-Smart Watch Integration: Enable seamless connectivity with smart watches to track key metrics such as heart rate, calories burned, and workout duration. This integration should provide real-time feedback to users, helping them monitor their progress and adjust their practice accordingly.
-AI-Powered Guidance: Utilize AI algorithms to analyze user data from the smart watch and provide personalized recommendations for yoga routines. The Smart Yoga Mat should be capable of offering curated content, including instructional videos, audio guidance, and posture corrections based on individual performance metrics.
-Affordability: Ensure that the Smart Yoga Mat remains cost-effective without compromising on quality or functionality. This affordability factor is crucial for encouraging widespread adoption among AYUSH start-ups and yoga enthusiasts across India.
-Expected Outcome: Participants are expected to deliver a prototype of the Smart Yoga Mat that demonstrates:
-Seamless integration with smart watches for tracking yoga-related metrics.
-AI-driven capabilities for personalized yoga guidance and content recommendations.
-User-friendly interface and ergonomic design suitable for various yoga practices.
-Cost-effective manufacturing feasibility, suitable for AYUSH start-ups.</p>
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Tyre cost is one of the most important O&M cost in dumpers. In high capacity dumpers of CIL, the tyres are imported ones, and cost of such tyre is more than Rs. 25.00 lakhs each.
+Two aspects are equally crucial for tyre management in a mine – The first is the proper assessment of TKPH, and the second is proper maintenance of tyre pressure. Besides these two aspects, proper tyre performance analysis is also important.
+TKPH: Tonne-Kilometer-Per-Hour
+It is indicative of how much average load is carried by an individual tyre, for a given average speed condition, during an entire shift of operation.
+TKPH = (Mean load on tyre in tonne) x (AWSS in km/hour)
+Where, Mean Load is the average load in empty condition and loaded condition, and AWSS is the Average Speed during the Work Shift.
+Assessing the correct TKPH requirement by the user for a particular mining condition is the most important task. The user has to seek a particular TKPH tyre from the manufacturer. Manufacturer accordingly manufactures and supplies the same TKPH tyre to the user, by using suitable tread pattern and tyre compound in its factory.
+More is the TKPH, more heat-resistance the tyre will be. But if the TKPH is increased just to ensure heat-resistance, then it adversely affects the cut-resistance properties of the tyre. If operating TKPH is very very less than the designed TKPH of tyres, there will not be heat- failures, but cut-failures will increase. So, there should be a balance between the heat-resistance and cut-resistance properties, and proper assessment of TKPH is a must.
+Actions required: The payload monitoring system has already been installed in CIL’s dumpers, and the payload as well as operating speed per shift is being continuously recorded in the Vehicle’s Productivity and Health Monitoring System. By using suitable IoT application and suitable app, the payload and speed data may be directly transferred and analysed through the suitable app, so that correct value of TKPH assessment may be made directly through the mobile app. This assessed TKPH will be very helpful in procurement of suitable tyres for a particular geo mining condition.
+Tyre Pressure
+Proper tyre pressure is equally important for tyre life. Incorrect tyre pressure adversely affects the fuel economy, as well as the performance of other vital systems of the vehicle, apart from creating safety issues also. In a big mine, regular checking of tyre pressure for all the dumpers remain a daunting task, and involves lot of time and manpower resources.
+Expected Solution: Suitable Tyre Pressure Sensors along with data transfer mechanism need to be installed in the dumpers, which can be used in real-time capturing of tyre pressure of all tyres fitted in the dumper. So, first of all necessary IIoT system along with hardware need to be fitted in the dumper. Next, appropriate application may be developed, to transfer the real-time tyre pressure data through the Mobile App. The real-time tyre pressure data may also be simultaneously displayed to the operator with suitable alarm system in case of low tyre pressure. In case of low tyre pressure, suitable alerts may be incorporated for Mobile App user. If such a system through Mobile App is controlled effectively by Maintenance team, they may not require to check each and every tyre pressure physically, rather they can directly identify the tyres which need immediate attention. This will help in optimum utilization of the tyre maintenance resources, and avoiding unnecessary downtime.
+Tyre Performance Analysis
+Apart from the above two aspects of tyres maintenance and operation, the Mobile App may also keep tyre-wise, its fitment position-wise records to properly assess the tyre performance and reasons of failures including premature failures, if any. Such provisioning in the App will automatically compute the individual tyre life obtained in a particular mine; and if linked to costing, it will automatically compute the cost/working hour of tyres.
+Such analysis will go a long way in improving the tyre performance in CIL.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1557</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
       <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
@@ -122,9 +143,9 @@ Cost-effective manufacturing feasibility, suitable for AYUSH start-ups.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">coal</span> <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-029.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1718] Capturing Non-manual features of Indian Sign Language and converting it into text — Findings Report</title>
+  <title>[SIH-1735] On-device semantic segmentation of WMS services with geospatial data export — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,54 +83,65 @@
       <span class="finding-id">finding-186</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1718] Capturing Non-manual features of Indian Sign Language and converting it into text</h1>
+      <h1>[SIH-1735] On-device semantic segmentation of WMS services with geospatial data export</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">Open Source & Skill Discovery</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1718</code>
-      <button onclick="copyToClipboard('SIH-1718')">Copy</button>
+      <code>SIH-1735</code>
+      <button onclick="copyToClipboard('SIH-1735')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Social Justice and Empowerment
+      <p>**Sponsoring Body:** Indian Space Research Organization (ISRO)
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** Open Source & Skill Discovery
 
-Develop an advanced system capable of capturing the nuanced non-manual features (NMFs) of Indian Sign Language (ISL), such as facial expressions, head movements, and body posture, and accurately converting them into written text. This system should enhance the translation of ISL by including these essential components of sign language communication, which provide critical context and meaning beyond manual signs.
+**Recommendation:** YES - HIGH PRIORITY (9/10)
 
-Key Features to Include:
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
 
-High-precision recognition of NMFs using advanced image processing and machine learning techniques.
-Real-time conversion of recognized NMFs into contextually appropriate text.
-A comprehensive database of NMFs associated with ISL, including regional variations.
-User-friendly interface for both sign language users and those learning ISL.
-Capability to integrate with existing ISL to text translation systems to provide a more complete translation experience.
-Offline functionality to ensure accessibility and usability in various environments.
-Challenges to Address:
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
 
-Creating a recognition system sensitive enough to capture the subtleties of NMFs in ISL.
-Ensuring the system can operate in diverse lighting and background conditions.
-Developing an extensive and representative database of NMFs in ISL.
-Balancing system performance with the need for real-time processing and output.
-This problem statement addresses the need for a more holistic approach to ISL translation by incorporating NMFs, which are often overlooked in current translation technologies. It presents an opportunity for innovation in the field of sign language recognition and translation, aiming to improve communication accessibility for the deaf and hard-of-hearing community.</p>
+---
+
+Description: Develop a mobile or desktop (qgis plugin) or web application that uses on-device GPU/NPU for interactive semantic segmentation on images loaded using WMS service.
+Challenge: To ensure the system is user-friendly and accessible, even for non-technical users.
+To utilize the computational power of GPUs/NPUs to enhance the performance and responsiveness of the system and reduce reliance on server side GPU compute.
+
+Usage: Useful for assisting on-screen digitization for various remote sensing applications.
+Users: WebGIS application developers and the end users of these applications.
+Available Solutions (if Yes, reasons for not using them): Individual components are available, comprehensive and proven solution does not exist.
+Desired Outcome:
+1. The tool should be compatible with and OGC compatible WMS service.
+2. It should provide data export in geospatial format of user selected features (geojson/kml).
+3. It should make maximum utilisation of on-device GPUs/NPUs available in modern desktop/mobile devices.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1735</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">isro</span> <span class="badge info">open-source</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-185.html" class="prev">← Previous</a>

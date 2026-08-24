@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1745] De-anonymizing of entities on the onion sites operating on TOR Network — Findings Report</title>
+  <title>[SIH-1763] Building a National Web Community of Philatelists — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,40 +83,64 @@
       <span class="finding-id">finding-213</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1745] De-anonymizing of entities on the onion sites operating on TOR Network</h1>
+      <h1>[SIH-1763] Building a National Web Community of Philatelists</h1>
       <div class="badges">
         <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
+        <span class="category-tag">Open Source & Skill Discovery</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1745</code>
-      <button onclick="copyToClipboard('SIH-1745')">Copy</button>
+      <code>SIH-1763</code>
+      <button onclick="copyToClipboard('SIH-1763')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** National Critical Information Infrastructure Protection Center (NCIIPC)
+      <p>**Sponsoring Body:** Ministry of Communication
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+**Category:** Open Source & Skill Discovery
 
-Background: Dark web is being used for illegal purposes and number of market places are being operated by the underground operators which facilitate illegal buying/selling of drugs/weapons/data leaks/counterfeit moneys/documents etc. Platforms, being anonymise to the LEA, make it difficult to identify the market place running on dark web mainly TOR Network.
-Description: Running the illegal sites on dark web network only requires the access of TOR Browser and TORRC file to run the market from local system. For hosting the services, people may utilise the paid or freely available hosting servers. Being on TOR network (V3), it is very difficult to identify the underground operator running the market. Amid running market on TOR network, the underground operator provides the access of his portal though his ISP/VPN services which has been taken from the respective ISP of his country and the VPN service provider.
-Expected Solution: It is expected that any solution like tool or technique may be developed the underground operator running the market may be identified. The participants may target finding the actual IP/VPN IP being used by the players of the onion sites. The participants may also try to find out other personally identifiable information (PII) regarding the underground operators active on the onion sites.</p>
+**Recommendation:** YES - HIGH PRIORITY (9/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background:
+One of the primary concerns for philatelists in our country is the limited access to philatelic material released nationwide. Currently, each postal circle releases its own material, catering primarily to philatelists within its respective jurisdiction and immediate reach. Consequently, philatelists from other circles often find it challenging to obtain such material. Additionally, there is a lack of awareness regarding ancillary releases among the philatelic community nationwide.
+Description:
+To address these issues, the development of a comprehensive website dedicated to philately, which would serve as a centralized platform for philatelists across India is the prospective solution suggested.  This website would facilitate the creation of a National Philately Deposit Account, enabling philatelists to access philatelic material released pan India. Other supporting mechanisms to strengthen the community can also be thought of and integrated to the main solution.
+Expected Solution:
+The proposed website would offer the following features:
+Centralized Platform: The website would display philatelic material released by all postal circles across India, ensuring that philatelists have access to a wide range of items.
+Online Ordering and Payment: Philatelists would be able to order and pay for philatelic material online through the website, streamlining the purchasing process and eliminating geographical barriers.
+Standard Postal Services: Postage for ordered items would be charged at the standard rates for Registered/ Speedpost services, ensuring reliable and efficient delivery.
+ Cancellation Releases: Information regarding cancellation releases would be made available on the website, allowing philatelists to obtain cancellations on postal stationery through the website. Rates for such services can be determined accordingly.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1763</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
+**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">open-source</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-212.html" class="prev">← Previous</a>

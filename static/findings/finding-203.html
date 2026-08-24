@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1735] On-device semantic segmentation of WMS services with geospatial data export — Findings Report</title>
+  <title>[SIH-1753] Measurement and Monitoring of Counter Services — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,48 +83,63 @@
       <span class="finding-id">finding-203</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1735] On-device semantic segmentation of WMS services with geospatial data export</h1>
+      <h1>[SIH-1753] Measurement and Monitoring of Counter Services</h1>
       <div class="badges">
         <span class="badge high">high</span>
-        <span class="category-tag">Open Source & Skill Discovery</span>
+        <span class="category-tag">LegalTech / Document AI / GovTech</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1735</code>
-      <button onclick="copyToClipboard('SIH-1735')">Copy</button>
+      <code>SIH-1753</code>
+      <button onclick="copyToClipboard('SIH-1753')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Indian Space Research Organization (ISRO)
+      <p>**Sponsoring Body:** Ministry of Communication
 
-**Recommendation:** YES - HIGH PRIORITY (9/10)
+**Category:** LegalTech / Document AI / GovTech
 
-Description: Develop a mobile or desktop (qgis plugin) or web application that uses on-device GPU/NPU for interactive semantic segmentation on images loaded using WMS service.
-Challenge: To ensure the system is user-friendly and accessible, even for non-technical users.
-To utilize the computational power of GPUs/NPUs to enhance the performance and responsiveness of the system and reduce reliance on server side GPU compute.
+**Recommendation:** YES - HIGH PRIORITY (9.5/10)
 
-Usage: Useful for assisting on-screen digitization for various remote sensing applications.
-Users: WebGIS application developers and the end users of these applications.
-Available Solutions (if Yes, reasons for not using them): Individual components are available, comprehensive and proven solution does not exist.
-Desired Outcome:
-1. The tool should be compatible with and OGC compatible WMS service.
-2. It should provide data export in geospatial format of user selected features (geojson/kml).
-3. It should make maximum utilisation of on-device GPUs/NPUs available in modern desktop/mobile devices.</p>
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background: The Department of Posts has well laid down norm for services to customers in its Citizens’ Charter. These service standards include provision of hassle free counter services with defined time norms for all basic transactions. The waiting time for customers in bigger offices is managed with a Dynamic Queue Management System. A system of quick response on the service experience based on manual feedback forms has been in vogue in the Department in the past. The Department has also tried adopting the SMS and link based “Rapid Assessment System” with a proof of concept being provided through the pilot project. CCTV is also installed in various post offices across the country for better monitoring and timely intervention.
+Even with the progressive adoption of the emerging and available technology based solutions for measuring and improving customer experience, the Department of Posts needs a solution that is easy to implement in a large number of offices.
+In this context, a comprehensive solution to fill the gap in measurement and analysis about the quality of service at each Post Office in the network is being sought as part of the problem statement here.
+Description: The problem statement can be understood better by studying the Citizen’s Charter of the Department at
+https://www.indiapost.gov.in/VAS/Pages/AboutUs/CitizenCharter.aspx
+The list of services being provided  at the Post Office Counters are available in this link.
+The list of offices with CCTV and raw data available will be provided by the Department so that interested teams can work on actual data available to devise the pictorial data based part of the solution. Other available tools for monitoring this aspect of the service may be explored. A simple design for wider adoption by the interested teams would gain more marks.
+This is a problem statement seeking monitoring and data analytics solution using modern and emerging Industry 4.0 technologies. While the use of AI and pictorial data based automated monitoring is at the heart of the problem, the team working on this problem can choose any combination of available technologies and tools to devise a simple to use and adopt solution to enable its mass adoption across the post office network.
+Expected Solution: The solution should provide real time and analytics based inputs for administrative authorities from the Postmasters in-charge to the Sub-Divisional and Divisional Heads to enable effective decision making for continuous improvement in office service level and efficient delivery of counter services.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1753</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
+      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
 
-**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
+**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
 
-**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
+**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">open-source</span> <span class="badge info">isro</span> <span class="badge info">reuses-gitscout</span>
+      <span class="badge info">govtech</span> <span class="badge info">legaltech</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-202.html" class="prev">← Previous</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1660] Interactive gamified approach to Ocean Literacy — Findings Report</title>
+  <title>[SIH-1679] Development of Audit script for Windows 11 and Linux OS as per CIS (Centre for Internet Security) bench mark — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,44 +83,73 @@
       <span class="finding-id">finding-131</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1660] Interactive gamified approach to Ocean Literacy</h1>
+      <h1>[SIH-1679] Development of Audit script for Windows 11 and Linux OS as per CIS (Centre for Internet Security) bench mark</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge medium">medium</span>
+        <span class="category-tag">Cyber Security & Anomaly Detection</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1660</code>
-      <button onclick="copyToClipboard('SIH-1660')">Copy</button>
+      <code>SIH-1679</code>
+      <button onclick="copyToClipboard('SIH-1679')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Earth Sciences
+      <p>**Sponsoring Body:** National Technical Research Organisation (NTRO)
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** Cyber Security & Anomaly Detection
 
-Background: The 2030 Agenda for Sustainable Development, adopted by all United Nations members in 2015, created 17 world Sustainable Development Goals (SDGs). It was also accepted that these SDGs are not possible to achieve without changing humanity’s relationship with the oceans. To realize that, in 2017, it was decided that the decade of 2021-30 is to be observed as UN Decade of Ocean Sciences for Sustainable Development (or UN Ocean Decade). INCOIS is identified as UN Ocean Decade Collaborative Centre for the Indian Ocean Region to help address all the ten UN Ocean Decade challenges (https://oceandecade.org/challenges/).
+**Recommendation:** YES - MEDIUM PRIORITY (8/10)
 
-Description: The creative solution proposed herein will address mainly (but not limited to) challenge-10. The gamified way of creating ocean related awareness is aimed for all age-groups and diverse education levels. Considering popularity of online gaming (multi-role playing to conventional games such as ludo) and affordable devices along with data plans, this approach is promising option for ocean literacy. For a starter, one such solution (but very limited/basic in nature) can be found at: https://www.outreachgames.org/OceanProtector/main.html.
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
 
-Expected Solution:
-The user will be able to chose from a variety of sea-going roles e.g. but not limited to, fishermen, captain of a ship, tourism operator etc. Based on the role, one needs to choose the correct sea conditions to be at a location (or move away) with the help of available/applicable ocean information services form INCOIS (simulated for the game). Correct decision (e.g. going for fishing to PFZ zone or moving away from the shore when tsunami is detected) will add to the points and help player achieve next level. Wrong decision may result in loosing points and add other gaming penalties (e.g. start over or wait till certain time etc etc). Users goal would be to advance and maintain gains at the daily, weekly etc leaderboards so in that way it would be competitive among the users even though their game decisions are not affecting to the others directly.
-The solution should be suitable for windows and android environments (web and browser based) and scalable over the time by the host institute independently post-SIH</p>
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Background:
+Organisations across various industries face significant challenges in maintaining robust cyber security posture. Compliance with industry standard bench marks and guidelines, such as those provided by Center for Internet Security (CIS), is crucial for ensuring the security and integrity of their IT Infrastructure. However, manually auditing and ensuring adherence to these benchmarks and guidelines can be time- consuming, error prone, and resource intensive. Current practises often involve manual checks. To address these challenges, there is a critical need to develop automated auditing scripts tailored to CIS benchmarks.
+Detailed description:
+This software solution aimed to list out the control guidelines as per CIS benchmark for the following operating systems: -
+Windows (Reference
+www.cisecurity.org/benchmark/Microsoft_winodws_desktop)
+i. Windows 11 (Enterprise version)
+ii. Windows 11 (Standalone version)
+Linux (Reference:www.cisecurity.org/benchmark/red_hat_linux, www.cisecurity.org/benchmark/ubuntu_linux)
+i. Redhat Enterprise (8 and 9)
+ii. Ubuntu desktop (20.04 LTS, 22.04 LTS)
+iii. Ubuntu server (12.04LTS and 14.04 LTS)
+Preferable scripting language (PowerShell for Windows, bash/python for Linux).
+Expected solution:
+i. A user-friendly GUI based solution with capability to generate a report of findings.
+ii. Should be customizable as per organizational needs and scale to audit large and diverse IT environments effectively.
+iii. Scripts should be reliable and accurate in identifying the deviations from
+iv. best practices outlined in CIS benchmarks.
+v. Should facilitate easy update and maintenance to accommodate changes in benchmarks over time.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1679</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** Automated security telemetry aggregator with AI log anomaly detection, IOC tracking, and incident escalation queue.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** FastAPI log ingestion endpoint + scikit-learn Isolation Forest / Gemini Flash classifier + Celery task queue for alert notifications.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** Utilizes FastAPI, Celery, and security concepts documented in Django security notes.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">earth-sciences</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">cybersecurity</span> <span class="badge info">ntro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-130.html" class="prev">← Previous</a>

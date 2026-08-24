@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1576] Reducing the carbon emissions from thermal plants, developing ways of Carbon capture and utilisation through value added products — Findings Report</title>
+  <title>[SIH-1577] Development of co-electrolyzer : which would synthesize organic chemicals like methanol and inorganic chemicals like ammonia in a single sta — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,47 +83,71 @@
       <span class="finding-id">finding-050</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1576] Reducing the carbon emissions from thermal plants, developing ways of Carbon capture and utilisation through value added products</h1>
+      <h1>[SIH-1577] Development of co-electrolyzer : which would synthesize organic chemicals like methanol and inorganic chemicals like ammonia in a single sta</h1>
       <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
+        <span class="badge low">low</span>
+        <span class="category-tag">Miscellaneous Software & Enterprise App</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1576</code>
-      <button onclick="copyToClipboard('SIH-1576')">Copy</button>
+      <code>SIH-1577</code>
+      <button onclick="copyToClipboard('SIH-1577')">Copy</button>
     </div>
     <div class="description">
       <p>**Sponsoring Body:** Ministry of Power
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
+**Category:** Miscellaneous Software & Enterprise App
+
+**Recommendation:** MAYBE (6.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
 
 Background:
-Coal is the most important and abundant fossil fuel in India. It accounts for 55% of the country's energy need. The country's industrial heritage was built upon indigenous coal. Our countries major production of Electricity is achieved through coal fired thermal power plant which is around 3/4th of the total power generation and also the biggest source of Carbon emission. India updated its NDC according to which the target: To reduce emissions intensity of its GDP has been enhanced to 45% by 2030 from 2005 level. India's also creating energy transition pathway to shift from fossil fuels to renewable energy sources to reduce the effects of climate change and promote sustainability. However, owning to energy security issue the role of coal cannot be ruled out in immediate future till various storage solution gets mature and become available at affordable cost.
+Decarbonization of chemical manufacturing is crucial for achieving Net Zero 2050. The transition towards carbon-neutral chemical production is challenging due to the fundamental reliance of the chemical sector on petrochemical feedstock. Electrolysis- based manufacturing, powered with renewables, is a rapidly evolving technology that might be capable of drastically reducing CO2 emissions from the chemical sector.
 
 Description:
-Carbon Capture, Utilization, and Storage (CCUS) is a promising technology that can help India meet its energy security and emission reduction goals. CCUS can be retrofitted to existing power and industrial plants, allowing for their continued operation. CCS was acknowledged as a solution for climate mitigation by IPCC. However, IPCC also noted that CCS has the highest cost and lowest possible contribution to net emission reduction in both energy and industry sectors. This problem is having potential opportunity for innovators, researchers and start-ups. In order to meet the 1.5°C goal, IPCC projects the need to have technical geological storage of about 1,000 GtCO2. However, the availability of geological storage is highly location dependent and there are several technological, economic, institutional, ecological-environmental and socio-cultural barriers to implementing CCS, according to IPCC.
+Co-electrolysis, also known as syntrolysis, is an alternative technology that uses electrolysis to convert renewable electricity into syngas for the co-production of methanol and ammonia. The process involves three main steps:
+
+1. Hydrogen production: Using water electrolysis, renewable electricity is used to produce hydrogen.
+
+2. CO2 utilization: CO2 is used in the process.
+
+3. Methanol synthesis and purification: Methanol is synthesized and purified
 
 Expected Solution:
-Low cost solution with indigenous technology development for carbon capture and utilisation.
-Developing solution for storage and transport of carbon which is more sustainable ecologically and environmentally
-Converting CO2 into value-added products, creating economic value from waste products and contributing to the circular carbon economy, building construction materials, fuels & chemicals and carbon nano-materials.</p>
+
+Design and development of the co-electrolysis process (materials, reactor, operating conditions) towards direct chemical production.
+Development of cell structure and design, including electrolyte products and/or new developed electrodes, constructed from materials abundant in nature, and can easily be scaled up without material-availability constraints.
+Validate the co-electrolysis operation for different targeted outlet for various chemical such as ammonia and methanol.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1577</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+      <p>**Probable Solution:** Web-based microservice architecture with REST APIs, role-based access control, and intuitive analytics dashboard.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** FastAPI / Django REST Framework backend with PostgreSQL database and React frontend, packaged cleanly in Docker containers.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
+**Why this rating:** Standard CRUD/web software application; can be executed easily using core Python/React stack.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">legaltech</span> <span class="badge info">govtech</span> <span class="badge info">reuses-vela</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">enterprise-app</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-049.html" class="prev">← Previous</a>

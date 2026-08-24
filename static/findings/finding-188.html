@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1720] Education & Awareness - Effective Use of Technology for Dissemination of Anti-Doping Information — Findings Report</title>
+  <title>[SIH-1737] Automatic Modulation Recognition software for DVB -S2X waveforms — Findings Report</title>
   <style>
     :root {
       --color-critical: #dc3545;
@@ -83,54 +83,64 @@
       <span class="finding-id">finding-188</span>
     </div>
     <div class="title-card">
-      <h1>[SIH-1720] Education & Awareness - Effective Use of Technology for Dissemination of Anti-Doping Information</h1>
+      <h1>[SIH-1737] Automatic Modulation Recognition software for DVB -S2X waveforms</h1>
       <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
+        <span class="badge high">high</span>
+        <span class="category-tag">AI/ML & Industrial Analytics</span>
         <span class="source-tag">SIH software PS analysis</span>
       </div>
     </div>
     <div class="location-block">
-      <code>SIH-1720</code>
-      <button onclick="copyToClipboard('SIH-1720')">Copy</button>
+      <code>SIH-1737</code>
+      <button onclick="copyToClipboard('SIH-1737')">Copy</button>
     </div>
     <div class="description">
-      <p>**Sponsoring Body:** Ministry of Youth Affairs & Sports
+      <p>**Sponsoring Body:** Indian Space Research Organization (ISRO)
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
+**Category:** AI/ML & Industrial Analytics
 
-Background: Education and awareness are critical components of the National Anti-Doping Agency’s mission to promote clean sport. Despite ongoing efforts, the reach and impact of current educational initiatives remain limited, particularly in remote and rural areas. The rapid advancement of technology presents an opportunity to bridge these gaps and ensure that comprehensive anti-doping education is accessible to all stakeholders in the sporting community.
-Description: The above problem statement envisages to design and develop innovative technological solutions to effectively disseminate anti-doping information to athletes, coaches, support staff, and the broader sporting community. The solution should utilize modern digital tools and platforms to ensure comprehensive coverage, engagement, and retention of critical anti-doping knowledge. It should cater to diverse linguistic and cultural backgrounds and be accessible across various digital devices.
-Key Objectives
-(a) Comprehensive Coverage: Ensure that anti-doping information reaches a wide audience across various sports and regions in India, including remote and underserved areas.
-(b) Engagement: Create interactive and engaging content that captures and retains the attention of athletes and stakeholders, making learning about anti-doping practices impactful.
-(c) Retention: Develop methods to ensure that the information is not only received but also retained and applied by the target audience. This includes periodic assessments and interactive elements to reinforce learning.
-Detailed Requirements
-(a) Platform Development
-Create a multilingual mobile application and web portal to disseminate anti-doping information. Ensure the platform is user-friendly, accessible, and compatible with various devices, including smartphones, tablets, and computers.
-(b) Content Creation Develop engaging multimedia content, including videos, infographics, podcasts, and interactive modules. Include real-life scenarios and case studies to provide practical insights into anti-doping practices. Regularly update the
-content to reflect the latest anti-doping rules, guidelines, and best practices.
-(c) Interactive Features Implement quizzes, puzzles, and gamified elements to enhance user engagement. Include discussion forums and chat features for real-time interaction and support. Provide certifications or badges for users who complete specific educational modules.
-(d) Real-Time Updates Integrate a notification system to provide real-time updates on anti-doping regulations, news, and events. Allow users to subscribe to newsletters and alerts for the latest information.
-(e) Analytics and Feedback Incorporate analytics tools to track user engagement, progress, and learning outcomes. Collect user feedback to continuously improve the platform and its content.
-Expected Solution
-A comprehensive and accessible digital platform for anti-doping education. High levels of engagement and interaction from athletes and stakeholders. Improved understanding and adherence to anti-doping regulations. Measurable improvements
-in knowledge retention and application among users.</p>
+**Recommendation:** YES - MEDIUM-HIGH PRIORITY (8.5/10)
+
+**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
+
+**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+
+---
+
+Description: DVB -S2X waveforms is have various types of modulation scheme like QPSK, APSK etc. The selection of modulation scheme is based upon channel. A novel AMR based soft algorithm is need to develop to detect the DVB S2X modulation waveform on ground in order to synchronized the ground receiver from satellite
+Challenge:
+1. To develop the algorithm compliant to existing DVB S2X waveform.
+2. To ensure the develop algorithm should not complex to implement and not taking much hardware resources.
+3. To integrate all DVB S2X waveform together and having a single detection algorithm.
+
+Usage: To develop Automatic modulation recognition algorithm of software define radio based upon DVB S2X waveform.
+Users: All software define radio user who are designing the new SDR based upon DVB S2X waveform will required this algorithm.
+Available Solutions (if Yes, reasons for not using them): Solution exits but more versatile, less complex and more generic nature algorithms is required, which can accommodate future waveform also
+Desired Outcome: Develop a tool or proof-of-concept model. The solution should be able to detect and recognize DVB S2X waveform, data rate and other modulation parameter. The model should be scalable to accommodate all current DVB S2X waveform and also able to accommodate future waveform also.</p>
     </div>
-    
+    <div class="code-section">
+      <div class="code-header">
+        <span>Code</span>
+        <button onclick="copyCode()">Copy</button>
+      </div>
+      <pre><code>Official portal: https://sih.gov.in/sih2025PS
+Source repo: https://github.com/Wraient/SIH-2024-Problems
+Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+PS_ID: SIH-1737</code></pre>
+    </div>
     <div class="recommendation">
       <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+      <p>**Probable Solution:** Full-stack predictive portal utilizing tabular machine learning models for anomaly detection, failure forecasting, and automated executive reporting.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** Use XGBoost/LightGBM models (from Hands-On ML notes) combined with FastAPI backend and React frontend. Add Gemini copilot to auto-generate summary reports.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
+**Why this rating:** Strong alignment with ML coursework (Hands-On ML notes) and Flyrank backend skills.</p>
     </div>
     <div class="metadata-footer">
       <div class="tags">
-      <span class="badge info">education</span> <span class="badge info">vault-match</span> <span class="badge info">reuses-edtech</span> <span class="badge info">reuses-memnox</span>
+      <span class="badge info">industrial</span> <span class="badge info">isro</span>
     </div>
-      <div class="meta">Generated: 8/23/2026, 10:07:58 PM · Source: SIH software PS analysis</div>
+      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
     </div>
     <div class="finding-nav">
     <a href="finding-187.html" class="prev">← Previous</a>
