@@ -1,199 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1702] Bail Reckoner — Findings Report</title>
-  <style>
-    :root {
-      --color-critical: #dc3545;
-      --color-high: #fd7e14;
-      --color-medium: #ffc107;
-      --color-low: #0dcaf0;
-      --color-info: #6c757d;
-      --bg-primary: #ffffff;
-      --bg-secondary: #f8f9fa;
-      --bg-card: #ffffff;
-      --text-primary: #212529;
-      --text-secondary: #6c757d;
-      --border: #dee2e6;
-      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-      --radius: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    [data-theme="dark"] {
-      --bg-primary: #1a1a2e;
-      --bg-secondary: #16213e;
-      --bg-card: #0f3460;
-      --text-primary: #e0e0e0;
-      --text-secondary: #a0a0a0;
-      --border: #2a2a4a;
-      --shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--text-primary); background: var(--bg-secondary); }
-    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
-    .breadcrumb { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; }
-    .breadcrumb a { color: var(--color-low); text-decoration: none; }
-    .breadcrumb a:hover { text-decoration: underline; }
-    .finding-id { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
-    .title-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .title-card h1 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
-    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
-    .badge.critical { background: rgba(220,53,69,0.15); color: var(--color-critical); }
-    .badge.high { background: rgba(253,126,20,0.15); color: var(--color-high); }
-    .badge.medium { background: rgba(255,193,7,0.15); color: var(--color-medium); }
-    .badge.low { background: rgba(13,202,240,0.15); color: var(--color-low); }
-    .badge.info { background: rgba(108,117,125,0.15); color: var(--color-info); }
-    .category-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); }
-    .source-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); }
-    .location-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 12px; }
-    .location-block code { color: var(--text-primary); }
-    .location-block button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-secondary); cursor: pointer; font-size: 11px; }
-    .location-block button:hover { background: var(--border); }
-    .description { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .description p { margin-bottom: 12px; }
-    .description p:last-child { margin-bottom: 0; }
-    .code-section { margin-bottom: 20px; }
-    .code-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; font-size: 12px; }
-    .code-header button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); cursor: pointer; font-size: 11px; }
-    .code-header button:hover { background: var(--bg-secondary); }
-    pre { margin: 0; padding: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow-x: auto; }
-    code { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
-    .recommendation { background: rgba(13,202,240,0.05); border: 1px solid rgba(13,202,240,0.2); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
-    .recommendation h4 { font-size: 12px; text-transform: uppercase; color: var(--color-low); margin-bottom: 8px; }
-    .recommendation p { font-size: 14px; }
-    .metadata-footer { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .meta { font-size: 11px; color: var(--text-secondary); }
-    .finding-nav { display: flex; justify-content: space-between; padding: 16px 0; }
-    .finding-nav a { color: var(--color-low); text-decoration: none; font-size: 13px; }
-    .finding-nav a:hover { text-decoration: underline; }
-    .theme-toggle { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
-    @media print { .theme-toggle { display: none; } body { background: white; } }
-  </style>
+<html lang="en">
+<head><meta charset="UTF-8"><title>[SIH26191] Intelligent Identification of Hazard-Based Red Zones, Carrying Capacity Assessment, and Immediate Relocation Needs for Vulnerable Habitation</title>
+<style>body{font-family:system-ui,sans-serif;padding:30px;max-width:800px;margin:0 auto}</style>
 </head>
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
-  <div class="container">
-    <div class="breadcrumb">
-      <a href="index.html">← Back to Dashboard</a>
-      <span class="finding-id">finding-154</span>
-    </div>
-    <div class="title-card">
-      <h1>[SIH-1702] Bail Reckoner</h1>
-      <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">LegalTech / Document AI / GovTech</span>
-        <span class="source-tag">SIH software PS analysis</span>
-      </div>
-    </div>
-    <div class="location-block">
-      <code>SIH-1702</code>
-      <button onclick="copyToClipboard('SIH-1702')">Copy</button>
-    </div>
-    <div class="description">
-      <p>**Sponsoring Body:** Ministry of Law & Justice
+  <a href="index.html">← Back</a>
+  <h1>[SIH26191] Intelligent Identification of Hazard-Based Red Zones, Carrying Capacity Assessment, and Immediate Relocation Needs for Vulnerable Habitation</h1>
+  <p><b>Severity:</b> critical | <b>Category:</b> Disaster Management &amp; GIS AI</p>
+  <p><b>File:</b> SIH26191</p>
+  <div><h3>Description</h3><p>**Sponsoring Body:** Ministry of Home Affairs  |  **Department:** National Disaster Response Force (NDRF), DM Division department; --&gt;
 
-**Category:** LegalTech / Document AI / GovTech
+**Theme:** Disaster Management  |  **Category:** Software  |  **Priority:** YES - TOP PRIORITY (10/10)
 
-**Recommendation:** YES - HIGH PRIORITY (9.5/10)
-
-**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
-
-**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+**Official URL:** https://sih.gov.in/sih2026PS  (search PS ID: SIH26191)
 
 ---
 
-Objective
-The objective is to develop an innovative digital solution, termed the "Bail Reckoner," designed to assist undertrial prisoners, legal aid providers, and judicial authorities in streamlining the bail process. The Bail Reckoner aims to simplify and expedite the bail application and evaluation process by considering various legal and procedural parameters.
-Parameters to Consider for integration in the Tool:
-1. Nature of the Offense and Penal Provisions:
-o Seek the inputs for the charges framed (can be multiple charges, and if they are compoundable etc). In this regard Statutes like Indian Penal Code,1860 and the upcoming Bhartiya Nyaya Sanhita 2023; Bhartiya Suraksha Sanhita 2023; and Bhartiya Saakshya Adhiniyam 2023; should be covered. Special statutes on the following under-mentioned areas should also be covered:
-1. Cyber Crimes
-2. Crimes Against SCs and STs:
-3. Crimes Against Women
-4. Crimes Against Children
-5. Offences Against the State
-6. Economic Offence
-7. Crimes Against Foreigners
-a. Develop a comprehensive backend database to map penalties with sections of various Acts/Laws.
-b. Link and provide detailed information on the nature of offenses and corresponding legal provisions.
-2. Duration of Imprisonment Already Served:
-a. Track the duration of imprisonment undertrial prisoner has served.
-b. Highlight the eligibility timeline for bail based on the time already served.
-3. Considerations of Judge’s Discretion:
-a. Evaluate the risk of the undertrial prisoner escaping the judicial process, such as leaving the country.
-b. Assess the potential influence the prisoner may have on evidence or witnesses.
-4. Procedural Pre-requisites:
-a. Outline requirements such as surety bonds, personal bonds, fines (if applicable), and identity verification.
-b. Ensure compliance with procedural aspects under IPC/CrPC.
-5. Judicial Pronouncements on Bail Eligibility:
-a. Integrate key judicial pronouncements regarding bail eligibility.
-b. Automatically identify undertrial prisoners who are eligible for bail if they have served half the term during the undertrial stage, based on the prescribed sentence for their charges.
-Solution Requirements
-. The Bail Reckoner should be a user-friendly, plug-and-play tool that can be integrated into existing software systems. It must provide a clear and accessible interface for:
-1. Undertrial Prisoners: To understand their eligibility and process for applying for bail.
-2. Legal Aid Providers: To assist in preparing and submitting accurate bail applications.
-3. Judicial Authorities: To streamline the evaluation process and ensure timely decisions.
-By leveraging technology and innovation, the Bail Reckoner aims to make the bail process more transparent, efficient, and just, contributing to a more equitable legal system.</p>
-    </div>
-    <div class="code-section">
-      <div class="code-header">
-        <span>Code</span>
-        <button onclick="copyCode()">Copy</button>
-      </div>
-      <pre><code>Official portal: https://sih.gov.in/sih2025PS
-Source repo: https://github.com/Wraient/SIH-2024-Problems
-Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
-PS_ID: SIH-1702</code></pre>
-    </div>
-    <div class="recommendation">
-      <h4>Recommendation</h4>
-      <p>**Probable Solution:** Multi-lingual RAG system ingesting legal/government documents, summarizing complex jargon into plain regional text, and providing Q&A with exact citations.
+&amp;#8226; Background Indiaâ€™s disaster-prone regions face recurring hazards such as landslides,floods, coastal erosion, and cloudbursts. Vulnerable habitations often remain in unsafe zones, leading to repeated loss of lives and property.Current relocation efforts are largely reactive, initiated after disasters strike, rather than proactively planned.&lt;br&gt; &amp;#8226; Description The initiative seeks to develop an intelligent, GIS-enabled decision support platform. This platform will dynamically identify and update multi-hazard Red Zones (areas unsuitable for permanent habitation),assess the carrying capacity of safer alternative sites, and prioritize vulnerable habitations for relocation. The system will integrate hazard intensity, population vulnerability, and disaster history to guide evidence-based decisions.&lt;br&gt; &amp;#8226; Expected Solution A robust, AI-driven GIS platform that Maps and updates hazard-based Red Zones in real time, assesses suitability and carrying capacity of safer relocation sites, prioritizes vulnerable habitations for immediate,short-term, and medium-term relocation and provides actionable insights to State Disaster Management Authorities for proactive planning.&lt;br&gt;</p></div>
+  <div><h3>Evidence</h3><pre><code>PS_ID: SIH26191
+Official: https://sih.gov.in/sih2026PS
+Search: https://sih.gov.in/sih2026PS -&gt; Find SIH26191</code></pre></div>
+  <div><h3>Recommendation</h3><p>**Probable Solution:** Real-time GIS dashboard with AI/ML predictive risk heatmaps, satellite/IMD API integration, geo-tagged field reporting, and multilingual early-warning alerts.
 
-**Build Plan (your stack):** Deploy LangGraph Supervisor pattern (from Vela) with Supabase pgvector. Sub-agents handle document chunking, precedent matching, and regional language synthesis.
+**Build Plan (your stack):** FastAPI + GIS (Leaflet/Mapbox) + WebSockets for sensor feeds, XGBoost/prophet for landslide risk prediction, Celery for alert queue, React PWA with offline sync. Leverages Vela supervisor pattern for triage.
 
-**Why this rating:** Direct fit for Vela supervisor agent architecture and MemNoX vector document RAG pipeline.</p>
-    </div>
-    <div class="metadata-footer">
-      <div class="tags">
-      <span class="badge info">govtech</span> <span class="badge info">law</span> <span class="badge info">legaltech</span>
-    </div>
-      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
-    </div>
-    <div class="finding-nav">
-    <a href="finding-153.html" class="prev">← Previous</a>
-    <a href="finding-155.html" class="next">Next →</a>
-  </div>
-  </div>
-  <script>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const current = html.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    }
-    const saved = localStorage.getItem('theme');
-    if (saved) document.documentElement.setAttribute('data-theme', saved);
-    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = event.target;
-        const original = btn.textContent;
-        btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = original, 1500);
-      });
-    }
-    function copyCode() {
-      const code = document.querySelector('pre code').textContent;
-      copyToClipboard(code);
-    }
-  </script>
+**Why this rating:** Aligns with Vela (supervisor + pgvector), FastAPI/Celery/Redis and time-series ML notes. High win: GIS + AI is high barrier, low competition.</p></div>
 </body>
 </html>

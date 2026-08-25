@@ -1,190 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1610] Learning App for Deaf And Mute and sign language-English/Gujarati converter — Findings Report</title>
-  <style>
-    :root {
-      --color-critical: #dc3545;
-      --color-high: #fd7e14;
-      --color-medium: #ffc107;
-      --color-low: #0dcaf0;
-      --color-info: #6c757d;
-      --bg-primary: #ffffff;
-      --bg-secondary: #f8f9fa;
-      --bg-card: #ffffff;
-      --text-primary: #212529;
-      --text-secondary: #6c757d;
-      --border: #dee2e6;
-      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-      --radius: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    [data-theme="dark"] {
-      --bg-primary: #1a1a2e;
-      --bg-secondary: #16213e;
-      --bg-card: #0f3460;
-      --text-primary: #e0e0e0;
-      --text-secondary: #a0a0a0;
-      --border: #2a2a4a;
-      --shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--text-primary); background: var(--bg-secondary); }
-    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
-    .breadcrumb { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; }
-    .breadcrumb a { color: var(--color-low); text-decoration: none; }
-    .breadcrumb a:hover { text-decoration: underline; }
-    .finding-id { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
-    .title-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .title-card h1 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
-    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
-    .badge.critical { background: rgba(220,53,69,0.15); color: var(--color-critical); }
-    .badge.high { background: rgba(253,126,20,0.15); color: var(--color-high); }
-    .badge.medium { background: rgba(255,193,7,0.15); color: var(--color-medium); }
-    .badge.low { background: rgba(13,202,240,0.15); color: var(--color-low); }
-    .badge.info { background: rgba(108,117,125,0.15); color: var(--color-info); }
-    .category-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); }
-    .source-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); }
-    .location-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 12px; }
-    .location-block code { color: var(--text-primary); }
-    .location-block button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-secondary); cursor: pointer; font-size: 11px; }
-    .location-block button:hover { background: var(--border); }
-    .description { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .description p { margin-bottom: 12px; }
-    .description p:last-child { margin-bottom: 0; }
-    .code-section { margin-bottom: 20px; }
-    .code-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; font-size: 12px; }
-    .code-header button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); cursor: pointer; font-size: 11px; }
-    .code-header button:hover { background: var(--bg-secondary); }
-    pre { margin: 0; padding: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow-x: auto; }
-    code { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
-    .recommendation { background: rgba(13,202,240,0.05); border: 1px solid rgba(13,202,240,0.2); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
-    .recommendation h4 { font-size: 12px; text-transform: uppercase; color: var(--color-low); margin-bottom: 8px; }
-    .recommendation p { font-size: 14px; }
-    .metadata-footer { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .meta { font-size: 11px; color: var(--text-secondary); }
-    .finding-nav { display: flex; justify-content: space-between; padding: 16px 0; }
-    .finding-nav a { color: var(--color-low); text-decoration: none; font-size: 13px; }
-    .finding-nav a:hover { text-decoration: underline; }
-    .theme-toggle { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
-    @media print { .theme-toggle { display: none; } body { background: white; } }
-  </style>
+<html lang="en">
+<head><meta charset="UTF-8"><title>[SIH26090] AI-Driven Market Linkage and Smart Cataloging Mobile Application for Marginalized Artisans</title>
+<style>body{font-family:system-ui,sans-serif;padding:30px;max-width:800px;margin:0 auto}</style>
 </head>
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
-  <div class="container">
-    <div class="breadcrumb">
-      <a href="index.html">← Back to Dashboard</a>
-      <span class="finding-id">finding-068</span>
-    </div>
-    <div class="title-card">
-      <h1>[SIH-1610] Learning App for Deaf And Mute and sign language-English/Gujarati converter</h1>
-      <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
-        <span class="source-tag">SIH software PS analysis</span>
-      </div>
-    </div>
-    <div class="location-block">
-      <code>SIH-1610</code>
-      <button onclick="copyToClipboard('SIH-1610')">Copy</button>
-    </div>
-    <div class="description">
-      <p>**Sponsoring Body:** Government of Gujarat
+  <a href="index.html">← Back</a>
+  <h1>[SIH26090] AI-Driven Market Linkage and Smart Cataloging Mobile Application for Marginalized Artisans</h1>
+  <p><b>Severity:</b> low | <b>Category:</b> Miscellaneous Software</p>
+  <p><b>File:</b> SIH26090</p>
+  <div><h3>Description</h3><p>**Sponsoring Body:** Ministry of Social Justice and Empowerment (MoSJE)  |  **Department:** Department of Social Justice and Empowerment department; --&gt;
 
-**Category:** Smart Education / Career Analytics
+**Theme:** Miscellaneous  |  **Category:** Software  |  **Priority:** MAYBE (6.5/10)
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
-
-**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
-
-**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+**Official URL:** https://sih.gov.in/sih2026PS  (search PS ID: SIH26090)
 
 ---
 
-Background:
-“Inclusivity” is the motto of Education department, Government of Gujarat. Opportunity for all is the new slogan and The Indian Government has come up with Indian Sign Language. There has been lot of work in done in American sign language and focusing on interpretation in English. Majority schools in India adopt local language. In Gujarat, the deaf and mute students would be learning Gujarati by sign language. There are two general methods of deaf education are manualism and oralism..The students learn at school but at home if they want to practice material in Digital form is in limited form especially considering Indian Sign Language and Gujarati as local language.
-Detailed Description:
-The proposed comprehensive Mobile Application aims to address the key challenges faced in learning beyond classroom by deaf and mute students. The key features of the application include:
-Interpretation of Alphabets and numbers in Gujarati: Explaining the alphabets and numbers in Gujarati. The students first should learn and then should get writing pad to practice the writing of alphabets and numbers.
-Words and Sentences: Explaining the basic words starting from each Gujarati alphabet for example ? –???. Writing Exercises based on this
-Mathematics : Tables. Basic calculation Sum, Subtract, Multiplication, division in Gujarati. Writing problems for assessment of learning.
-Science : Prepare learning of science principles to sign language tutorials and writing exercises based on this.
-Conversion of Gujarati sentences to Sign Language and vice versa: If some Gujarati news/ articles are fed, they should be converted to sign language
-Conversion of speech to sign Language and vice versa: If some Gujarati conversation/addressing is taking place, they should be converted to sign language
-Data Analytics : Report card of the student to assess his/her learning of Mathematics and Science
-The application will cater to various users, including teachers, students, parents and HR(company). By integrating all these functions into a single Application , the application will address the lack of resources and bridge of communication gap.
-Teachers: Get a platform for teaching and can give repeated exercises to fine tune students with Mathematics and science. .
-Students: Learning platform where they can learn at their own pace and do the exercises.
-Parents: Helping aid for parents who do not know sign language.
-HR: Inclusivity is part of company policy also. While interviewing speech to text and text to speech will be helpful.
-Expected Solution:
-The implementation of this comprehensive Mobile application is expected to yield significant positive outcomes:
-Learning of Basic Mathematics and Science: Establishment of a unified platform where all relevant data is stored, reducing fragmentation and improving data accessibility.
-Increased Communication: Enhanced transparency in tracking progress and outcomes of various projects, facilitating better oversight and accountability.
-Better Assessment of learning: More effective allocation and utilization of resources, leading to improved outcomes for research and innovation projects.
-Including specially abled to mainstream : Conversion of text to sign language, speech to sign language and vice versa will narrow down the communication gap that arises due to non understanding of sign language.
-In summary, the proposed Mobile application aims to create a more efficient and supportive environment for learning to deaf and mute students in Gujarat. By addressing the current challenges and leveraging modern technology, the application will significantly enhance the learning ability of specially abled students.</p>
-    </div>
-    <div class="code-section">
-      <div class="code-header">
-        <span>Code</span>
-        <button onclick="copyCode()">Copy</button>
-      </div>
-      <pre><code>Official portal: https://sih.gov.in/sih2025PS
-Source repo: https://github.com/Wraient/SIH-2024-Problems
-Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
-PS_ID: SIH-1610</code></pre>
-    </div>
-    <div class="recommendation">
-      <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
+&amp;#8226; Background The government actively supports the socio-economic upliftment of marginalized communities,particularly micro-entrepreneurs, artisans, and weavers. Financial assistance is provided to establish small-scale manufacturing and handicraft units. To help these beneficiaries sell their goods, market exposure is facilitated through periodic physical exhibitions, cluster development programs, and trade fairs (such as Shilp Samagam, Surajkund Mela, and Dilli Haat).While physical exhibitions provide a temporary boost in sales, these micro-entrepreneurs lack continuous, year-round access to broader digital markets. Transitioning to the digital economy is hindered by low digital literacy, language barriers, and a lack of technical skills required to professionally photograph, price, and catalog products for modern e-commerce.&lt;br&gt; &amp;#8226; Challenge There is a critical need to bridge the gap between traditional craftsmanship and modern digital commerce. Beneficiaries struggle to present their products competitively online. They often fail to capture high-quality images, write compelling product descriptions, or understand dynamic market pricing.The challenge is to build an int ...</p></div>
+  <div><h3>Evidence</h3><pre><code>PS_ID: SIH26090
+Official: https://sih.gov.in/sih2026PS
+Search: https://sih.gov.in/sih2026PS -&gt; Find SIH26090</code></pre></div>
+  <div><h3>Recommendation</h3><p>**Probable Solution:** Role-based web portal with RAG-assisted workflows, analytics dashboards, and multilingual support.
 
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
+**Build Plan (your stack):** FastAPI/Django + pgvector RAG (Vela/MemNoX) + React. Package as Docker microservices.
 
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
-    </div>
-    <div class="metadata-footer">
-      <div class="tags">
-      <span class="badge info">education</span>
-    </div>
-      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
-    </div>
-    <div class="finding-nav">
-    <a href="finding-067.html" class="prev">← Previous</a>
-    <a href="finding-069.html" class="next">Next →</a>
-  </div>
-  </div>
-  <script>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const current = html.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    }
-    const saved = localStorage.getItem('theme');
-    if (saved) document.documentElement.setAttribute('data-theme', saved);
-    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = event.target;
-        const original = btn.textContent;
-        btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = original, 1500);
-      });
-    }
-    function copyCode() {
-      const code = document.querySelector('pre code').textContent;
-      copyToClipboard(code);
-    }
-  </script>
+**Why this rating:** Generic CRUD + RAG; easy to execute with core Python/React stack but less distinctive.</p></div>
 </body>
 </html>

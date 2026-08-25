@@ -1,215 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1613] Automated System for Career Advancements of the Faculties of Higher Education — Findings Report</title>
-  <style>
-    :root {
-      --color-critical: #dc3545;
-      --color-high: #fd7e14;
-      --color-medium: #ffc107;
-      --color-low: #0dcaf0;
-      --color-info: #6c757d;
-      --bg-primary: #ffffff;
-      --bg-secondary: #f8f9fa;
-      --bg-card: #ffffff;
-      --text-primary: #212529;
-      --text-secondary: #6c757d;
-      --border: #dee2e6;
-      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-      --radius: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    [data-theme="dark"] {
-      --bg-primary: #1a1a2e;
-      --bg-secondary: #16213e;
-      --bg-card: #0f3460;
-      --text-primary: #e0e0e0;
-      --text-secondary: #a0a0a0;
-      --border: #2a2a4a;
-      --shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--text-primary); background: var(--bg-secondary); }
-    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
-    .breadcrumb { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; }
-    .breadcrumb a { color: var(--color-low); text-decoration: none; }
-    .breadcrumb a:hover { text-decoration: underline; }
-    .finding-id { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
-    .title-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .title-card h1 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
-    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
-    .badge.critical { background: rgba(220,53,69,0.15); color: var(--color-critical); }
-    .badge.high { background: rgba(253,126,20,0.15); color: var(--color-high); }
-    .badge.medium { background: rgba(255,193,7,0.15); color: var(--color-medium); }
-    .badge.low { background: rgba(13,202,240,0.15); color: var(--color-low); }
-    .badge.info { background: rgba(108,117,125,0.15); color: var(--color-info); }
-    .category-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); }
-    .source-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); }
-    .location-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 12px; }
-    .location-block code { color: var(--text-primary); }
-    .location-block button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-secondary); cursor: pointer; font-size: 11px; }
-    .location-block button:hover { background: var(--border); }
-    .description { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .description p { margin-bottom: 12px; }
-    .description p:last-child { margin-bottom: 0; }
-    .code-section { margin-bottom: 20px; }
-    .code-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; font-size: 12px; }
-    .code-header button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); cursor: pointer; font-size: 11px; }
-    .code-header button:hover { background: var(--bg-secondary); }
-    pre { margin: 0; padding: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow-x: auto; }
-    code { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
-    .recommendation { background: rgba(13,202,240,0.05); border: 1px solid rgba(13,202,240,0.2); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
-    .recommendation h4 { font-size: 12px; text-transform: uppercase; color: var(--color-low); margin-bottom: 8px; }
-    .recommendation p { font-size: 14px; }
-    .metadata-footer { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .meta { font-size: 11px; color: var(--text-secondary); }
-    .finding-nav { display: flex; justify-content: space-between; padding: 16px 0; }
-    .finding-nav a { color: var(--color-low); text-decoration: none; font-size: 13px; }
-    .finding-nav a:hover { text-decoration: underline; }
-    .theme-toggle { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
-    @media print { .theme-toggle { display: none; } body { background: white; } }
-  </style>
+<html lang="en">
+<head><meta charset="UTF-8"><title>[SIH26093] AI-Based Real-Time Stress and Trauma Assessment Module for Victims/Complainants Accessing NHAA (14566) and Integrated Portal</title>
+<style>body{font-family:system-ui,sans-serif;padding:30px;max-width:800px;margin:0 auto}</style>
 </head>
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
-  <div class="container">
-    <div class="breadcrumb">
-      <a href="index.html">← Back to Dashboard</a>
-      <span class="finding-id">finding-071</span>
-    </div>
-    <div class="title-card">
-      <h1>[SIH-1613] Automated System for Career Advancements of the Faculties of Higher Education</h1>
-      <div class="badges">
-        <span class="badge critical">critical</span>
-        <span class="category-tag">Smart Education / Career Analytics</span>
-        <span class="source-tag">SIH software PS analysis</span>
-      </div>
-    </div>
-    <div class="location-block">
-      <code>SIH-1613</code>
-      <button onclick="copyToClipboard('SIH-1613')">Copy</button>
-    </div>
-    <div class="description">
-      <p>**Sponsoring Body:** Government of NCT of Delhi
+  <a href="index.html">← Back</a>
+  <h1>[SIH26093] AI-Based Real-Time Stress and Trauma Assessment Module for Victims/Complainants Accessing NHAA (14566) and Integrated Portal</h1>
+  <p><b>Severity:</b> high | <b>Category:</b> MedTech / Health AI</p>
+  <p><b>File:</b> SIH26093</p>
+  <div><h3>Description</h3><p>**Sponsoring Body:** Ministry of Social Justice and Empowerment (MoSJE)  |  **Department:** Department of Social Justice and Empowerment department; --&gt;
 
-**Category:** Smart Education / Career Analytics
+**Theme:** Smart Automation  |  **Category:** Software  |  **Priority:** YES - MEDIUM-HIGH PRIORITY (8/10)
 
-**Recommendation:** YES - TOP PRIORITY (10/10)
-
-**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
-
-**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+**Official URL:** https://sih.gov.in/sih2026PS  (search PS ID: SIH26093)
 
 ---
 
-Background:
-This problem requires an innovative approach to enhance the efficiency and transparency of faculty self-appraisal in the university settings. Through a robust web-based platform, the system should address the complexities associated with traditional evaluation processes. It should capture and manages intricate details of faculty activities, encompassing research publications, event participation, seminars, projects, and lectures.
-The project must aim to create a user-friendly environment for faculty members, optimizing the self-appraisal experience. Employing a secure registration and login system ensures data confidentiality and personalized access. The meticulous automated tracking of research outputs (as done automatically by google scholar) and academic engagements streamlines the evaluation process, providing a consolidated record for administrators.
-By introducing features for logging events, seminars. projects, and lectures, the system offers a holistic view of faculty contributions beyond the classroom. This comprehensive solution should aligns with the objectives of modernizing appraisal methodologies, fostering a culture of continuous improvement, and supporting Paperless India motive.
-Administrators, on the other hand, can leverage this data to make informed decisions about faculty development and resource allocation. University Administrators can log in to the Admin Panel and access all the form entries submitted by the faculty members. They can view all the details in the form, sort the form entries according to Name, Employee Code or Date of Submission. They can then download the form submission details in a PDF format. In contemporary academic institutions, the process of faculty self-appraisal plays a crucial role in ensuring quality education, fostering professional development, and aligning individual contributions with institutional goals. However, traditional appraisal methods often entail cumbersome paperwork, lack of transparency, and inefficiencies that can hinder comprehensive evaluation. This real-time application seeks to address these challenges by introducing a streamlined, web-based solution that enhances the efficiency and transparency of the appraisal process.
-This innovative platform should be designed to meticulously capture and manage a wide range of faculty activity, including research publications (automatically as done by google scholar), event participation, seminars, projects, and lectures. By leveraging technology, the system should provide a user-friendly interface that facilitates easy logging and tracking of academic contributions. The secure registration and login system should ensure that faculty data remains confidential and accessible only to authorized personnel.
-Moreover, the platform should support administrators by offering a consolidated view of faculty performance. The Admin Panel should enable administrators to access, Sort, and download detailed appraisal data, thereby supporting informed decision- making regarding Faculty development and resource allocation. This digital approach should not only modernizes the appraisal process but also it should aligns with the broader objective of promoting sustainable and paperless administrative practices.
+&amp;#8226; Background Victims and complainants belonging to Scheduled Castes and Scheduled Tribes who approach the National Helpline Against Atrocities (14566), Integrated Portal, chatbot, mobile application, IVRS, or other digital platforms often experience severe emotional distress arising from caste-based discrimination, violence, rape, gang rape, murder of family members, social boycott, displacement, threats, and prolonged legal proceedings. Presently, there is no standardized mechanism for assessing the psychological condition and vulnerability of victims at the time of first contact with authorities.&lt;br&gt; &amp;#8226; Problem Statement Design and develop an AI-enabled Real-Time Stress and Trauma Assessment Module that can assess the psychological stress, trauma, fear, anxiety, and vulnerability levels of victims/complainants interacting through NHAA (14566), the Integrated Portal, chatbot,IVRS, mobile application, or any other approved digital interface.&lt;br&gt; &amp;#8226; Expected Solution The solution should:&lt;br&gt; &amp;#8226; Analyse voice interactions, speech patterns, pauses, pitch variation, emotional indicators, and textual narratives.&lt;br&gt; &amp;#8226; Use Natural Language Processing (NLP), Spe ...</p></div>
+  <div><h3>Evidence</h3><pre><code>PS_ID: SIH26093
+Official: https://sih.gov.in/sih2026PS
+Search: https://sih.gov.in/sih2026PS -&gt; Find SIH26093</code></pre></div>
+  <div><h3>Recommendation</h3><p>**Probable Solution:** Multilingual voice triage assistant with symptom checker, risk stratification, and doctor-queue prioritization, plus offline PHC sync.
 
-Detailed Description:
-In the dynamic landscape of higher education, the imperative for effective systems to evaluate and enhance faculty performance has become increasingly apparent. Existing approaches to faculty appraisal often lack transparency and a data-driven foundation, hindering the ability to recognize and promote excellence. This underscores the pressing need for an innovative solution.
-The “Automated System for Career Advancements of the Faculties of Higher Education"" project should addresses this critical gap by introducing a comprehensive and dynamic platform. This application must empower faculty members to engage in a transparent and assessment self-driven of their professional activities.
-By facilitating documentation and evaluation of contributions in teaching, research, and community engagement, the system must offer a transformative approach to performance appraisal within university context.
-The project must offer numerous benefits to both faculty members and university administrators. Faculty should be able to maintain a detailed and organized record of their professional activities, helping them track progress and identify areas for improvement. Administrators, on the other hand, should leverage this data to make informed decisions about faculty development and resource allocation.
+**Build Plan (your stack):** Whisper/Gemini audio + FastAPI decision-tree triage + SQLite offline cache + React PWA. RAG for medical guidelines.
 
-Expected Solutions:
-The primary objectives of the ""Automated System for Career Advancements of the Faculties of Higher Education"" are to alleviate the challenges inherent in traditional paper-based processes. This project must aim to streamline and modernize faculty self-appraisal by implementing a secure, user-friendly web-based platform. The key focus must be on reducing administrative burdens, minimizing time consumption through digital processes, and enhancing data accuracy.
-By centralizing faculty information, the system seeks to provide administrators with efficient tools for evaluation, contributing to a more transparent and accountable appraisal process. Ultimately, the project aims to optimize the overall faculty assessment experience, fostering a culture of continuous improvement in higher education institutions.
-REAL-TIME APPLICATION
-Faculty should be able to update their activities, such as research publications, event participation, and seminars, in real-time, eliminating delays associated with traditional methods.
-This dynamic system must ensure administrators have instant access to the latest information for timely and informed decision-making. The website's real-time capabilities enhance the overall efficiency of the faculty self-appraisal process, promoting a more agile and responsive approach to performance evaluation in the academic environment.
-SOFTWARE REQUIREMENT
--Web Browser: Compatible web browser (e.g., Chrome, Firefox) for accessing and interacting with the Faculty Self-Appraisal Database Management Website.
--Postman: Postman for testing API endpoints and ensuring seamless communication between the web application and server.
--Git and GitHub: Git for version control and GitHub for collaborative development, facilitating efficient code management and collaboration.
--VSCode: Visual Studio Code (VSCode) as the integrated development environment (IDE) for code editing, debugging, and project management during the development of the web application.
-HARDWARE REQUIREMENT
--OS: Windows 10 or above or any other OS (e.g. Linux).
--Processor (not minimum requirement): A modern quad-core or above for seamless and smooth development process of application.
--RAM: At least 4 GB of available RAM to be able to run the Web App on the Browser.
--GPU: Any GPU can be preferred.
--Storage: Sufficient storage can be fulfilled by SSD or HDD.
-FUNCTIONAL REQUIREMENTS
--User Authentication: Users must register and log in securely. Unique user profiles for faculty members and authorized administrators.
--Data Collection Form: Implement a comprehensive ""SELF APPRAISAL FORM"" for faculty activities. Capture personal and professional details in a user-friendly interface.
--Manage Database: Establish a secure database to store faculty self- appraisal data. Ensure efficient data retrieval and management for evaluation purposes.
--Client-Side Scripting: Employ client-side scripting (e.g., JavaScript) for dynamic and responsive user interfaces. Enhance user experience with real-time form validation and interactive features.
--Server-Side Scripting: Utilize server-side scripting (e.g.. Node.js, Python) for processing and storing data securely. Enable seamless communication between the front-end and back-end components.
--Event Logging: Enable faculty to log events, seminars, projects, and lectures for a comprehensive assessment. Capture details to provide insights into faculty contributions beyond traditional metrics
-NON - FUNCTIONAL REQUIREMENTS
--Performance: The system must respond promptly to user interactions, with minimal latency during data retrieval and form submissions.
--Scalability: The web application should accommodate an increasing number of users and data entries without compromising performance.
--Reliability: Ensure high system availability with minimal downtime for routine maintenance, updates, or unforeseen issues.
--Security: Implement robust security measures, including encryption and access controls, to protect sensitive faculty data and maintain user privacy.
--Usability: The interface must be intuitive and user-friendly, requiring minimal training for faculty members and administrators to navigate and use the system efficiently.
-
-The implementation of the given problem must successfully address the longstanding challenges embedded in traditional paper-based faculty self-appraisal processes within higher education. The system must possess crucial features, such as secure user authentication, ensuring that faculty members and authorized administrators have unique and protected access to the platform.
-A comprehensive system should be seamlessly integrated, providing faculty members with a user-friendly interface to submit personal and professional details efficiently. The system must establishe a secure database, ensuring the confidentiality and integrity of faculty self-appraisal data. Robust client-side scripting, powered by JavaScript, it should enhance the user experience with dynamic and responsive interfaces, real-time form validation, and interactive features.
-Moreover, the system must include an admin panel that provides administrators with centralized access to all submitted appraisal forms. This panel must allow administrators to view, sort, and manage appraisal data efficiently. They can sort entries based on various criteria such as Name, Employee Code, or Date of Submission, streamlining the process of data retrieval and analysis. Additionally, administrators can download the submission details in PDF format, facilitating easy record-keeping and reporting.</p>
-    </div>
-    <div class="code-section">
-      <div class="code-header">
-        <span>Code</span>
-        <button onclick="copyCode()">Copy</button>
-      </div>
-      <pre><code>Official portal: https://sih.gov.in/sih2025PS
-Source repo: https://github.com/Wraient/SIH-2024-Problems
-Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
-PS_ID: SIH-1613</code></pre>
-    </div>
-    <div class="recommendation">
-      <h4>Recommendation</h4>
-      <p>**Probable Solution:** Unified web portal featuring automated resume parsing against JDs, adaptive skill quizzes, AI voice mock interview system, and college placement dashboards.
-
-**Build Plan (your stack):** Leverage EdTech-Dashboard codebase. Integrate FastAPI backend, Gemini 2.5 Flash for ATS scoring, React/Vite UI, and voice-based mock interview system using WebRTC.
-
-**Why this rating:** Matches EdTech-Dashboard & MemNoX vault projects directly. Fastest execution with 80% ready code.</p>
-    </div>
-    <div class="metadata-footer">
-      <div class="tags">
-      <span class="badge info">education</span>
-    </div>
-      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
-    </div>
-    <div class="finding-nav">
-    <a href="finding-070.html" class="prev">← Previous</a>
-    <a href="finding-072.html" class="next">Next →</a>
-  </div>
-  </div>
-  <script>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const current = html.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    }
-    const saved = localStorage.getItem('theme');
-    if (saved) document.documentElement.setAttribute('data-theme', saved);
-    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = event.target;
-        const original = btn.textContent;
-        btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = original, 1500);
-      });
-    }
-    function copyCode() {
-      const code = document.querySelector('pre code').textContent;
-      copyToClipboard(code);
-    }
-  </script>
+**Why this rating:** Good voice-AI showcase (Vela/MemNoX audio), but needs clinical validation.</p></div>
 </body>
 </html>

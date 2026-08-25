@@ -1,170 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[SIH-1658] Development of a versatile and fast algorithm for the optimal ship routing — Findings Report</title>
-  <style>
-    :root {
-      --color-critical: #dc3545;
-      --color-high: #fd7e14;
-      --color-medium: #ffc107;
-      --color-low: #0dcaf0;
-      --color-info: #6c757d;
-      --bg-primary: #ffffff;
-      --bg-secondary: #f8f9fa;
-      --bg-card: #ffffff;
-      --text-primary: #212529;
-      --text-secondary: #6c757d;
-      --border: #dee2e6;
-      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-      --radius: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    [data-theme="dark"] {
-      --bg-primary: #1a1a2e;
-      --bg-secondary: #16213e;
-      --bg-card: #0f3460;
-      --text-primary: #e0e0e0;
-      --text-secondary: #a0a0a0;
-      --border: #2a2a4a;
-      --shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--text-primary); background: var(--bg-secondary); }
-    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
-    .breadcrumb { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; }
-    .breadcrumb a { color: var(--color-low); text-decoration: none; }
-    .breadcrumb a:hover { text-decoration: underline; }
-    .finding-id { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
-    .title-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .title-card h1 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
-    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
-    .badge.critical { background: rgba(220,53,69,0.15); color: var(--color-critical); }
-    .badge.high { background: rgba(253,126,20,0.15); color: var(--color-high); }
-    .badge.medium { background: rgba(255,193,7,0.15); color: var(--color-medium); }
-    .badge.low { background: rgba(13,202,240,0.15); color: var(--color-low); }
-    .badge.info { background: rgba(108,117,125,0.15); color: var(--color-info); }
-    .category-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); }
-    .source-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); }
-    .location-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 12px; }
-    .location-block code { color: var(--text-primary); }
-    .location-block button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-secondary); cursor: pointer; font-size: 11px; }
-    .location-block button:hover { background: var(--border); }
-    .description { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .description p { margin-bottom: 12px; }
-    .description p:last-child { margin-bottom: 0; }
-    .code-section { margin-bottom: 20px; }
-    .code-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; font-size: 12px; }
-    .code-header button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-card); cursor: pointer; font-size: 11px; }
-    .code-header button:hover { background: var(--bg-secondary); }
-    pre { margin: 0; padding: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow-x: auto; }
-    code { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
-    .recommendation { background: rgba(13,202,240,0.05); border: 1px solid rgba(13,202,240,0.2); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
-    .recommendation h4 { font-size: 12px; text-transform: uppercase; color: var(--color-low); margin-bottom: 8px; }
-    .recommendation p { font-size: 14px; }
-    .metadata-footer { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .meta { font-size: 11px; color: var(--text-secondary); }
-    .finding-nav { display: flex; justify-content: space-between; padding: 16px 0; }
-    .finding-nav a { color: var(--color-low); text-decoration: none; font-size: 13px; }
-    .finding-nav a:hover { text-decoration: underline; }
-    .theme-toggle { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
-    @media print { .theme-toggle { display: none; } body { background: white; } }
-  </style>
+<html lang="en">
+<head><meta charset="UTF-8"><title>[SIH26142] Deep Learning Based Super Resolution Mapping (SRM) from Medium Resolution Satellite Imageries</title>
+<style>body{font-family:system-ui,sans-serif;padding:30px;max-width:800px;margin:0 auto}</style>
 </head>
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
-  <div class="container">
-    <div class="breadcrumb">
-      <a href="index.html">← Back to Dashboard</a>
-      <span class="finding-id">finding-113</span>
-    </div>
-    <div class="title-card">
-      <h1>[SIH-1658] Development of a versatile and fast algorithm for the optimal ship routing</h1>
-      <div class="badges">
-        <span class="badge high">high</span>
-        <span class="category-tag">Open Source & Skill Discovery</span>
-        <span class="source-tag">SIH software PS analysis</span>
-      </div>
-    </div>
-    <div class="location-block">
-      <code>SIH-1658</code>
-      <button onclick="copyToClipboard('SIH-1658')">Copy</button>
-    </div>
-    <div class="description">
-      <p>**Sponsoring Body:** Ministry of Earth Sciences
+  <a href="index.html">← Back</a>
+  <h1>[SIH26142] Deep Learning Based Super Resolution Mapping (SRM) from Medium Resolution Satellite Imageries</h1>
+  <p><b>Severity:</b> low | <b>Category:</b> Smart Education</p>
+  <p><b>File:</b> SIH26142</p>
+  <div><h3>Description</h3><p>**Sponsoring Body:** National Technical Research Organisation (NTRO)  |  **Department:** National Technical Research Organisation (NTRO) department; --&gt;
 
-**Category:** Open Source & Skill Discovery
+**Theme:** Smart Education  |  **Category:** Software  |  **Priority:** MAYBE (6.5/10)
 
-**Recommendation:** YES - HIGH PRIORITY (9/10)
-
-**Problem Statement URL:** https://github.com/Wraient/SIH-2024-Problems  |  Official portal: https://sih.gov.in/sih2025PS
-
-**Gist (software list):** https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
+**Official URL:** https://sih.gov.in/sih2026PS  (search PS ID: SIH26142)
 
 ---
 
-Background: Most of the goods are transported around the world by shipping which relies heavily on fossil fuels for powering. Given the expenditure of the shipping industry on the fuel, a main objective of a shipping company is to optimize the ship route for the least fuel consumption. Depending on the type and purpose of the voyage, it is also desirable to optimize several other parameters such as, the travel time, passenger comfort and route safety, to avoid any damage to the ship, cargo, crew and passengers. Optimization of each of these parameters serves a purpose. For instance, an energy efficient route may not be safe in terms of weather. Therefore, to avoid loss of life and property, route weather safety needs to be considered. An application suggesting the optimal route based on the chosen set of optimal parameters for any voyage between two ports in the Indian Ocean, will immensely benefit the Indian shipping industry.
-Description: At the heart of any optimal ship routing application lies the optimization algorithm. Although scientific literature is available on various methods of optimizing the ship routes, given the commercial potential, there are no applications available publicly which can be customized for the Indian Ocean region. The optimization methods reported in literature range in complexity, computation time, versatility, etc. Various factors, such as, the forcings (surface winds, currents and waves), design of the ship and ship drift characteristics, impact the ship’s motion at sea. The optimal route must be continually evolving because the weather conditions keep changing as a ship proceeds on its voyage. Therefore, it is crucial to choose a suitable optimization method that can optimize several parameters for a range of ships (with varying type, dimensions, drift characteristics of a ship) and develop an algorithm to return an optimal route within a reasonable computational time. The algorithm can optimize for the voyage time and safety to begin with but with a scope for addition of more optimization parameters. To get an idea of the problem, please visit: https://www.youtube.com/watch?v=ct9v-mQgYqE ii) https://www.youtube.com/watch?v=wCTdHRTWtNI
-Expected Solution: Identification of a versatile optimization method and development of a reasonably fast algorithm, preferably written in an open-source programming language such as Python</p>
-    </div>
-    <div class="code-section">
-      <div class="code-header">
-        <span>Code</span>
-        <button onclick="copyCode()">Copy</button>
-      </div>
-      <pre><code>Official portal: https://sih.gov.in/sih2025PS
-Source repo: https://github.com/Wraient/SIH-2024-Problems
-Gist (software list): https://gist.github.com/VidhyaVarshanyJS/ee558d70f6278ee8a6c6e1375952e4ca
-PS_ID: SIH-1658</code></pre>
-    </div>
-    <div class="recommendation">
-      <h4>Recommendation</h4>
-      <p>**Probable Solution:** Automated scanner analyzing developer repositories, scoring skill proficiency, and matching suitable open-source contribution issues.
+&amp;#8226; Background Medium-resolution satellite imagery, typically ranging from 10 to 30 meters, is widely used in change detection, agriculture, land-cover mapping, disaster monitoring, and urban planning because it offers broad coverage and frequent revisit time. However, the spatial detail is often insufficient for fine-scale analysis, such as identifying small buildings, narrow roads, field boundaries, or localized damage assessment. This creates a need for advanced deep learning based generative enhancement techniques that can extract greater value from existing Earth observation data.&lt;br&gt; &amp;#8226; Description Medium-resolution satellite imagery, usually ranging from 10 to 30 meters, is widely used in remote sensing for agriculture monitoring, land-cover mapping, urban planning, disaster assessment, and environmental observation because it provides large-area coverage and frequent revisit capability. However, its spatial resolution is often not sufficient to clearly identify fine details such as narrow roads, small buildings, field boundaries, water edges, or localized damage. This limitation reduces the accuracy and confidence of interpretation and decision-making in applicatio ...</p></div>
+  <div><h3>Evidence</h3><pre><code>PS_ID: SIH26142
+Official: https://sih.gov.in/sih2026PS
+Search: https://sih.gov.in/sih2026PS -&gt; Find SIH26142</code></pre></div>
+  <div><h3>Recommendation</h3><p>**Probable Solution:** Web portal with REST APIs, role-based access, and analytics dashboard; add RAG copilot where docs are involved.
 
-**Build Plan (your stack):** Extend GitScout project. Uses GitHub REST/GraphQL APIs and LangGraph to fetch open issues, evaluate candidate commit quality, and generate tailored contribution plans.
+**Build Plan (your stack):** FastAPI + PostgreSQL + React + pgvector RAG if document-heavy. Dockerized.
 
-**Why this rating:** 100% match with GitScout vault project. Minimum effort required to adapt for SIH submission.</p>
-    </div>
-    <div class="metadata-footer">
-      <div class="tags">
-      <span class="badge info">earth-sciences</span> <span class="badge info">open-source</span>
-    </div>
-      <div class="meta">Generated: 8/24/2026, 10:36:50 AM · Source: SIH software PS analysis</div>
-    </div>
-    <div class="finding-nav">
-    <a href="finding-112.html" class="prev">← Previous</a>
-    <a href="finding-114.html" class="next">Next →</a>
-  </div>
-  </div>
-  <script>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const current = html.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    }
-    const saved = localStorage.getItem('theme');
-    if (saved) document.documentElement.setAttribute('data-theme', saved);
-    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = event.target;
-        const original = btn.textContent;
-        btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = original, 1500);
-      });
-    }
-    function copyCode() {
-      const code = document.querySelector('pre code').textContent;
-      copyToClipboard(code);
-    }
-  </script>
+**Why this rating:** Standard web app; executable with core stack.</p></div>
 </body>
 </html>
