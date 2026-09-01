@@ -15,6 +15,7 @@ from pathlib import Path
 
 STATIC_DIR = Path('static')
 
+import os, shutil, json
 from fastapi import FastAPI, Header, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -25,6 +26,13 @@ import threading
 from cron_engine import CronEngine, RunRecord, get_engine
 
 app = FastAPI(title="Cron System", version="1.0.0")
+
+
+ADMIN_SECRET = os.environ.get('ADMIN_SECRET', '')
+
+def verify_admin(x_admin_secret: str = Header(None)):
+    if not ADMIN_SECRET or x_admin_secret != ADMIN_SECRET:
+        raise HTTPException(status_code=401, detail='Invalid admin secret')
 
 app.add_middleware(GZipMiddleware, minimum_size=500)
 app.add_middleware(CacheControlMiddleware)
@@ -131,6 +139,48 @@ def run_job_background(name: str):
     engine.execute_job(name)
 
 
+
+
+@app.get('/admin/static')
+async def list_static():
+    if not STATIC_DIR.exists():
+        return []
+    results = []
+    for sub in sorted(STATIC_DIR.iterdir()):
+        if sub.is_dir():
+            files = list(sub.rglob('*'))
+            file_list = [f for f in files if f.is_file()]
+            total_bytes = sum(f.stat().st_size for f in file_list)
+            results.append({
+                'slug': sub.name,
+                'file_count': len(file_list),
+                'total_bytes': total_bytes,
+                'mounted_at': f'/{sub.name}'
+            })
+    return results
+
+@app.get('/admin/static/{slug}/status')
+async def static_status(slug: str):
+    target = STATIC_DIR / slug
+    if not target.exists() or not target.is_dir():
+        raise HTTPException(status_code=404, detail=f'Static content not found: {slug}')
+    files = [f for f in target.rglob('*') if f.is_file()]
+    return {
+        'slug': slug,
+        'file_count': len(files),
+        'total_bytes': sum(f.stat().st_size for f in files),
+        'files': [{'name': str(f.relative_to(target)), 'size': f.stat().st_size} for f in sorted(files)],
+        'mounted_at': f'/{slug}'
+    }
+
+@app.delete('/admin/static/{slug}')
+async def delete_static(slug: str, x_admin_secret: str = Header(None)):
+    verify_admin(x_admin_secret)
+    target = STATIC_DIR / slug
+    if not target.exists():
+        raise HTTPException(status_code=404, detail=f'Not found: {slug}')
+    shutil.rmtree(target)
+    return {'deleted': slug, 'status': 'ok'}
 
 def mount_static_dirs(app):
     if not STATIC_DIR.exists():
