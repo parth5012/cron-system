@@ -1,5 +1,25 @@
+import os
+import shutil
+import threading
+from datetime import datetime
+from pathlib import Path
+from typing import Optional, List
+
+from fastapi import FastAPI, Header, HTTPException, BackgroundTasks, UploadFile, File
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware
+
+from cron_engine import CronEngine, RunRecord, get_engine
+
+
+# ---------------------------------------------------------------------------
+# Constants & Config
+# ---------------------------------------------------------------------------
+STATIC_DIR = Path('static')
+
 
 class CacheControlMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
@@ -10,23 +30,6 @@ class CacheControlMiddleware(BaseHTTPMiddleware):
         elif any(path.endswith(ext) for ext in ['.html', '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.mp4', '.webm', '.mov', '.pdf', '.svg']):
             response.headers['Cache-Control'] = 'public, max-age=86400'
         return response
-
-from pathlib import Path
-
-STATIC_DIR = Path('static')
-
-import os, shutil, json
-from fastapi import UploadFile, File, Form
-from fastapi.responses import HTMLResponse
-from datetime import datetime
-from fastapi import FastAPI, Header, HTTPException, BackgroundTasks
-from fastapi.responses import JSONResponse
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
-from typing import Optional, List
-import threading
-
-from cron_engine import CronEngine, RunRecord, get_engine
 
 app = FastAPI(title="Cron System", version="1.0.0")
 
