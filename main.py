@@ -34,11 +34,9 @@ class CacheControlMiddleware(BaseHTTPMiddleware):
 app = FastAPI(title="Cron System", version="1.0.0")
 
 
-UPLOAD_PASSWORD = os.environ.get('UPLOAD_PASSWORD', '')
+ADMIN_SECRET = os.environ.get('ADMIN_SECRET', '')
 ALLOWED_EXTENSIONS = {'.html', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.mp4', '.webm', '.mov', '.pdf'}
 MAX_UPLOAD_SIZE = 50 * 1024 * 1024  # 50MB
-
-ADMIN_SECRET = os.environ.get('ADMIN_SECRET', '')
 
 def verify_admin(x_admin_secret: str = Header(None)):
     if not ADMIN_SECRET or x_admin_secret != ADMIN_SECRET:
@@ -196,10 +194,9 @@ async def delete_static(slug: str, x_admin_secret: str = Header(None)):
 @app.post('/admin/upload')
 async def upload_file(
     file: UploadFile = File(...),
-    x_upload_password: str = Header(None)
+    x_admin_secret: str = Header(None)
 ):
-    if not UPLOAD_PASSWORD or x_upload_password != UPLOAD_PASSWORD:
-        raise HTTPException(status_code=401, detail='Invalid upload password')
+    verify_admin(x_admin_secret)
     
     ext = Path(file.filename).suffix.lower()
     if ext not in ALLOWED_EXTENSIONS:
@@ -320,11 +317,11 @@ async def index():
             }});
 
             async function upload(file) {{
-                let pwd = sessionStorage.getItem('upload_pwd');
+                let pwd = sessionStorage.getItem('admin_secret');
                 if(!pwd) {{
-                    pwd = prompt("Enter upload password:");
+                    pwd = prompt("Enter admin secret:");
                     if(!pwd) return;
-                    sessionStorage.setItem('upload_pwd', pwd);
+                    sessionStorage.setItem('admin_secret', pwd);
                 }}
                 
                 const formData = new FormData();
@@ -336,7 +333,7 @@ async def index():
                 try {{
                     const res = await fetch('/admin/upload', {{
                         method: 'POST',
-                        headers: {{ 'X-Upload-Password': pwd }},
+                        headers: {{ 'X-Admin-Secret': pwd }},
                         body: formData
                     }});
                     const data = await res.json();
@@ -346,7 +343,7 @@ async def index():
                     }} else {{
                         status.textContent = 'Error: ' + data.detail;
                         status.style.color = 'red';
-                        if(res.status === 401) sessionStorage.removeItem('upload_pwd');
+                        if(res.status === 401) sessionStorage.removeItem('admin_secret');
                     }}
                 }} catch (e) {{
                     status.textContent = 'Upload failed: ' + e.message;
