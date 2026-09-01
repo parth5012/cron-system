@@ -1,3 +1,16 @@
+from fastapi.middleware.gzip import GZipMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class CacheControlMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        path = request.url.path
+        if path.endswith('/') or 'index.html' in path:
+            response.headers['Cache-Control'] = 'no-cache'
+        elif any(path.endswith(ext) for ext in ['.html', '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.mp4', '.webm', '.mov', '.pdf', '.svg']):
+            response.headers['Cache-Control'] = 'public, max-age=86400'
+        return response
+
 from fastapi import FastAPI, Header, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -8,6 +21,10 @@ import threading
 from cron_engine import CronEngine, RunRecord, get_engine
 
 app = FastAPI(title="Cron System", version="1.0.0")
+
+app.add_middleware(GZipMiddleware, minimum_size=500)
+app.add_middleware(CacheControlMiddleware)
+
 
 app.mount("/findings/sih", StaticFiles(directory="static/findings", html=True), name="findings-sih")
 app.mount("/sih-arch", StaticFiles(directory="static/sih-arch", html=True), name="sih-arch")
