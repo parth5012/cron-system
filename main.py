@@ -10,6 +10,7 @@ from cron_engine import CronEngine, RunRecord, get_engine
 app = FastAPI(title="Cron System", version="1.0.0")
 
 app.mount("/findings/sih", StaticFiles(directory="static/findings", html=True), name="findings-sih")
+app.mount("/sih-arch", StaticFiles(directory="static/sih-arch", html=True), name="sih-arch")
 
 
 class RunResponse(BaseModel):
