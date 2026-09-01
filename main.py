@@ -11,6 +11,10 @@ class CacheControlMiddleware(BaseHTTPMiddleware):
             response.headers['Cache-Control'] = 'public, max-age=86400'
         return response
 
+from pathlib import Path
+
+STATIC_DIR = Path('static')
+
 from fastapi import FastAPI, Header, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -26,8 +30,6 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 app.add_middleware(CacheControlMiddleware)
 
 
-app.mount("/findings/sih", StaticFiles(directory="static/findings", html=True), name="findings-sih")
-app.mount("/sih-arch", StaticFiles(directory="static/sih-arch", html=True), name="sih-arch")
 
 
 class RunResponse(BaseModel):
@@ -128,6 +130,19 @@ def run_job_background(name: str):
     engine = get_engine()
     engine.execute_job(name)
 
+
+
+def mount_static_dirs(app):
+    if not STATIC_DIR.exists():
+        return
+    for sub in sorted(STATIC_DIR.iterdir()):
+        if sub.is_dir():
+            app.mount(f"/{sub.name}", StaticFiles(directory=str(sub), html=True), name=f"static-{sub.name}")
+            for child in sorted(sub.iterdir()):
+                if child.is_dir():
+                    app.mount(f"/{sub.name}/{child.name}", StaticFiles(directory=str(child), html=True), name=f"static-{sub.name}-{child.name}")
+
+mount_static_dirs(app)
 
 if __name__ == "__main__":
     import uvicorn
