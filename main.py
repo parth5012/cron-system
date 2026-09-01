@@ -16,6 +16,9 @@ from pathlib import Path
 STATIC_DIR = Path('static')
 
 import os, shutil, json
+from fastapi import UploadFile, File, Form
+from fastapi.responses import HTMLResponse
+from datetime import datetime
 from fastapi import FastAPI, Header, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -27,6 +30,10 @@ from cron_engine import CronEngine, RunRecord, get_engine
 
 app = FastAPI(title="Cron System", version="1.0.0")
 
+
+UPLOAD_PASSWORD = os.environ.get('UPLOAD_PASSWORD', '')
+ALLOWED_EXTENSIONS = {'.html', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.mp4', '.webm', '.mov', '.pdf'}
+MAX_UPLOAD_SIZE = 50 * 1024 * 1024  # 50MB
 
 ADMIN_SECRET = os.environ.get('ADMIN_SECRET', '')
 
@@ -181,6 +188,173 @@ async def delete_static(slug: str, x_admin_secret: str = Header(None)):
         raise HTTPException(status_code=404, detail=f'Not found: {slug}')
     shutil.rmtree(target)
     return {'deleted': slug, 'status': 'ok'}
+
+
+@app.post('/admin/upload')
+async def upload_file(
+    file: UploadFile = File(...),
+    x_upload_password: str = Header(None)
+):
+    if not UPLOAD_PASSWORD or x_upload_password != UPLOAD_PASSWORD:
+        raise HTTPException(status_code=401, detail='Invalid upload password')
+    
+    ext = Path(file.filename).suffix.lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail=f'File type {ext} not allowed')
+    
+    content = await file.read()
+    if len(content) > MAX_UPLOAD_SIZE:
+        raise HTTPException(status_code=413, detail=f'File too large. Max {MAX_UPLOAD_SIZE // (1024*1024)}MB')
+    
+    upload_dir = STATIC_DIR / 'uploads'
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    
+    dest = upload_dir / file.filename
+    if dest.exists():
+        stem = dest.stem
+        dest = upload_dir / f'{stem}_{int(datetime.now().timestamp())}{ext}'
+    
+    dest.write_bytes(content)
+    return {'url': f'/uploads/{dest.name}', 'size': len(content), 'filename': dest.name}
+
+@app.get('/', response_class=HTMLResponse)
+async def index():
+    directories = []
+    if STATIC_DIR.exists():
+        for sub in sorted(STATIC_DIR.iterdir()):
+            if sub.is_dir():
+                files = list(sub.rglob('*'))
+                file_list = [f for f in files if f.is_file()]
+                total_bytes = sum(f.stat().st_size for f in file_list)
+                directories.append({
+                    'slug': sub.name,
+                    'file_count': len(file_list),
+                    'total_size': f"{total_bytes / (1024*1024):.2f} MB" if total_bytes > 1024*1024 else f"{total_bytes / 1024:.2f} KB",
+                    'url': f'/{sub.name}'
+                })
+    
+    dirs_html = "".join([
+        f"<div class='dir-card'><h3><a href='{d['url']}'>{d['slug']}</a></h3><p>{d['file_count']} files • {d['total_size']}</p></div>"
+        for d in directories
+    ])
+
+    html = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>📂 Cron System - Content Hub</title>
+        <style>
+            :root {{
+                --bg: #f8f9fa;
+                --text: #212529;
+                --card-bg: #fff;
+                --border: #dee2e6;
+                --primary: #0d6efd;
+            }}
+            @media (prefers-color-scheme: dark) {{
+                :root {{
+                    --bg: #212529;
+                    --text: #f8f9fa;
+                    --card-bg: #343a40;
+                    --border: #495057;
+                    --primary: #0d6efd;
+                }}
+            }}
+            body {{ font-family: system-ui, sans-serif; margin: 0; padding: 20px; background: var(--bg); color: var(--text); }}
+            .container {{ max-width: 800px; margin: 0 auto; }}
+            .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }}
+            .dir-card {{ background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; }}
+            .dir-card a {{ color: var(--primary); text-decoration: none; }}
+            .dir-card p {{ margin: 5px 0 0; font-size: 0.9em; opacity: 0.8; }}
+            #dropzone {{
+                border: 2px dashed var(--border);
+                border-radius: 12px;
+                padding: 40px 20px;
+                text-align: center;
+                background: var(--card-bg);
+                cursor: pointer;
+                transition: border-color 0.2s;
+            }}
+            #dropzone.dragover {{ border-color: var(--primary); }}
+            #status {{ margin-top: 15px; font-weight: bold; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>📂 Content Hub</h1>
+            <h2>Directories</h2>
+            <div class="grid">
+                {dirs_html}
+            </div>
+            <h2>Upload File</h2>
+            <div id="dropzone">
+                <p>Drag and drop a file here or click to select</p>
+                <p style="font-size: 0.8em; opacity: 0.7;">Max 50MB. HTML, Images, Video, PDF</p>
+                <input type="file" id="fileInput" style="display: none;">
+            </div>
+            <div id="status"></div>
+        </div>
+        <script>
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+            const status = document.getElementById('status');
+
+            dropzone.addEventListener('click', () => fileInput.click());
+            dropzone.addEventListener('dragover', (e) => {{
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            }});
+            dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+            dropzone.addEventListener('drop', (e) => {{
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+                if(e.dataTransfer.files.length) upload(e.dataTransfer.files[0]);
+            }});
+            fileInput.addEventListener('change', () => {{
+                if(fileInput.files.length) upload(fileInput.files[0]);
+            }});
+
+            async function upload(file) {{
+                let pwd = sessionStorage.getItem('upload_pwd');
+                if(!pwd) {{
+                    pwd = prompt("Enter upload password:");
+                    if(!pwd) return;
+                    sessionStorage.setItem('upload_pwd', pwd);
+                }}
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                status.textContent = 'Uploading...';
+                status.style.color = 'inherit';
+                
+                try {{
+                    const res = await fetch('/admin/upload', {{
+                        method: 'POST',
+                        headers: {{ 'X-Upload-Password': pwd }},
+                        body: formData
+                    }});
+                    const data = await res.json();
+                    if(res.ok) {{
+                        status.textContent = 'Success! View at: ' + data.url;
+                        status.style.color = 'green';
+                    }} else {{
+                        status.textContent = 'Error: ' + data.detail;
+                        status.style.color = 'red';
+                        if(res.status === 401) sessionStorage.removeItem('upload_pwd');
+                    }}
+                }} catch (e) {{
+                    status.textContent = 'Upload failed: ' + e.message;
+                    status.style.color = 'red';
+                }}
+            }}
+        </script>
+    </body>
+    </html>
+    """
+    return html
 
 def mount_static_dirs(app):
     if not STATIC_DIR.exists():
