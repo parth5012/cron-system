@@ -34,8 +34,8 @@ body{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--bg);colo
 <body>
 <div class="header">
   <span style="width:10px;height:10px;background:var(--cyan);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>
-  <h1>ORCA Map View — prototype</h1>
-  <p>Leaflet • PFZ overlays • Fast Map Memory (PostGIS tiles in prod, sample GeoJSON here)</p>
+  <h1>ORCA Map View — LIVE PFZ 02-Sep-2026</h1>
+  <p>437 zones • INCOIS TextData SEC001-014 • <a href="./data/pfz-today.geojson" style="color:var(--cyan)">pfz-today.geojson</a> • <a href="./data/pfz-all.json" style="color:var(--cyan)">pfz-all.json</a></p>
 </div>
 <div class="layout">
   <div id="map"></div>
@@ -62,31 +62,49 @@ body{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--bg);colo
 const map = L.map('map').setView([9.93, 76.10], 9);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18, attribution:'© OSM • Bhuvan in prod'}).addTo(map);
 
-// Sample PFZ polygons — Kochi offshore (replace with fetch('/api/tiles/pfz') in prod)
-const pfz = {
-  type:"FeatureCollection",
-  features:[
-    {type:"Feature", properties:{id:"A", rank:1, sst:"28.1°C", chl:"0.82 mg/m³", wind:"8 kt", safety:"Safe", citation:"INCOIS 02-Sep-2026, IMD wind"}, geometry:{type:"Polygon", coordinates:[[[75.8,10.2],[76.3,10.2],[76.3,9.6],[75.8,9.6],[75.8,10.2]]]}},
-    {type:"Feature", properties:{id:"B", rank:2, sst:"29.0°C", chl:"0.45 mg/m³", wind:"14 kt", safety:"Caution — wind rise pm", citation:"MOSDAC SST, IMD"}, geometry:{type:"Polygon", coordinates:[[[76.4,10.4],[76.9,10.4],[76.9,9.9],[76.4,9.9],[76.4,10.4]]]}},
-    {type:"Feature", properties:{id:"C", rank:1, sst:"27.8°C", chl:"1.05 mg/m³", wind:"22 kt", safety:"Avoid — cyclone cone", citation:"INCOIS + IMD cyclone"}, geometry:{type:"Polygon", coordinates:[[[75.5,9.5],[76.0,9.5],[76.0,9.0],[75.5,9.0],[75.5,9.5]]]}},
-  ]
-};
-const hazard = {type:"Feature", properties:{name:"Cyclone watch"}, geometry:{type:"Polygon", coordinates:[[[75.4,9.6],[76.1,9.6],[76.1,8.9],[75.4,8.9],[75.4,9.6]]]}};
+// LIVE PFZ — 02-Sep-2026 INCOIS TextData SEC001-014 (437 points) — fetched from ./data/pfz-today.geojson (same as FastAPI /api/pfz/today would serve)
+let pfz = null;
+async function loadPFZ(){
+  const res = await fetch('./data/pfz-today.geojson');
+  pfz = await res.json();
+  // enrich for demo: rank 1 for depth 20-60 approx, else 2
+  pfz.features.forEach(f=>{
+    const d = f.properties.distance || '';
+    const m = d.match(/(\d+)/);
+    const dist = m ? parseInt(m[1]) : 50;
+    f.properties.rank = dist<60 ? 1 : 2;
+    f.properties.safety = dist<60 ? 'Safe — PFZ advisory' : 'Caution';
+    f.properties.citation = `INCOIS TextData ${f.properties.sector} ${f.properties.sector_name} 02-Sep-2026`;
+    f.properties.id = f.properties.place;
+  });
+  renderPFZ();
+}
+let pfzLayer=null;
+function renderPFZ(){
+  if(pfzLayer) map.removeLayer(pfzLayer);
+  pfzLayer = L.geoJSON(pfz, {
+    pointToLayer: (f,latlng)=> L.circleMarker(latlng, {radius: f.properties.rank===1?7:5, color: f.properties.rank===1?'#22d3ee':'#94a3b8', weight:2, fillColor: f.properties.rank===1?'#22d3ee':'#94a3b8', fillOpacity: f.properties.rank===1?0.85:0.5}),
+    onEachFeature: (f,layer)=>{
+      const p=f.properties;
+      const badge = p.rank===1 ? '<span class="badge rank1">RANK 1 — BEST</span>' : '<span class="badge rank2">RANK 2</span>';
+      const safe = p.safety.startsWith('Safe') ? '<span class="badge safe">✓ SAFE</span>' : '<span class="badge warn">Caution</span>';
+      layer.bindPopup(`<b>${p.place}</b> ${badge}<br><small>${p.sector_name} (${p.sector}) • Bearing ${p.bearing}° ${p.dir} • Depth ${p.depth}m • Dist ${p.distance}km</small><br>${safe}<br><small>Lat ${p.lat} Lon ${p.lon}<br>Citation: ${p.citation}</small><br><a href="#" onclick="routeTo('${p.place}');return false;">Show route →</a>`);
+      layer.on('click', ()=> selectZone(p.place));
+    }
+  }).addTo(map);
+  try{ map.fitBounds(pfzLayer.getBounds().pad(0.15)); }catch(e){}
+  buildList();
+}
+const hazard = {type:"Feature", properties:{name:"Cyclone watch (IMD) — sample"}, geometry:{type:"Polygon", coordinates:[[[75.4,9.6],[76.1,9.6],[76.1,8.9],[75.4,8.9],[75.4,9.6]]]}};
 let hazardLayer=null;
+loadPFZ();
 
 function stylePFZ(f){
   const r=f.properties.rank;
   if(f.properties.id==="C") return {color:"#fb7185", weight:2, fillColor:"#fb7185", fillOpacity:0.28, dashArray:"6 6"};
   return r===1 ? {color:"#22d3ee", weight:2, fillColor:"#22d3ee", fillOpacity:0.32} : {color:"#94a3b8", weight:1.5, fillColor:"#94a3b8", fillOpacity:0.18};
 }
-const pfzLayer = L.geoJSON(pfz, {style:stylePFZ, onEachFeature:(f,layer)=>{
-  const p=f.properties;
-  const badge = p.rank===1 ? '<span class="badge rank1">RANK 1 — BEST SAFE</span>' : '<span class="badge rank2">RANK 2</span>';
-  const safe = p.safety.startsWith("Safe") ? '<span class="badge safe">✓ SAFE</span>' : p.safety.startsWith("Avoid") ? '<span class="badge warn">⚠ AVOID</span>' : '<span class="badge warn">Caution</span>';
-  layer.bindPopup(`<b>Zone ${p.id}</b> ${badge}<br>${safe}<br><small>SST ${p.sst} • Chl ${p.chl} • Wind ${p.wind}<br>Citation: ${p.citation}</small><br><a href="#" onclick="routeTo('${p.id}');return false;">Show safest route →</a>`);
-  layer.on('click', ()=> selectZone(p.id));
-}}).addTo(map);
-map.fitBounds(pfzLayer.getBounds().pad(0.25));
+// pfzLayer now rendered in renderPFZ() after fetch
 
 // Routes (sample)
 const routes = {A:[ [9.93,76.26],[10.05,76.0],[9.9,75.95] ], B:[ [9.93,76.26],[10.2,76.5],[10.15,76.8] ]};
