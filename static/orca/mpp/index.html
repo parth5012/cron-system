@@ -28,7 +28,7 @@ tr:last-child td{border-bottom:0}
 </head>
 <body>
 <h1>ORCA — 2-Week MPP — Who Does What By When</h1>
-<p class="sub">02 Sep – 16 Sep 2026 • 437 PFZ live <a href="https://cron-system.vercel.app/orca/map/data/pfz-today.geojson" style="color:var(--cyan)">pfz-today.geojson</a> • Global Tests Fri 05 & 12 Sep 16:00 IST all 6 on <a href="https://cron-system.vercel.app/orca/" style="color:var(--cyan)">cron-system live</a> • Voice + Copernicus = backlog W5 • M5 wave mock 0.8m W1 → real OSF W2</p>
+<p class="sub">02 Sep – 16 Sep 2026 • 437 PFZ live <a href="https://cron-system.vercel.app/orca/map/data/pfz-today.geojson" style="color:var(--cyan)">pfz-today.geojson</a> • Global Tests Fri 05 & 12 Sep 16:00 IST all 6 on <a href="https://cron-system.vercel.app/orca/" style="color:var(--cyan)">cron-system live</a> • Voice + Copernicus = backlog W5 • M5 wave mock 0.8m W1 → real OSF W2 • <a href="https://cron-system.vercel.app/orca/codebase/ORCA_Codebase_Guide.md" style="color:var(--emerald)">Full Codebase Guide</a></p>
 <table class="table">
 <thead><tr><th>Member</th><th>Role (FR)</th><th>W1 Due — 09 Sep (Build)</th><th>W2 Due — 16 Sep (Harden)</th><th>Done Check</th></tr></thead>
 <tbody>
@@ -40,6 +40,17 @@ tr:last-child td{border-bottom:0}
 <tr><td><span class="badge b-m6">M6</span> <b>Platform</b></td><td class="mono">NFR</td><td><b>FastAPI /api/pfz/today</b> proxy bypasses CORS + Vercel deploy</td><td>SMS Alerts + offline mbtiles + PDF report</td><td class="mono">Live `https://cron-system.vercel.app/orca/`</td></tr>
 </tbody>
 </table>
-<p class="note"><b class="dead">Deadlines:</b> <span class="mono">W1 Fri 05 Sep 16:00 Global Test #1 (all 6) → Tue 02 → Thu 04 daily 10:00 standup 15min • W2 Fri 12 Sep 16:00 Global Test #2 (5 SIH scenarios, P50 + geofence distance logged) → Freeze Thu 11 Sep for SIH submit. Backlog: Voice STT/TTS + Copernicus PHY/BGC W5.</span> Full doc: <a href="https://cron-system.vercel.app/orca/ORCA_GeoJSON_Architecture.md" style="color:var(--cyan)">ORCA_GeoJSON_Architecture.md</a> • This plan: <span class="mono">docs/ORCA_2Week_MPP_Plan.md</span></p>
+<p class="note"><b class="dead">Deadlines:</b> <span class="mono">W1 Fri 05 Sep 16:00 Global Test #1 (all 6) → Daily 10:00 IST standup 15min • W2 Fri 12 Sep 16:00 Global Test #2 (5 SIH scenarios, P50 + geofence) → Freeze Thu 11 Sep. Backlog: Voice STT/TTS + Copernicus W5.</span>
+<br><br><b>W1 Daily Schedule (Tue-Fri):</b>
+<table class="table" style="margin-top:.5rem;font-size:.75rem">
+<thead><tr><th>Day</th><th><span class="badge b-m1">M1</span></th><th><span class="badge b-m2">M2</span></th><th><span class="badge b-m3">M3</span></th><th><span class="badge b-m4">M4</span></th><th><span class="badge b-m5">M5</span></th><th><span class="badge b-m6">M6</span></th></tr></thead>
+<tbody>
+<tr><td class="mono">Tue 02</td><td>Brain stub</td><td>GeoJSON 437 done</td><td>Map circles</td><td>Bhashini en↔ml</td><td>EEZ download</td><td>FastAPI proxy</td></tr>
+<tr><td class="mono">Wed 03</td><td>Tool Router</td><td>PostGIS ingest</td><td>Bhuvan WMS</td><td>Chat UI</td><td>MPA ingest</td><td>Vercel deploy</td></tr>
+<tr><td class="mono">Thu 04</td><td>Combiner rank</td><td>11:30am cron</td><td>Popup citation</td><td>22 langs</td><td>ST_DWithin</td><td>Redis cache</td></tr>
+<tr style="background:rgba(34,211,238,.08)"><td class="mono" style="color:var(--cyan)"><b>Fri 05 16:00</b></td><td colspan="6" style="text-align:center;color:var(--cyan)"><b>GLOBAL TEST #1 — Malayalam text → Map pin → Safety → SMS mock</b></td></tr>
+</tbody></table>
+<br>Full docs: <a href="https://cron-system.vercel.app/orca/ORCA_GeoJSON_Architecture.md" style="color:var(--cyan)">GeoJSON Arch</a> • <a href="https://cron-system.vercel.app/orca/codebase/ORCA_Codebase_Guide.md" style="color:var(--cyan)">Codebase Guide</a> • <a href="https://cron-system.vercel.app/orca/mpp/ORCA_2Week_MPP_Plan.md" style="color:var(--cyan)">Full MPP (MD)</a>
+</p>
 </body>
 </html>

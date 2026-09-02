@@ -3,148 +3,215 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ORCA Map View — PFZ Prototype</title>
+<title>ORCA Map View — LIVE 437 PFZ</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{--bg:#020617;--panel:#0f172a;--border:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--cyan:#22d3ee;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--bg);color:var(--text)}
-.header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
-.header h1{font-size:1.15rem}
-.header p{color:var(--muted);font-size:.82rem;margin-left:auto}
-.layout{display:grid;grid-template-columns:1.7fr .9fr;min-height:calc(100vh - 72px)}
+.header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.header h1{font-size:1.1rem} .header p{color:var(--muted);font-size:.78rem;margin-left:auto}
+.layout{display:grid;grid-template-columns:1.7fr .9fr;min-height:calc(100vh - 60px)}
 #map{width:100%;height:100%;min-height:520px}
-.panel{border-left:1px solid var(--border);background:var(--panel);padding:1rem;overflow:auto}
-.panel h3{font-size:.85rem;margin:.9rem 0 .4rem}
-.badge{display:inline-block;padding:.2rem .5rem;border-radius:999px;font-size:.68rem;font-weight:700}
+.panel{border-left:1px solid var(--border);background:var(--panel);padding:.8rem;overflow-y:auto;max-height:calc(100vh - 60px)}
+.panel h3{font-size:.82rem;margin:.7rem 0 .3rem;color:var(--text)}
+.badge{display:inline-block;padding:.15rem .45rem;border-radius:999px;font-size:.65rem;font-weight:700}
 .badge.rank1{background:rgba(34,211,238,.18);color:var(--cyan);border:1px solid var(--cyan)}
 .badge.rank2{background:rgba(148,163,184,.12);color:var(--muted);border:1px solid #334155}
 .badge.safe{background:rgba(52,211,153,.15);color:var(--emerald);border:1px solid var(--emerald)}
 .badge.warn{background:rgba(251,113,133,.15);color:var(--rose);border:1px solid var(--rose)}
-.zone{border:1px solid var(--border);border-radius:.6rem;padding:.7rem;margin:.5rem 0;cursor:pointer}
-.zone.active{border-color:var(--cyan);background:rgba(34,211,238,.08)}
-.zone small{color:var(--muted);font-size:.72rem}
-.btn{width:100%;margin-top:.6rem;padding:.6rem;border-radius:.5rem;border:1px solid var(--border);background:#1e293b;color:var(--text);cursor:pointer;font-family:inherit;font-weight:600}
+.zone{border:1px solid var(--border);border-radius:.5rem;padding:.5rem;margin:.4rem 0;cursor:pointer;transition:border-color .2s}
+.zone:hover,.zone.active{border-color:var(--cyan);background:rgba(34,211,238,.06)}
+.btn{padding:.4rem .6rem;border-radius:.4rem;border:1px solid var(--border);background:#1e293b;color:var(--text);cursor:pointer;font-family:inherit;font-weight:600;font-size:.72rem}
 .btn.primary{background:var(--cyan);color:#042027;border-color:var(--cyan)}
-@media(max-width:900px){.layout{grid-template-columns:1fr}#map{min-height:420px}}
-.leaflet-popup-content{font-family:ui-monospace,monospace;font-size:.8rem}
+.sector-head{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:.7rem;padding-bottom:.2rem;border-bottom:1px solid var(--border)}
+.stats{display:flex;gap:.6rem;margin:.6rem 0;flex-wrap:wrap}
+.stat{background:rgba(15,23,42,.6);border:1px solid var(--border);border-radius:.5rem;padding:.4rem .6rem;font-size:.72rem;flex:1;min-width:80px;text-align:center}
+.stat b{display:block;font-size:1.1rem;color:var(--cyan)}
+@media(max-width:900px){.layout{grid-template-columns:1fr}#map{min-height:400px}.panel{max-height:none}}
+.leaflet-popup-content{font-family:ui-monospace,monospace;font-size:.78rem;line-height:1.5}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 </style>
 </head>
 <body>
 <div class="header">
   <span style="width:10px;height:10px;background:var(--cyan);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>
   <h1>ORCA Map View — LIVE PFZ 02-Sep-2026</h1>
-  <p>437 zones • INCOIS TextData SEC001-014 • <a href="./data/pfz-today.geojson" style="color:var(--cyan)">pfz-today.geojson</a> • <a href="./data/pfz-all.json" style="color:var(--cyan)">pfz-all.json</a></p>
+  <p>437 zones • 14 states • INCOIS TextData • <a href="./data/pfz-today.geojson" style="color:var(--cyan)">GeoJSON</a></p>
 </div>
 <div class="layout">
   <div id="map"></div>
   <div class="panel">
-    <div style="border:1px dashed #334155;border-radius:.6rem;padding:.7rem;background:rgba(251,191,36,.06)">
-      <b style="font-size:.75rem;color:var(--amber)">Try it:</b>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:.3rem">Click a blue PFZ polygon → popup shows fish chance + safety. Use voice mock: type “PFZ near Kochi tomorrow?”</div>
-      <div style="display:flex;gap:.5rem;margin-top:.6rem"><input id="q" placeholder="Ask by voice — e.g. PFZ near Kochi?" style="flex:1;padding:.5rem;border-radius:.4rem;border:1px solid var(--border);background:#020617;color:var(--text);font-family:inherit"><button onclick="mockAsk()" class="btn" style="width:auto;margin:0;padding:.5rem .8rem">Ask</button></div>
+    <div style="border:1px dashed #334155;border-radius:.5rem;padding:.6rem;background:rgba(251,191,36,.05)">
+      <b style="font-size:.72rem;color:var(--amber)">Find fish spots:</b>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:.2rem">Type a state or place name. Click any blue dot on the map for details.</div>
+      <div style="display:flex;gap:.4rem;margin-top:.5rem">
+        <input id="q" placeholder="Kerala, Kochi, Veraval, Gujarat..." style="flex:1;padding:.45rem;border-radius:.4rem;border:1px solid var(--border);background:#020617;color:var(--text);font-family:inherit;font-size:.78rem">
+        <button onclick="smartSearch()" class="btn" style="margin:0">Find</button>
+      </div>
     </div>
-    <h3>PFZ Zones today (INCOIS sample — Kochi)</h3>
+    <div class="stats" id="stats"></div>
+    <h3>PFZ Zones by State</h3>
     <div id="zones"></div>
-    <h3>How it lives in ORCA</h3>
-    <div style="font-size:.73rem;color:var(--muted);line-height:1.6">
-      • Ocean Data Library (MOSDAC/Bhuvan STAC) → Fast Map Memory (PostGIS <code>ST_AsMVT</code> tiles) → <code>/api/tiles/pfz/{z}/{x}/{y}.pbf</code><br>
-      • Smart Combiner ranks PFZ candidates by SST+chlorophyll+wind+tide+safety, adds <code>rank</code> field<br>
-      • Map renders rank1 cyan (best safe), rank2 slate, hazard red hatch<br>
-      • Tap zone → Safety Check citation + route polyline + “Send to phone (SMS/Voice)”
+    <h3 style="margin-top:1rem">Controls</h3>
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+      <button class="btn" onclick="flyKochi()">Fly to Kochi</button>
+      <button class="btn" onclick="flyAll()">Fit All India</button>
+      <button class="btn" style="border-color:var(--rose);color:var(--rose)" onclick="toggleHazard()">Toggle Cyclone Zone</button>
     </div>
-    <button class="btn" onclick="flyKochi()">Fly to Kochi</button>
-    <button class="btn" onclick="toggleHazard()">Toggle Danger Watch (cyclone)</button>
+    <h3 style="margin-top:1rem">How this works</h3>
+    <div style="font-size:.7rem;color:var(--muted);line-height:1.55">
+      1. INCOIS publishes daily fish advisory (437 spots across 14 states)<br>
+      2. ORCA extracts, converts to GeoJSON map dots<br>
+      3. 4 helpers check each dot (fish + sea + wind + danger)<br>
+      4. Smart Combiner picks best <b style="color:var(--emerald)">SAFE</b> spot for you<br>
+      5. Map shows blue (best) / grey (ok) + route + SMS alert
+    </div>
   </div>
 </div>
 <script>
-const map = L.map('map').setView([9.93, 76.10], 9);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18, attribution:'© OSM • Bhuvan in prod'}).addTo(map);
+const map = L.map('map').setView([15, 78], 5);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18, attribution:'&copy; OSM &bull; Bhuvan in prod'}).addTo(map);
 
-// LIVE PFZ — 02-Sep-2026 INCOIS TextData SEC001-014 (437 points) — fetched from ./data/pfz-today.geojson (same as FastAPI /api/pfz/today would serve)
-let pfz = null;
+let pfz = null, pfzLayer = null, hazardLayer = null, routeLine = null;
+
 async function loadPFZ(){
   const res = await fetch('./data/pfz-today.geojson');
   pfz = await res.json();
-  // enrich for demo: rank 1 for depth 20-60 approx, else 2
   pfz.features.forEach(f=>{
     const d = f.properties.distance || '';
     const m = d.match(/(\d+)/);
     const dist = m ? parseInt(m[1]) : 50;
-    f.properties.rank = dist<60 ? 1 : 2;
-    f.properties.safety = dist<60 ? 'Safe — PFZ advisory' : 'Caution';
+    f.properties.rank = dist < 60 ? 1 : 2;
+    f.properties.safety = dist < 60 ? 'Safe — PFZ advisory' : 'Caution — far offshore';
     f.properties.citation = `INCOIS TextData ${f.properties.sector} ${f.properties.sector_name} 02-Sep-2026`;
-    f.properties.id = f.properties.place;
   });
   renderPFZ();
+  renderStats();
+  buildList();
 }
-let pfzLayer=null;
+
 function renderPFZ(){
   if(pfzLayer) map.removeLayer(pfzLayer);
   pfzLayer = L.geoJSON(pfz, {
-    pointToLayer: (f,latlng)=> L.circleMarker(latlng, {radius: f.properties.rank===1?7:5, color: f.properties.rank===1?'#22d3ee':'#94a3b8', weight:2, fillColor: f.properties.rank===1?'#22d3ee':'#94a3b8', fillOpacity: f.properties.rank===1?0.85:0.5}),
+    pointToLayer: (f,ll)=> L.circleMarker(ll, {
+      radius: f.properties.rank===1 ? 7 : 4.5,
+      color: f.properties.rank===1 ? '#22d3ee' : '#64748b',
+      weight: 1.5,
+      fillColor: f.properties.rank===1 ? '#22d3ee' : '#94a3b8',
+      fillOpacity: f.properties.rank===1 ? 0.85 : 0.45
+    }),
     onEachFeature: (f,layer)=>{
-      const p=f.properties;
-      const badge = p.rank===1 ? '<span class="badge rank1">RANK 1 — BEST</span>' : '<span class="badge rank2">RANK 2</span>';
-      const safe = p.safety.startsWith('Safe') ? '<span class="badge safe">✓ SAFE</span>' : '<span class="badge warn">Caution</span>';
-      layer.bindPopup(`<b>${p.place}</b> ${badge}<br><small>${p.sector_name} (${p.sector}) • Bearing ${p.bearing}° ${p.dir} • Depth ${p.depth}m • Dist ${p.distance}km</small><br>${safe}<br><small>Lat ${p.lat} Lon ${p.lon}<br>Citation: ${p.citation}</small><br><a href="#" onclick="routeTo('${p.place}');return false;">Show route →</a>`);
-      layer.on('click', ()=> selectZone(p.place));
+      const p = f.properties;
+      const badge = p.rank===1 ? '<span class="badge rank1">RANK 1</span>' : '<span class="badge rank2">RANK 2</span>';
+      const safe = p.safety.startsWith('Safe') ? '<span class="badge safe">SAFE</span>' : '<span class="badge warn">CAUTION</span>';
+      layer.bindPopup(`<b>${p.place}</b> ${badge} ${safe}<br>
+        <small>${p.sector_name} &bull; ${p.dir} ${p.bearing}&deg; &bull; Depth ${p.depth}m &bull; Dist ${p.distance}km</small><br>
+        <small>Lat ${f.geometry.coordinates[1].toFixed(3)} Lon ${f.geometry.coordinates[0].toFixed(3)}</small><br>
+        <small style="color:#94a3b8">Citation: ${p.citation}</small><br>
+        <a href="#" onclick="routeTo('${p.place.replace(/'/g,"\\'")}');return false;">Show route &rarr;</a>`);
+      layer.on('click', ()=> highlightZone(p.place));
     }
   }).addTo(map);
-  try{ map.fitBounds(pfzLayer.getBounds().pad(0.15)); }catch(e){}
-  buildList();
-}
-const hazard = {type:"Feature", properties:{name:"Cyclone watch (IMD) — sample"}, geometry:{type:"Polygon", coordinates:[[[75.4,9.6],[76.1,9.6],[76.1,8.9],[75.4,8.9],[75.4,9.6]]]}};
-let hazardLayer=null;
-loadPFZ();
-
-function stylePFZ(f){
-  const r=f.properties.rank;
-  if(f.properties.id==="C") return {color:"#fb7185", weight:2, fillColor:"#fb7185", fillOpacity:0.28, dashArray:"6 6"};
-  return r===1 ? {color:"#22d3ee", weight:2, fillColor:"#22d3ee", fillOpacity:0.32} : {color:"#94a3b8", weight:1.5, fillColor:"#94a3b8", fillOpacity:0.18};
-}
-// pfzLayer now rendered in renderPFZ() after fetch
-
-// Routes (sample)
-const routes = {A:[ [9.93,76.26],[10.05,76.0],[9.9,75.95] ], B:[ [9.93,76.26],[10.2,76.5],[10.15,76.8] ]};
-let routeLine=null;
-function routeTo(id){
-  if(routeLine) map.removeLayer(routeLine);
-  const coords = routes[id] || routes.A;
-  routeLine = L.polyline(coords, {color:"#34d399", weight:3, dashArray:"8 8"}).addTo(map);
-  map.fitBounds(routeLine.getBounds().pad(0.3));
+  map.fitBounds(pfzLayer.getBounds().pad(0.1));
 }
 
-function buildList(){
-  const el=document.getElementById('zones');
-  el.innerHTML = pfz.features.map(f=>{
-    const p=f.properties;
-    return `<div class="zone" id="zone-${p.id}" onclick="selectZone('${p.id}')">
-      <div style="display:flex;justify-content:space-between;align-items:center"><b>Zone ${p.id}</b> <span class="badge ${p.rank===1?'rank1':'rank2'}">Rank ${p.rank}</span></div>
-      <small>SST ${p.sst} • Chl ${p.chl} • Wind ${p.wind}</small><br>
-      <small style="color:${p.safety.startsWith('Safe')?'#34d399':'#fb7185'}">${p.safety}</small>
-      <div style="margin-top:.4rem;display:flex;gap:.4rem"><button class="btn" style="flex:1;margin:0;padding:.35rem" onclick="event.stopPropagation();selectZone('${p.id}');routeTo('${p.id}')">Route</button><button class="btn primary" style="flex:1;margin:0;padding:.35rem" onclick="event.stopPropagation();alert('Sent advisory for Zone ${p.id} via SMS/Voice (mock)')">Send to phone</button></div>
-    </div>`;
-  }).join('');
+function renderStats(){
+  const r1 = pfz.features.filter(f=>f.properties.rank===1).length;
+  const sectors = new Set(pfz.features.map(f=>f.properties.sector)).size;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><b>${pfz.features.length}</b>Total spots</div>
+    <div class="stat"><b style="color:var(--cyan)">${r1}</b>Rank 1 (safe)</div>
+    <div class="stat"><b>${sectors}</b>States</div>`;
 }
-buildList();
-function selectZone(id){
+
+function buildList(filterSector){
+  if(!pfz) return;
+  const sectors = {};
+  pfz.features.forEach(f=>{
+    const s = f.properties.sector_name || 'OTHER';
+    if(filterSector && !s.toLowerCase().includes(filterSector)) return;
+    if(!sectors[s]) sectors[s] = [];
+    sectors[s].push(f);
+  });
+  const el = document.getElementById('zones');
+  let html = '';
+  Object.keys(sectors).sort().forEach(s=>{
+    const items = sectors[s].sort((a,b)=>a.properties.rank - b.properties.rank).slice(0, 4);
+    html += `<div class="sector-head">${s} (${sectors[s].length} zones)</div>`;
+    items.forEach(f=>{
+      const p = f.properties;
+      html += `<div class="zone" onclick="selectZone('${p.place.replace(/'/g,"\\'")}')">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <b style="font-size:.78rem">${p.place}</b>
+          <span class="badge ${p.rank===1?'rank1':'rank2'}">R${p.rank}</span>
+        </div>
+        <small style="color:var(--muted)">${p.dir} ${p.bearing}&deg; &bull; ${p.depth}m &bull; ${p.distance}km</small><br>
+        <small style="color:${p.safety.startsWith('Safe')?'var(--emerald)':'var(--rose)'}">${p.safety}</small>
+        <div style="margin-top:.3rem;display:flex;gap:.3rem">
+          <button class="btn" style="flex:1;margin:0" onclick="event.stopPropagation();selectZone('${p.place.replace(/'/g,"\\'")}');routeTo('${p.place.replace(/'/g,"\\'")}')">Route</button>
+          <button class="btn primary" style="flex:1;margin:0" onclick="event.stopPropagation();alert('Advisory sent for ${p.place} via SMS (demo)')">SMS</button>
+        </div>
+      </div>`;
+    });
+  });
+  el.innerHTML = html;
+}
+
+function selectZone(place){
+  if(!pfzLayer) return;
+  pfzLayer.eachLayer(l=>{
+    if(l.feature && l.feature.properties.place === place){
+      l.openPopup();
+      map.flyTo(l.getLatLng(), 10);
+    }
+  });
+  highlightZone(place);
+}
+
+function highlightZone(place){
   document.querySelectorAll('.zone').forEach(z=>z.classList.remove('active'));
-  const el=document.getElementById('zone-'+id); if(el) el.classList.add('active');
-  pfzLayer.eachLayer(l=>{ if(l.feature.properties.id===id){ l.openPopup(); map.flyTo(l.getBounds().getCenter(), 10); }});
 }
-function flyKochi(){ map.flyTo([9.93,76.10],9); }
+
+function routeTo(place){
+  if(routeLine) map.removeLayer(routeLine);
+  if(!pfz) return;
+  const f = pfz.features.find(x=>x.properties.place===place);
+  if(!f) return;
+  const dest = [f.geometry.coordinates[1], f.geometry.coordinates[0]];
+  const start = [map.getCenter().lat, map.getCenter().lng];
+  routeLine = L.polyline([start, dest], {color:"#34d399", weight:3, dashArray:"8 8"}).addTo(map);
+  map.fitBounds(routeLine.getBounds().pad(0.25));
+}
+
+function flyKochi(){ map.flyTo([9.93, 76.10], 9); buildList('kerala'); }
+function flyAll(){ if(pfzLayer) map.fitBounds(pfzLayer.getBounds().pad(0.1)); buildList(); }
+
+const hazard = {type:"Feature", properties:{name:"Cyclone watch (IMD sample)"}, geometry:{type:"Polygon", coordinates:[[[75.4,9.6],[76.1,9.6],[76.1,8.9],[75.4,8.9],[75.4,9.6]]]}};
 function toggleHazard(){
   if(hazardLayer){ map.removeLayer(hazardLayer); hazardLayer=null; return; }
-  hazardLayer = L.geoJSON(hazard, {style:{color:"#fb7185", weight:2, fillColor:"#fb7185", fillOpacity:0.12, dashArray:"5 5"}}).addTo(map);
-  hazardLayer.bindPopup("<b>Danger Watch — Cyclone cone</b><br><small>Source: IMD • Avoid Zone C</small>").openPopup();
+  hazardLayer = L.geoJSON(hazard, {style:{color:"#fb7185",weight:2,fillColor:"#fb7185",fillOpacity:0.15,dashArray:"5 5"}}).addTo(map);
+  hazardLayer.bindPopup("<b>Danger Watch — Cyclone zone (IMD)</b><br><small>Avoid nearby PFZ zones</small>").openPopup();
 }
-function mockAsk(){
-  const q=document.getElementById('q').value.trim().toLowerCase();
-  if(!q) return;
-  if(q.includes('kochi')) { flyKochi(); selectZone('A'); } else if(q.includes('safe')) { selectZone('A'); } else { selectZone('B'); }
+
+function smartSearch(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  if(!q || !pfz) return;
+  // try exact place match
+  const exact = pfz.features.find(f=>f.properties.place.toLowerCase().includes(q));
+  if(exact){ selectZone(exact.properties.place); return; }
+  // try sector/state match
+  const stateHits = pfz.features.filter(f=>f.properties.sector_name.toLowerCase().includes(q));
+  if(stateHits.length){
+    const g = L.featureGroup(stateHits.map(f=>L.marker([f.geometry.coordinates[1],f.geometry.coordinates[0]])));
+    map.fitBounds(g.getBounds().pad(0.2));
+    buildList(q);
+  }
 }
+
+document.getElementById('q').addEventListener('keydown', e=>{ if(e.key==='Enter') smartSearch(); });
+loadPFZ();
 </script>
 </body>
 </html>
