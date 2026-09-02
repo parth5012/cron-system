@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORCA GeoJSON Pipeline — Atomic Arch</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#020617;--panel:rgba(15,23,42,.5);--border:#1e293b;--text:#fff;--muted:#94a3b8;--faint:#64748b;--cyan:#22d3ee;--emerald:#34d399;--violet:#a78bfa;--amber:#fbbf24;--rose:#fb7185}
+[data-theme="light"]{--bg:#f8fafc;--panel:#fff;--border:#e2e8f0;--text:#0f172a;--muted:#64748b}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);padding:1.5rem}
+.container{max-width:1100px;margin:0 auto}
+h1{font-size:1.3rem;margin-bottom:.3rem} .sub{color:var(--muted);font-size:.82rem;margin-bottom:1rem}
+.diagram{background:var(--panel);border:1px solid var(--border);border-radius:1rem;padding:1rem;overflow:auto}
+svg{width:100%;min-width:900px;display:block}
+.c-external{fill:rgba(30,41,59,.5);stroke:#94a3b8} .c-frontend{fill:rgba(8,51,68,.4);stroke:#22d3ee} .c-backend{fill:rgba(6,78,59,.4);stroke:#34d399} .c-database{fill:rgba(76,29,149,.4);stroke:#a78bfa} .c-security{fill:rgba(136,19,55,.4);stroke:#fb7185}
+.t-primary{fill:var(--text);font-weight:700} .t-muted{fill:var(--muted)} .a-default{stroke:#64748b;fill:none} .a-emphasis{stroke:#34d399;fill:none}
+.note{margin-top:1rem;background:var(--panel);border:1px dashed var(--border);border-radius:.6rem;padding:.8rem;font-size:.75rem;color:var(--muted)}
+.note b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>ORCA GeoJSON Pipeline — Atomic (PFZ TextData → Map)</h1>
+<p class="sub">02-Sep-2026 437 zones SEC001-014 • INCOIS TextDataHome with JSESSIONID → pfz-today.geojson → PostGIS → Smart Combiner → Map View</p>
+<div class="diagram">
+<svg viewBox="0 0 1080 520" role="img" aria-label="ORCA GeoJSON atomic pipeline">
+<defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748b"/></marker><marker id="ahe" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#34d399"/></marker></defs>
+<!-- Boxes -->
+<rect x="20" y="60" width="170" height="70" rx="8" class="c-external" stroke-width="1.5"/><text x="105" y="88" text-anchor="middle" class="t-primary" font-size="11">INCOIS TextDataHome</text><text x="105" y="104" text-anchor="middle" class="t-muted" font-size="9">mfid=1 + JSESSIONID</text><text x="105" y="118" text-anchor="middle" class="t-muted" font-size="7">PFZViewer dead 404</text>
+<rect x="220" y="60" width="170" height="70" rx="8" class="c-external" stroke-width="1.5"/><text x="305" y="88" text-anchor="middle" class="t-primary" font-size="11">TextData SEC001-014</text><text x="305" y="104" text-anchor="middle" class="t-muted" font-size="9">HTML table 7-col</text><text x="305" y="118" text-anchor="middle" class="t-muted" font-size="7">place | bearing | lat DMS</text>
+<rect x="420" y="60" width="170" height="70" rx="8" class="c-frontend" stroke-width="1.5"/><text x="505" y="88" text-anchor="middle" class="t-primary" font-size="11">Parse DMS → Decimal</text><text x="505" y="104" text-anchor="middle" class="t-muted" font-size="9">8 33 18 N → 8.555</text><text x="505" y="118" text-anchor="middle" class="t-muted" font-size="7">437 Points</text>
+<rect x="620" y="60" width="170" height="70" rx="8" class="c-database" stroke-width="1.5"/><text x="705" y="88" text-anchor="middle" class="t-primary" font-size="11">pfz-today.geojson</text><text x="705" y="104" text-anchor="middle" class="t-muted" font-size="9">Point(lon,lat) 128KB</text><text x="705" y="118" text-anchor="middle" class="t-muted" font-size="7">+ pfz-all.json</text>
+<rect x="820" y="60" width="170" height="70" rx="8" class="c-database" stroke-width="1.5"/><text x="905" y="88" text-anchor="middle" class="t-primary" font-size="11">PostGIS + Redis</text><text x="905" y="104" text-anchor="middle" class="t-muted" font-size="9">ST_AsMVT tiles</text><text x="905" y="118" text-anchor="middle" class="t-muted" font-size="7">/tiles/{z}/{x}/{y}.pbf</text>
+<!-- Agents row -->
+<rect x="80" y="220" width="150" height="60" rx="8" class="c-backend" stroke-width="1.5"/><text x="155" y="248" text-anchor="middle" class="t-primary" font-size="11">🐟 Fish Finder</text><text x="155" y="264" text-anchor="middle" class="t-muted" font-size="8">WHERE sector=KERALA</text>
+<rect x="280" y="220" width="150" height="60" rx="8" class="c-backend" stroke-width="1.5"/><text x="355" y="248" text-anchor="middle" class="t-primary" font-size="11">🌊 Sea Checker</text><text x="355" y="264" text-anchor="middle" class="t-muted" font-size="8">wave at point</text>
+<rect x="480" y="220" width="150" height="60" rx="8" class="c-backend" stroke-width="1.5"/><text x="555" y="248" text-anchor="middle" class="t-primary" font-size="11">⛅ Weather</text><text x="555" y="264" text-anchor="middle" class="t-muted" font-size="8">wind at point</text>
+<rect x="680" y="220" width="150" height="60" rx="8" class="c-backend" stroke-width="1.5"/><text x="755" y="248" text-anchor="middle" class="t-primary" font-size="11">⚠️ Danger</text><text x="755" y="264" text-anchor="middle" class="t-muted" font-size="8">EEZ MPA check</text>
+<rect x="380" y="340" width="220" height="70" rx="8" class="c-backend" stroke-width="1.8"/><text x="490" y="368" text-anchor="middle" class="t-primary" font-size="11">✨ Smart Combiner</text><text x="490" y="384" text-anchor="middle" class="t-muted" font-size="9">Fusion • Rank • Explain</text><text x="490" y="398" text-anchor="middle" class="t-muted" font-size="7">after swarm</text>
+<rect x="120" y="340" width="170" height="70" rx="8" class="c-frontend" stroke-width="1.5"/><text x="205" y="368" text-anchor="middle" class="t-primary" font-size="11">🗺️ Map View</text><text x="205" y="384" text-anchor="middle" class="t-muted" font-size="9">Leaflet 437 circles</text><text x="205" y="398" text-anchor="middle" class="t-muted" font-size="7">tap → popup</text>
+<rect x="680" y="340" width="170" height="70" rx="8" class="c-security" stroke-width="1.5"/><text x="765" y="368" text-anchor="middle" class="t-primary" font-size="11">✅ Safety Check</text><text x="765" y="384" text-anchor="middle" class="t-muted" font-size="9">citation</text>
+<!-- Arrows top -->
+<path d="M190 95 L220 95" class="a-default" stroke-width="1.5" marker-end="url(#ah)"/><path d="M390 95 L420 95" class="a-default" stroke-width="1.5" marker-end="url(#ah)"/><path d="M590 95 L620 95" class="a-default" stroke-width="1.5" marker-end="url(#ah)"/><path d="M790 95 L820 95" class="a-default" stroke-width="1.5" marker-end="url(#ah)"/>
+<!-- Tiles to agents -->
+<path d="M905 130 L905 190 L755 190 L755 220" class="a-default" stroke-width="1.2" marker-end="url(#ah)"/><path d="M905 130 L555 130 L555 220" class="a-default" stroke-width="1.2" marker-end="url(#ah)"/><path d="M905 130 L355 130 L355 220" class="a-default" stroke-width="1.2" marker-end="url(#ah)"/><path d="M905 130 L155 130 L155 220" class="a-default" stroke-width="1.2" marker-end="url(#ah)"/>
+<!-- Agents to combiner -->
+<path d="M155 280 L155 310 L380 310 L380 340" class="a-default" stroke-width="1.2" marker-end="url(#ah)"/><path d="M355 280 L355 320 L380 320 L380 345" class="a-default" stroke-width="1.2" marker-end="url(#ah)"/><path d="M555 280 L555 330 L600 330" class="a-default" stroke-width="1.2" marker-end="url(#ah)"/><path d="M755 280 L680 280 L680 350" class="a-default" stroke-width="1.2" marker-end="url(#ah)"/>
+<!-- Combiner to outputs -->
+<path d="M380 375 L290 375" class="a-emphasis" stroke-width="1.8" marker-end="url(#ahe)"/><path d="M600 375 L680 375" class="a-emphasis" stroke-width="1.8" marker-end="url(#ahe)"/>
+<text x="335" y="370" font-size="8" fill="#34d399">synthesis</text><text x="640" y="370" font-size="8" fill="#34d399">explain</text>
+</svg>
+</div>
+<div class="note">
+<b>How to read:</b> Top row is <b>data pipeline</b> you built today (TextDataHome → GeoJSON → Tiles). Bottom row is <b>multi-agent</b> that reads same GeoJSON points. <b>Smart Combiner after swarm</b> fuses them → <b>Map View</b> shows cyan `rank1` circles with `Bearing/Distance/Citation INCOIS TextData` popup + route. Live data: <a href="https://cron-system.vercel.app/orca/map/data/pfz-today.geojson" style="color:var(--cyan)">pfz-today.geojson</a> • Map: <a href="https://cron-system.vercel.app/orca/map/" style="color:var(--cyan)">/orca/map/</a>
+</div>
+</div>
+</body>
+</html>
