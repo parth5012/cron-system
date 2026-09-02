@@ -632,12 +632,16 @@
         <path d="M 765 261 L 789.5 261 Q 797.5 261 797.5 253 L 797.5 172 Q 797.5 164 805.5 164 L 830 164" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path d="M 765 341 L 789.5 341 Q 797.5 341 797.5 333 L 797.5 172 Q 797.5 164 805.5 164 L 830 164" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path d="M 907.5 198 L 907.5 219 L 907.5 219 L 907.5 240" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-        <path d="M 692.5 132 L 692.5 208 Q 692.5 216 684.5 216 L 498 216 Q 490 216 490 224 L 490 300" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <path d="M 696 372 L 696 420 Q 696 430 696 430" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path d="M 620 341 L 620 347.75 Q 620 354.5 613.25 354.5 L 496.75 354.5 Q 490 354.5 490 361.25 L 490 368" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path d="M 490 300 L 490 290 Q 490 282 482 282 L 373 282 Q 365 282 365 274 L 365 264" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 570 334 L 692 334 Q 700 334 700 342 L 700 366 Q 700 374 708 374 L 830 374" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path d="M 490 368 L 490 389 L 490 389 L 490 410" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
         <path d="M 830 374 L 830 282 Q 830 274 822 274 L 373 274 Q 365 274 365 266 L 365 174" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        <!-- New: Smart Combiner (after swarm) → Map View + Alerts -->
+        <path d="M 612 464 L 520 464 Q 440 464 440 444 L 430 430" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <!-- Map View → Safety Check (explain) -->
+        <path d="M 340 465 L 340 478 Q 340 486 348 486 L 410 486" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
 
         <!-- Components -->
         <rect x="30" y="95" width="152" height="68" rx="6" class="c-mask"/>
@@ -662,10 +666,11 @@
         <text x="289" y="184" class="t-muted" font-size="9" text-anchor="middle">Chat by voice or map tap</text>
         <text x="289" y="200" class="t-frontend" font-size="7" text-anchor="middle">Works in your language</text>
 
-        <rect x="210" y="250" width="158" height="70" rx="6" class="c-mask"/>
-        <rect x="210" y="250" width="158" height="70" rx="6" class="c-frontend" stroke-width="1.5"/>
-        <text x="289" y="282" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">🗺️ Map View</text>
-        <text x="289" y="298" class="t-muted" font-size="9" text-anchor="middle">See fish zones on map</text>
+        <rect x="250" y="395" width="180" height="70" rx="6" class="c-mask"/>
+        <rect x="250" y="395" width="180" height="70" rx="6" class="c-frontend" stroke-width="1.5"/>
+        <text x="340" y="427" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">🗺️ Map View</text>
+        <text x="340" y="443" class="t-muted" font-size="9" text-anchor="middle">Tap zone → get safety + route</text>
+        <text x="340" y="455" class="t-frontend" font-size="7" text-anchor="middle">Leaflet • PFZ overlays • Offline</text>
 
         <rect x="410" y="150" width="160" height="68" rx="6" class="c-mask"/>
         <rect x="410" y="150" width="160" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
@@ -694,11 +699,11 @@
         <text x="692.5" y="339" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">⚠️ Danger Watch</text>
         <text x="692.5" y="355" class="t-muted" font-size="9" text-anchor="middle">Cyclone • Lightning • No-go zone</text>
 
-        <rect x="410" y="300" width="160" height="68" rx="6" class="c-mask"/>
-        <rect x="410" y="300" width="160" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
-        <text x="490" y="328" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">✨ Smart Combiner</text>
-        <text x="490" y="344" class="t-muted" font-size="9" text-anchor="middle">Picks best safe option</text>
-        <text x="490" y="360" class="t-backend" font-size="7" text-anchor="middle">Explains why — with proof</text>
+        <rect x="612" y="430" width="168" height="68" rx="6" class="c-mask"/>
+        <rect x="612" y="430" width="168" height="68" rx="6" class="c-backend" stroke-width="1.5"/>
+        <text x="696" y="458" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">✨ Smart Combiner</text>
+        <text x="696" y="474" class="t-muted" font-size="9" text-anchor="middle">Picks best safe option</text>
+        <text x="696" y="490" class="t-backend" font-size="7" text-anchor="middle">Explains why — with proof</text>
 
         <rect x="830" y="130" width="155" height="68" rx="6" class="c-mask"/>
         <rect x="830" y="130" width="155" height="68" rx="6" class="c-database" stroke-width="1.5"/>
