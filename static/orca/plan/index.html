@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORCA — SIH26176 Technical Plan + 6-Member Split (Live GeoJSON)</title>
+<style>
+  :root{
+    --bg:#10131a; --side:#0d1015; --surf:#171b23; --surf2:#1d222c;
+    --line:#242a35; --fg:#e6e9ee; --dim:#8b93a1; --dim2:#5d6572; --acc:#818cf8;
+    --crit:#f87171; --high:#fb923c; --med:#fbbf24; --low:#38bdf8; --info:#94a3b8;
+    --sans:'Inter',system-ui,sans-serif; --mono:'Cascadia Code',ui-monospace,Menlo,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13.5px;line-height:1.55;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+  header.top{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--line);flex-shrink:0}
+  .brand{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:9px}
+  .brand .sq{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#818cf8,#6366f1);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:#fff}
+  .crumb{color:var(--dim);font-size:12.5px}
+  .chips{margin-left:auto;display:flex;gap:5px}
+  .chip{font-size:11.5px;font-weight:600;padding:4px 11px;border-radius:99px;border:1px solid var(--line);color:var(--dim);cursor:pointer;background:transparent}
+  .chip:hover{color:var(--fg)}
+  .chip.on{background:var(--surf2);color:var(--fg);border-color:#39404d}
+  .chip i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;font-style:normal}
+  main{flex:1;display:flex;min-height:0}
+  .listpane{width:360px;flex-shrink:0;border-right:1px solid var(--line);background:var(--side);overflow-y:auto}
+  .item{display:block;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;border-left:3px solid transparent}
+  .item:hover{background:var(--surf)}
+  .item.on{background:var(--surf);border-left-color:var(--sc)}
+  .irow{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .sdot{width:8px;height:8px;border-radius:50%;background:var(--sc)}
+  .isv{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--sc)}
+  .icat{margin-left:auto;font-size:10.5px;color:var(--dim2)}
+  .ititle{font-size:13px;font-weight:500;line-height:1.4}
+  .ipath{font-family:var(--mono);font-size:10.5px;color:var(--dim2);margin-top:4px}
+  .detailpane{flex:1;min-width:0;overflow-y:auto;padding:26px 32px}
+  .dhead{margin-bottom:20px}
+  .drow{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+  .dbadge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--sc);background:color-mix(in srgb,var(--sc) 14%,transparent);padding:3px 11px;border-radius:99px}
+  .dbadge.soft{color:var(--dim);background:var(--surf2)}
+  h1{font-size:20px;font-weight:650;letter-spacing:-.01em;line-height:1.35}
+  .dpath{font-family:var(--mono);font-size:11.5px;color:var(--acc);margin-top:9px}
+  .card{background:var(--surf);border:1px solid var(--line);border-radius:11px;padding:17px 19px;margin-bottom:13px}
+  .card h2{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim2);margin-bottom:9px}
+  p{color:#c9cfd9}
+  pre{margin-top:10px;background:#0b0e13;border:1px solid var(--line);border-radius:8px;padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.6;color:#c4cad6;overflow-x:auto}
+  .fixcard{border-left:3px solid #34d399}
+  .fixcard h2{color:#34d399}
+  .tagsline{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .tag{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:2px 10px}
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="brand"><span class="sq">VF</span> visual-findings</span>
+  <span class="crumb">/ ORCA — SIH26176 Technical Plan + 6-Member Split (Live GeoJSON) · 7 findings</span>
+  <div class="chips" id="chips">
+    <button class="chip on" data-sev="">All</button>
+    <button class="chip" data-sev="critical"><i style="background:var(--crit)"></i>Critical</button>
+    <button class="chip" data-sev="high"><i style="background:var(--high)"></i>High</button>
+    <button class="chip" data-sev="medium"><i style="background:var(--med)"></i>Medium</button>
+    <button class="chip" data-sev="low"><i style="background:var(--low)"></i>Low</button>
+    <button class="chip" data-sev="info"><i style="background:var(--info)"></i>Info</button>
+  </div>
+</header>
+
+<main>
+  <nav class="listpane vf-listpane" id="list"></nav>
+  <article class="detailpane" id="detail"></article>
+</main>
+
+<script>
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+const F = [{"id":"plan-01","sev":"info","sc":"var(--info)","cat":"ux","title":"M2 — Live PFZ GeoJSON Pipeline (437 points) — DONE","path":"tmp/pfz-today.geojson:1","url":"https://cron-system.vercel.app/orca/map/data/pfz-today.geojson","tags":["#INCOIS","#GeoJSON","#live"],"desc":"INCOIS TextData SEC001-014 HTML tables (7-col: place|dir|bearing|depth|distance|lat DMS|lon DMS) parsed with JSESSIONID cookie. DMS 8 33 18 N → 8.555 decimal. 437 Point features saved as pfz-today.geojson (128KB) + pfz-all.json. Replaces dead pfzmmaps/20260902.kml 404 and PFZViewer 404. Daily 11am publish, cached for offline.","code":null,"fix":"Automate daily 11:30am cron FastAPI /ingest/pfz → PostGIS. Keep Copernicus PHY+BGC fallback as backlog (nice-to-have)."},{"id":"plan-02","sev":"info","sc":"var(--info)","cat":"ux","title":"M3 — Map View Shows Live PFZ (Live Demo)","path":"static/orca/map/index.html:1","url":"https://cron-system.vercel.app/orca/map/","tags":["#Leaflet","#PFZ"],"desc":"Leaflet map now fetches ./data/pfz-today.geojson, renders 437 circleMarkers (cyan rank1 &lt;60km, slate rank2), popup with bearing/distance/citation INCOIS TextData 02-Sep, route polyline, hazard toggle. Fast Map Store tiles /tiles/{z}/{x}/{y}.pbf planned. Top row data pipeline → bottom row 4 helpers → Smart Combiner after swarm.","code":null,"fix":"Next: replace mock 0.8m wave popup with real OSF wave in W2."},{"id":"plan-03","sev":"high","sc":"var(--high)","cat":"tech-debt","title":"M1 — Orchestrator + Smart Combiner After Swarm","path":"tmp/sih26176.html:654","url":"https://cron-system.vercel.app/orca/","tags":["#agentic","#ReAct"],"desc":"Brain (Intent→Planner→Tool Router, ReAct) splits fish where? + safe? into 4 parallel helpers. All read same lat/lon GeoJSON key. Smart Combiner x612,y430 after swarm fuses Fish Finder + Sea Checker + Weather + Danger → Fusion•Rank•Explain. Previous position x410 left of swarm caused back-track arrow confusion — fixed.","code":null,"fix":"Ranking W1: closest *0.4 + safe sea (mock 0.8m) *0.3 + safe wind *0.2 + not banned *0.1. Real OSF wave in W2."},{"id":"plan-04","sev":"medium","sc":"var(--med)","cat":"ux","title":"M4 — Multilingual Text (MVP) vs Voice (Backlog)","path":"docs/ORCA_GeoJSON_Architecture.md:1","url":"https://cron-system.vercel.app/orca/ORCA_GeoJSON_Architecture.md","tags":["#Bhashini","#i18n"],"desc":"MVP: Bhashini ULCA Translate 22 langs text only (request_locale=ta/ml/hi), Language Detect fasttext on Talk to ORCA. Voice STT/TTS is nice-to-have backlog W5. Demo: Kochi fisherman types Malayalam &#039;എവിടെ മത്സ്യം?&#039; → answer in Malayalam text + map pin 8.55,76.16. No mic needed for judges.","code":null,"fix":"Keep NLLB offline as fallback if Bhashini quota."},{"id":"plan-05","sev":"high","sc":"var(--high)","cat":"security","title":"M5 — Safety + Geofencing (W1 Mock, W2 Real OSF)","path":"tmp/pfz-today.geojson:1","url":"https://www.marineregions.org","tags":["#geofencing","#OSF"],"desc":"W1: EEZ MarineRegions + WDPA MPA → PostGIS ST_DWithin(boat, eez, 2km) Danger Watch IMBL. Wave mock 0.8m safe for all 437 points to keep W1 light (~1.5d). Real OSF daily 06Z (wave/current NetCDF → ST_Value at PFZ point) deferred to W2 (~+2d) → W1 would be heavy ~3.5d and risk slip.","code":null,"fix":"W1 mock wave, W2 swap to real OSF + IMD wind/cyclone. Judges see geofencing PS bullet already in W1."},{"id":"plan-06","sev":"medium","sc":"var(--med)","cat":"performance","title":"M6 — Platform + FastAPI Proxy (CORS Fix) + Deploy","path":"cron-system/static/orca:1","url":"https://cron-system.vercel.app/orca/","tags":["#FastAPI","#Vercel"],"desc":"FastAPI /api/pfz/today server proxy: browser fetch(&#039;/api/pfz/today&#039;) same-origin → no CORS, server requests.get(&#039;https://incois...&#039;) bypasses INCOIS CORS. Vercel static/orca file_count:6 335959 bytes, auto-deploy. Offline mbtiles via expo-file-system (VelaVoice pattern).","code":null,"fix":"Add daily ingest cron + Redis cache 6h."},{"id":"plan-07","sev":"info","sc":"var(--info)","cat":"ux","title":"User Flow — Closest + Safe (Simple)","path":"tmp/orca-geojson-arch.html:1","url":"https://cron-system.vercel.app/orca/geojson/","tags":["#user-journey"],"desc":"1. Get user location GPS or &#039;near Kochi&#039; → 2. Find closest dots from 437 GeoJSON within 80km → 3. 4 helpers filter (Sea/Wind/Danger) → 4. Smart Picker shows best SAFE spot (not just closest) on Map with proof citation + route + SMS in user language. Saves 4h + 40L diesel.","code":null,"fix":"Demo path for SIH 4min: Malayalam text → map pin → safety popup."}];
+let cur=0, sevF='';
+const listEl=document.getElementById('list'), detEl=document.getElementById('detail');
+
+function renderList(){
+  listEl.innerHTML=F.map((f,i)=>
+    (sevF&&f.sev!==sevF)?'':
+    `<div class="item ${i===cur?'on':''}" style="--sc:${f.sc}" data-i="${i}">
+      <div class="irow"><span class="sdot"></span><span class="isv">${esc(f.sev)}</span><span class="icat">${esc(f.cat)}</span></div>
+      <div class="ititle">${esc(f.title)}</div><div class="ipath">${esc(f.path)}</div></div>`).join('');
+  listEl.querySelectorAll('.item').forEach(el=>el.onclick=()=>{cur=+el.dataset.i;renderList();renderDetail()});
+}
+function renderDetail(){
+  if(!F.length){detEl.innerHTML='<div class="card">No findings</div>';return}
+  const f=F[cur];
+  detEl.innerHTML=`
+    <div class="dhead">
+      <div class="drow"><span class="dbadge">${esc(f.sev)}</span><span class="dbadge soft">${esc(f.cat)}</span><span class="dbadge soft">${esc(f.id)}</span></div>
+      <h1>${esc(f.title)}</h1>
+      <div class="dpath">${esc(f.path)} · generated 2026-09-02 ${f.url ? `· <a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--acc)">${esc(f.url)} ↗</a>` : ''}</div>
+    </div>
+    <div class="card"><h2>Description</h2><p>${f.desc}</p></div>
+    ${f.code?`<div class="card"><h2>Evidence</h2><pre>${f.code}</pre></div>`:''}
+    ${f.fix?`<div class="card fixcard"><h2>Recommended fix</h2><p>${f.fix}</p></div>`:''}
+    <div class="tagsline">${(f.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`;
+}
+document.getElementById('chips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+  sevF=c.dataset.sev;
+  document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c));
+  const vis=F.findIndex((f,i)=>(!sevF||f.sev===sevF)&&i>=cur);
+  cur=vis===-1?0:vis; renderList(); renderDetail();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    e.preventDefault();
+    const vis=F.map((f,i)=>(!sevF||f.sev===sevF)?i:-1).filter(i=>i>=0);
+    let p=vis.indexOf(cur);
+    cur=vis[Math.max(0,Math.min(vis.length-1,p+(e.key==='ArrowDown'?1:-1)))];
+    renderList();renderDetail();
+  }
+});
+renderList();renderDetail();
+</script>
+</body>
+</html>
