@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORCA Marine Glossary — Abbreviations & Fisher Jargons</title>
+<style>
+*{box-sizing:border-box}body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#071525;color:#e8f1f8}
+header{background:linear-gradient(135deg,#04263e,#0a4a6b);padding:32px 24px;text-align:center}
+header h1{margin:0;font-size:28px}header p{opacity:.85;margin:8px 0 0}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.badge{background:#0e6b95;padding:4px 12px;border-radius:20px;font-size:12px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px}
+.search{position:sticky;top:0;background:#071525;padding:12px 0;z-index:5}
+.search input{width:100%;padding:12px 16px;border-radius:10px;border:1px solid #1b3a52;background:#0b2236;color:#fff;font-size:15px}
+h2{margin:32px 0 12px;color:#5fd4ff;border-bottom:1px solid #16405d;padding-bottom:8px}
+table{width:100%;border-collapse:collapse;background:#0b2236;border-radius:12px;overflow:hidden;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid #143247}
+th{background:#103852;color:#8fdfff;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+tr:hover td{background:#0e2d46}
+code{background:#12354f;padding:2px 6px;border-radius:6px;color:#7de3ff;font-weight:700}
+.src{font-size:11px;opacity:.7}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{background:#0b2236;border:1px solid #16405d;border-radius:12px;padding:14px}
+.card b{color:#5fd4ff}
+footer{padding:24px;text-align:center;opacity:.6;font-size:12px}
+a{color:#5fd4ff}
+@media(max-width:640px){table{font-size:12px}header h1{font-size:20px}}
+</style>
+</head>
+<body>
+<header>
+<h1>⚓ ORCA Marine Glossary</h1>
+<p>All abbreviations & fisher-job jargons extracted from <b>orca-marine-intelligence</b> codebase</p>
+<div class="badges"><span class="badge">SIH26176 ISRO</span><span class="badge">437 PFZ zones/day</span><span class="badge">22 languages via Bhashini</span><span class="badge">INCOIS 11:30 AM IST</span></div>
+</header>
+<div class="wrap">
+<div class="search"><input id="q" placeholder="🔍 Search abbreviation, e.g. PFZ, EEZ, SST, trawl, Mathi..." oninput="filter()"></div>
+
+<h2>1. Core Abbreviations — Fisher's Daily Job (28)</h2>
+<table id="t1">
+<tr><th>Abbr</th><th>Full Form</th><th>Job Meaning</th><th>Source</th></tr>
+<tr><td><code>PFZ</code></td><td>Potential Fishing Zone</td><td>Daily govt advisory — where fish school today. Query: PFZ today?</td><td class="src">backend/routers/pfz.py, data/pfz-today.geojson</td></tr>
+<tr><td><code>INCOIS</code></td><td>Indian National Centre for Ocean Information Services</td><td>Publishes 11:30 AM tables SEC001-014. Citation = proof</td><td class="src">backend/ingest/incois_textdata.py</td></tr>
+<tr><td><code>SEC001-SEC014</code></td><td>Sector ID</td><td>14 coastal sectors: SEC005 Kerala, SEC001 Gujarat…SEC014 Lakshadweep</td><td class="src">scripts/extract_pfz.sh</td></tr>
+<tr><td><code>SST</code></td><td>Sea Surface Temperature (°C)</td><td>Front indicator. Query chlorophyll/SST hotspots</td><td class="src">docs/research, README</td></tr>
+<tr><td><code>CHL / Chl-a</code></td><td>Chlorophyll-a (mg/m³)</td><td>Plankton = fish food. PFZ = SST+CHL intersection. e.g. 0.85 mg/m³</td><td class="src">marine_data_package, frontend/chat</td></tr>
+<tr><td><code>SSH / SLA</code></td><td>Sea Surface Height / Sea Level Anomaly</td><td>Eddy/upwelling proxy for tuna</td><td class="src">data/marine_data_package</td></tr>
+<tr><td><code>SSS</code></td><td>Sea Surface Salinity</td><td>Ocean model param</td><td class="src">data/marine_data_package</td></tr>
+<tr><td><code>EEZ</code></td><td>Exclusive Economic Zone 200nm</td><td>Legal border. &gt;10km safe, 2-10km caution, &lt;2km/outside = RED veto</td><td class="src">danger_agent.py, geofence.py</td></tr>
+<tr><td><code>MPA</code></td><td>Marine Protected Area</td><td>No-take sanctuary e.g. Vembanad, Gulf of Mannar. Inside = RED veto</td><td class="src">data/mpa.geojson, schema.sql</td></tr>
+<tr><td><code>IMBL</code></td><td>International Maritime Boundary Line</td><td>Arrest risk border. 2km buffer warning, 5km caution</td><td class="src">00-core.md, danger_agent</td></tr>
+<tr><td><code>IMD</code></td><td>India Meteorological Dept</td><td>Wind/cyclone/lightning. fetch_imd_wind(), mausam.imd.gov.in</td><td class="src">weather_agent.py</td></tr>
+<tr><td><code>OSF</code></td><td>Ocean State Forecast</td><td>Wave/current forecast. fetch_osf_wave_current(), OSF 06Z Zarr</td><td class="src">sea_checker.py</td></tr>
+<tr><td><code>HWA / SSA</code></td><td>High Wave Advisory / Swell Surge Advisory</td><td>INCOIS hazard bulletins → marine_hazards.parquet</td><td class="src">ORCA_Marine_Data_Integration_Summary.md</td></tr>
+<tr><td><code>ESSO / MoES</code></td><td>Earth System Science Org / Ministry of Earth Sciences</td><td>Parent of INCOIS</td><td class="src">README attribution</td></tr>
+<tr><td><code>WDPA</code></td><td>World Database on Protected Areas</td><td>Source for mpa.geojson</td><td class="src">boundaries.py</td></tr>
+<tr><td><code>VLIZ MarineRegions</code></td><td>Flanders Marine Institute</td><td>Source for eez.geojson 200nm polygons</td><td class="src">boundaries.py</td></tr>
+<tr><td><code>OISST / NOAA</code></td><td>Optimum Interpolation SST</td><td>0.25° daily grids fallback</td><td class="src">Marine_Data_Integration_Summary</td></tr>
+<tr><td><code>VIIRS / MODIS / OLCI</code></td><td>Satellite ocean-colour sensors</td><td>4km chlorophyll grids</td><td class="src">copernicus_fallback.py</td></tr>
+<tr><td><code>ERA5-Ocean</code></td><td>ECMWF Reanalysis v5</td><td>wave_height_m, wind_speed_kt history</td><td class="src">coastal_point_features.parquet</td></tr>
+<tr><td><code>IBTrACS</code></td><td>Int. Best Track Archive</td><td>198 North Indian cyclones 2006-2025</td><td class="src">cyclone_events.parquet</td></tr>
+<tr><td><code>ETOPO2022 / GEBCO</code></td><td>Global Bathymetry</td><td>30 arc-sec depth / shelf break</td><td class="src">processed/bathymetry</td></tr>
+<tr><td><code>DMS</code></td><td>Degrees-Minutes-Seconds</td><td>8 33 18 N → 8.555 via dms_to_decimal.py</td><td class="src">scripts/dms_to_decimal.py</td></tr>
+<tr><td><code>WGS84</code></td><td>World Geodetic System 1984</td><td>GPS standard, GEOMETRY(...,4326)</td><td class="src">schema.sql, API.md</td></tr>
+<tr><td><code>GPS</code></td><td>Global Positioning System</td><td>Boat GPS [9.9312,76.2673] or 'near Kochi' lookup</td><td class="src">ChatPanel.tsx, orchestrator.py</td></tr>
+<tr><td><code>JSESSIONID</code></td><td>Java Session cookie</td><td>INCOIS auth via TextDataHome?mfid=1, expires daily</td><td class="src">extract_pfz.sh</td></tr>
+<tr><td><code>hPa</code></td><td>Hectopascal</td><td>&gt;1005 safe, 995-1005 depression, &lt;995 cyclone</td><td class="src">README safety matrix</td></tr>
+<tr><td><code>kt / nm</code></td><td>Knots / Nautical Mile</td><td>wind &lt;15 safe, 15-25 small-craft, &gt;25 gale. 1nm=1.852km</td><td class="src">routers/weather.py</td></tr>
+<tr><td><code>NE/NW/SE/SW</code></td><td>Compass quadrants</td><td>direction col + 232° bearing. വടക്ക്-കിഴക്ക് (NE) etc.</td><td class="src">03-coastal-marine-dictionary-spec.md</td></tr>
+</table>
+
+<h2>2. Job Jargons</h2>
+<div class="grid">
+<div class="card"><b>bearing / depth / distance</b><br>232° azimuth, 55-60m depth, 12km distance — INCOIS 7-col table → GeoJSON properties</div>
+<div class="card"><b>landing center / harbor / jetty</b><br>Where fisherman starts. Kochi, Munambam, Kasimedu etc. → GPS lookup</div>
+<div class="card"><b>haversine 80→120→160km</b><br>Closest-zone search radius expansion if no safe zone</div>
+<div class="card"><b>geofence / ST_DWithin / ST_Contains</b><br>Is point inside EEZ/MPA? Within 2km IMBL? PostGIS check</div>
+<div class="card"><b>safety badge + DO NOT SAIL</b><br>Green &lt;1.5m/&lt;15kt, Yellow 1.5-2.5m, Red &gt;2.5m/&gt;25kt/cyclone/MPA veto</div>
+<div class="card"><b>green route / fly-to</b><br>Map flies to winner, draws safe route from GPS dot</div>
+<div class="card"><b>swell / tide / upwelling / front / bloom</b><br>Swell height/period, tide range, SST front, plankton bloom = fish</div>
+<div class="card"><b>artisanal / small craft / set sail</b><br>4M+ artisanal fishermen, small boat warnings, കടലിൽ പോകരുത്!</div>
+</div>
+
+<h2>3. Fish Species — Vernacular (Market Names)</h2>
+<table id="t2">
+<tr><th>Commercial</th><th>Malayalam</th><th>Tamil</th><th>Telugu / Hindi</th></tr>
+<tr><td>Sardine</td><td>മത്തി Mathi</td><td>மத்தி Mathi</td><td>Kavvalu / तारली Tarli</td></tr>
+<tr><td>Mackerel</td><td>അയല Ayala</td><td>அயலை</td><td>Kanagarthalu / बांगडा Bangda</td></tr>
+<tr><td>Yellowfin Tuna</td><td>ചൂര Choora</td><td>சூரை Soorai</td><td>Soora / टूना Tuna</td></tr>
+<tr><td>Kingfish / Seer</td><td>നെയ്മീൻ Neymeen</td><td>வஞ்சிரம் Vanjaram</td><td>Vanjaram / सुरमई Surmai</td></tr>
+<tr><td>Silver Pomfret</td><td>ആവോലി Avoli</td><td>வவ்வால் Vavval</td><td>Chandamama / पापलेट Paplet</td></tr>
+<tr><td>Tiger Prawn</td><td>ചെമ്മീൻ Chemmeen</td><td>இறால் Iraal</td><td>Royyalu / झींगा Jheenga</td></tr>
+<tr><td>Anchovy</td><td>നത്തോലി Natholi</td><td>நெத்திலி Nethili</td><td>Nethallu / नेथोली</td></tr>
+<tr><td>Squid</td><td>കണവ Kanava</td><td>கணவாய் Kanavai</td><td>Kalamari / स्क्विड</td></tr>
+<tr><td>Snapper</td><td>ചെമ്പല്ലി Chempalli</td><td>செங்கனி</td><td>Thambelu / लाल मछली</td></tr>
+</table>
+
+<h2>4. Ports Registry</h2>
+<p>Kochi [Thoppumpady/Munambam/Cochin] • Kollam [Neendakara/Quilon] • Beypore [Kozhikode] • Chennai [Kasimedu/Madras] • Kanyakumari [Colachel/Muttom] • Thoothukudi [Tuticorin] • Visakhapatnam [Vizag] • Mangalore [Malpe/Karwar] • Mumbai [Sassoon Dock/Versova] • Veraval [Somnath/Porbandar] • Paradip [Chandbali/Gopalpur] • Digha [Shankarpur/Kakdwip]</p>
+<p class="src">Source: docs/research/03-coastal-marine-dictionary-spec.md, docs/notion/00-core.md, docs/API.md, backend/agents/*, backend/ingest/*</p>
+</div>
+<footer>ORCA Marine EcOsystem Reasoning with Collaborative Agents • SIH26176 • Generated 2026-09-15 • <a href="https://github.com/parth5012/orca-marine-intelligence">GitHub</a></footer>
+<script>
+function filter(){const q=document.getElementById('q').value.toLowerCase();document.querySelectorAll('table tr').forEach((r,i)=>{if(i==0)return;r.style.display=r.innerText.toLowerCase().includes(q)?'':'none'});document.querySelectorAll('.card').forEach(c=>{c.style.display=c.innerText.toLowerCase().includes(q)?'':'none'})}
+</script>
+</body>
+</html>
