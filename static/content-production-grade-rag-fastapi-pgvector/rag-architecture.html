@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Production-Grade Hybrid RAG Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    background-color: #020617;
+    color: #e2e8f0;
+    font-family: 'JetBrains+Mono', monospace;
+    margin: 0;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .container {
+    max-width: 1000px;
+    width: 100%;
+  }
+  .header {
+    margin-bottom: 24px;
+  }
+  .title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #38bdf8;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #34d399;
+    box-shadow: 0 0 10px #34d399;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 6px;
+  }
+  .diagram-card {
+    background: #0b0f19;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="title"><span class="dot"></span> Production-Grade Hybrid RAG Architecture</div>
+    <div class="subtitle">FastAPI + PostgreSQL (pgvector HNSW + BM25 Full-Text) + RRF + Cross-Encoder Reranker</div>
+  </div>
+
+  <div class="diagram-card">
+    <svg viewBox="0 0 920 480" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#141d2f" stroke-width="0.8"/>
+        </pattern>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8" />
+        </marker>
+        <marker id="arrow-emerald" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#34d399" />
+        </marker>
+        <marker id="arrow-violet" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#a78bfa" />
+        </marker>
+      </defs>
+
+      <rect width="920" height="480" fill="#060913" rx="8"/>
+      <rect width="920" height="480" fill="url(#grid)" rx="8"/>
+
+      <!-- Arrows -->
+      <path d="M 170 190 L 225 190" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+      
+      <!-- Query Fork -->
+      <path d="M 365 170 L 415 125" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+      <path d="M 365 210 L 415 255" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+
+      <!-- DB to RRF -->
+      <path d="M 555 125 L 605 170" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)" fill="none"/>
+      <path d="M 555 255 L 605 210" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrow-violet)" fill="none"/>
+
+      <!-- RRF to Reranker -->
+      <path d="M 670 230 L 670 295" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+
+      <!-- Reranker to LLM Generation -->
+      <path d="M 580 340 L 410 340" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+      <path d="M 270 340 L 170 340" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)" fill="none"/>
+
+      <!-- Components -->
+      <!-- 1. Client / User Query -->
+      <rect x="30" y="155" width="140" height="70" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="100" y="185" fill="#f8fafc" font-size="12" font-weight="700" text-anchor="middle">Client Query</text>
+      <text x="100" y="205" fill="#94a3b8" font-size="9" text-anchor="middle">Text / SKU / Error Code</text>
+
+      <!-- 2. FastAPI Orchestrator -->
+      <rect x="225" y="145" width="140" height="90" rx="6" fill="#042f2e" stroke="#2dd4bf" stroke-width="1.5"/>
+      <text x="295" y="175" fill="#5eead4" font-size="12" font-weight="700" text-anchor="middle">FastAPI Gateway</text>
+      <text x="295" y="195" fill="#ccfbf1" font-size="9" text-anchor="middle">Async Query Handler</text>
+      <text x="295" y="212" fill="#94a3b8" font-size="8" text-anchor="middle">&amp; Embedding Client</text>
+
+      <!-- Postgres Boundary Box -->
+      <rect x="405" y="60" width="160" height="250" rx="8" fill="rgba(15, 23, 42, 0.6)" stroke="#6366f1" stroke-width="1.2" stroke-dasharray="4,4"/>
+      <text x="485" y="82" fill="#818cf8" font-size="10" font-weight="700" text-anchor="middle">PostgreSQL Database</text>
+
+      <!-- 3a. pgvector (Dense) -->
+      <rect x="415" y="95" width="140" height="65" rx="6" fill="#064e3b" stroke="#34d399" stroke-width="1.5"/>
+      <text x="485" y="122" fill="#a7f3d0" font-size="11" font-weight="700" text-anchor="middle">pgvector (HNSW)</text>
+      <text x="485" y="140" fill="#6ee7b7" font-size="9" text-anchor="middle">Dense Semantic Search</text>
+      <text x="485" y="152" fill="#94a3b8" font-size="7" text-anchor="middle">Top 30 Vectors</text>
+
+      <!-- 3b. tsvector (Sparse) -->
+      <rect x="415" y="225" width="140" height="65" rx="6" fill="#3b0764" stroke="#c084fc" stroke-width="1.5"/>
+      <text x="485" y="252" fill="#f3e8ff" font-size="11" font-weight="700" text-anchor="middle">tsvector / BM25</text>
+      <text x="485" y="270" fill="#d8b4fe" font-size="9" text-anchor="middle">Sparse Keyword Match</text>
+      <text x="485" y="282" fill="#94a3b8" font-size="7" text-anchor="middle">Exact IDs / Tokens</text>
+
+      <!-- 4. RRF Rank Fusion -->
+      <rect x="605" y="155" width="130" height="75" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+      <text x="670" y="185" fill="#c7d2fe" font-size="11" font-weight="700" text-anchor="middle">RRF Fusion</text>
+      <text x="670" y="202" fill="#a5b4fc" font-size="8" text-anchor="middle">Score Normalization</text>
+      <text x="670" y="216" fill="#94a3b8" font-size="8" text-anchor="middle">1 / (60 + rank)</text>
+
+      <!-- 5. Cross-Encoder Reranker -->
+      <rect x="580" y="295" width="180" height="90" rx="6" fill="#4c0519" stroke="#fb7185" stroke-width="1.5"/>
+      <text x="670" y="325" fill="#ffe4e6" font-size="11" font-weight="700" text-anchor="middle">Cross-Encoder Reranker</text>
+      <text x="670" y="345" fill="#f43f5e" font-size="9" text-anchor="middle">Deep Joint Attention</text>
+      <text x="670" y="362" fill="#fecdd3" font-size="8" text-anchor="middle">Top 30 Candidates ➔ Top 4 Chunks</text>
+
+      <!-- 6. LLM Context Window -->
+      <rect x="270" y="305" width="140" height="70" rx="6" fill="#083344" stroke="#06b6d4" stroke-width="1.5"/>
+      <text x="340" y="335" fill="#e0f2fe" font-size="11" font-weight="700" text-anchor="middle">LLM Synthesis</text>
+      <text x="340" y="353" fill="#67e8f9" font-size="8" text-anchor="middle">Grounded Generation</text>
+      <text x="340" y="365" fill="#94a3b8" font-size="7" text-anchor="middle">Zero Hallucination</text>
+
+      <!-- 7. Response Output -->
+      <rect x="30" y="305" width="140" height="70" rx="6" fill="#064e3b" stroke="#34d399" stroke-width="1.5"/>
+      <text x="100" y="335" fill="#ecfdf5" font-size="12" font-weight="700" text-anchor="middle">Verified Answer</text>
+      <text x="100" y="355" fill="#a7f3d0" font-size="9" text-anchor="middle">Sub-25ms Latency</text>
+
+      <!-- Flow Labels -->
+      <text x="385" y="135" fill="#38bdf8" font-size="8">embed(q)</text>
+      <text x="385" y="245" fill="#38bdf8" font-size="8">tokens(q)</text>
+      <text x="500" y="332" fill="#38bdf8" font-size="8" text-anchor="middle">Top 4 Clean Chunks</text>
+      <text x="220" y="332" fill="#34d399" font-size="8" text-anchor="middle">Final Stream</text>
+    </svg>
+  </div>
+</div>
+</body>
+</html>
