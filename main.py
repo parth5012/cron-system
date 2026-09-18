@@ -13,6 +13,7 @@ from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from cron_engine import CronEngine, RunRecord, get_engine
+from wayfinder import router as wayfinder_router
 
 
 # ---------------------------------------------------------------------------
@@ -356,17 +357,25 @@ async def index():
     """
     return html
 
+# Include Wayfinder router
+app.include_router(wayfinder_router)
+
+
 def mount_static_dirs(app):
     if not STATIC_DIR.exists():
         return
     for sub in sorted(STATIC_DIR.iterdir()):
         if sub.is_dir():
+            if sub.name == "wayfinder":
+                continue
             app.mount(f"/{sub.name}", StaticFiles(directory=str(sub), html=True), name=f"static-{sub.name}")
             for child in sorted(sub.iterdir()):
                 if child.is_dir():
                     app.mount(f"/{sub.name}/{child.name}", StaticFiles(directory=str(child), html=True), name=f"static-{sub.name}-{child.name}")
 
+
 mount_static_dirs(app)
+
 
 if __name__ == "__main__":
     import uvicorn

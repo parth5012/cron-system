@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧭 Wayfinder Maps | Cron System</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #18181b;
+      --text-muted: #71717a;
+      --border: #e4e4e7;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #8b5cf6;
+      --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --card-radius: 12px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #121214;
+      --card-bg: #1c1c20;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border: #2e2e34;
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #121214;
+        --card-bg: #1c1c20;
+        --text: #f4f4f5;
+        --text-muted: #a1a1aa;
+        --border: #2e2e34;
+        --primary: #3b82f6;
+        --primary-hover: #60a5fa;
+        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    /* Top Navigation Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      color: #fff;
+    }
+
+    /* Metrics Bar */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      padding: 16px 20px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-title {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    /* Status Pill */
+    .status-pill {
+      font-size: 0.78rem;
+      padding: 4px 8px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Filters & Controls Toolbar */
+    .toolbar {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: var(--card-shadow);
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 16px;
+      height: 16px;
+    }
+
+    .select-wrap select {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.88rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Map Cards Grid */
+    .maps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .map-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .map-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .repo-badge {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(37, 99, 235, 0.08);
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .state-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      letter-spacing: 0.04em;
+    }
+
+    .state-badge.open {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent);
+    }
+
+    .state-badge.closed {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--purple);
+    }
+
+    .card-title {
+      font-size: 1.12rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .card-title a {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .card-title a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    .issue-num {
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    /* Destination Callout */
+    .destination-box {
+      background: var(--bg);
+      border-left: 3px solid var(--primary);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
+    .destination-box strong {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    /* Decisions Section */
+    .decisions-section {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .decisions-list, .tickets-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.86rem;
+    }
+
+    .decisions-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .decisions-list li::before {
+      content: "✓";
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* Tickets List */
+    .tickets-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 6px;
+      border-radius: 6px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+    }
+
+    .ticket-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      margin-right: 8px;
+    }
+
+    .ticket-badge {
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .ticket-badge.task { background: rgba(59, 130, 246, 0.15); color: var(--primary); }
+    .ticket-badge.research { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .ticket-badge.done { background: rgba(16, 185, 129, 0.15); color: var(--accent); }
+
+    /* Card Footer */
+    .card-footer {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* States */
+    .empty-state, .error-state, .loading-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--card-bg);
+      border: 1px dashed var(--border);
+      border-radius: var(--card-radius);
+      grid-column: 1 / -1;
+    }
+
+    .empty-state h3, .error-state h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p, .error-state p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div>
+          <h1>🧭 Wayfinder Maps</h1>
+          <p>Autonomous Decision Maps & Strategic Frontiers</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="status-pill" id="rate-limit-pill">
+          <span class="status-dot"></span>
+          <span id="rate-limit-text">Connecting...</span>
+        </span>
+        <button class="btn" id="btn-theme" title="Toggle color theme">🌓 Theme</button>
+        <button class="btn btn-primary" id="btn-refresh">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+          Refresh
+        </button>
+        <a href="/" class="btn">📂 Cron Home</a>
+      </div>
+    </header>
+
+    <!-- Metrics Bar -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-title">Total Wayfinder Maps</span>
+        <span class="metric-value" id="val-total-maps">-</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-title">Active / Open Frontiers</span>
+        <span class="metric-value" style="color: var(--accent);" id="val-open-maps">-</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-title">Completed Maps</span>
+        <span class="metric-value" style="color: var(--purple);" id="val-closed-maps">-</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-title">Tracked Repositories</span>
+        <span class="metric-value" id="val-total-repos">-</span>
+      </div>
+    </div>
+
+    <!-- Filters & Toolbar -->
+    <div class="toolbar">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="input-search" placeholder="Search by map title, repo, or destination...">
+      </div>
+
+      <div class="select-wrap">
+        <select id="select-state">
+          <option value="all">All States</option>
+          <option value="open" selected>Open Only</option>
+          <option value="closed">Closed Only</option>
+        </select>
+      </div>
+
+      <div class="select-wrap">
+        <select id="select-repo">
+          <option value="all">All Repositories</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="maps-grid" id="maps-container">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Gathering Wayfinder maps from GitHub...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allMaps = [];
+    let stateFilter = 'open';
+    let repoFilter = 'all';
+    let searchQuery = '';
+
+    // Theme toggle
+    const themeBtn = document.getElementById('btn-theme');
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('wayfinder-theme', next);
+    });
+    const savedTheme = localStorage.getItem('wayfinder-theme');
+    if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Fetch data
+    async function loadMaps(forceRefresh = false) {
+      const container = document.getElementById('maps-container');
+      const ratePill = document.getElementById('rate-limit-text');
+      
+      container.innerHTML = `
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Fetching Wayfinder decision maps...</p>
+        </div>
+      `;
+
+      try {
+        const url = `/api/wayfinder${forceRefresh ? '?refresh=true' : ''}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        
+        const data = await res.json();
+        allMaps = data.maps || [];
+
+        // Update rate limit pill
+        if (data.rate_limit) {
+          ratePill.textContent = `GitHub API: ${data.rate_limit.remaining} left • Cached ${Math.round(data.cache_age_sec || 0)}s ago`;
+        }
+
+        // Populate repo selector
+        populateRepoSelect();
+        
+        // Update stats
+        updateMetrics();
+        
+        // Render cards
+        renderCards();
+      } catch (err) {
+        container.innerHTML = `
+          <div class="error-state">
+            <h3>⚠️ Failed to Load Maps</h3>
+            <p>${err.message}</p>
+            <button class="btn btn-primary" onclick="loadMaps(true)">Retry Force Refresh</button>
+          </div>
+        `;
+        ratePill.textContent = 'API Error';
+      }
+    }
+
+    function updateMetrics() {
+      const total = allMaps.length;
+      const open = allMaps.filter(m => m.state === 'open').length;
+      const closed = total - open;
+      const repos = new Set(allMaps.map(m => m.repo)).size;
+
+      document.getElementById('val-total-maps').textContent = total;
+      document.getElementById('val-open-maps').textContent = open;
+      document.getElementById('val-closed-maps').textContent = closed;
+      document.getElementById('val-total-repos').textContent = repos;
+    }
+
+    function populateRepoSelect() {
+      const select = document.getElementById('select-repo');
+      const currentVal = select.value;
+      const repos = Array.from(new Set(allMaps.map(m => m.repo))).sort();
+      
+      select.innerHTML = '<option value="all">All Repositories</option>';
+      repos.forEach(repo => {
+        const opt = document.createElement('option');
+        opt.value = repo;
+        opt.textContent = repo;
+        select.appendChild(opt);
+      });
+      if (repos.includes(currentVal)) select.value = currentVal;
+    }
+
+    function renderCards() {
+      const container = document.getElementById('maps-container');
+      
+      const filtered = allMaps.filter(m => {
+        if (stateFilter !== 'all' && m.state !== stateFilter) return false;
+        if (repoFilter !== 'all' && m.repo !== repoFilter) return false;
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const matchTitle = m.title.toLowerCase().includes(q);
+          const matchRepo = m.repo.toLowerCase().includes(q);
+          const matchDest = (m.destination || '').toLowerCase().includes(q);
+          if (!matchTitle && !matchRepo && !matchDest) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h3>No Wayfinder Maps Found</h3>
+            <p>No maps matched your current filter criteria (${stateFilter}, ${repoFilter}).</p>
+            <button class="btn" onclick="resetFilters()">Reset Filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(m => {
+        const destHtml = m.destination ? `
+          <div class="destination-box">
+            <strong>Destination</strong>
+            ${escapeHtml(m.destination)}
+          </div>
+        ` : '';
+
+        const decisionsHtml = (m.decisions_so_far && m.decisions_so_far.length > 0) ? `
+          <div class="decisions-section">
+            <div class="section-label">Decisions Reached (${m.decisions_so_far.length})</div>
+            <ul class="decisions-list">
+              ${m.decisions_so_far.map(d => `<li>${escapeHtml(d)}</li>`).join('')}
+            </ul>
+          </div>
+        ` : '';
+
+        const ticketsHtml = (m.child_tickets && m.child_tickets.length > 0) ? `
+          <div>
+            <div class="section-label">Frontier & Tickets (${m.child_tickets.length})</div>
+            <ul class="tickets-list">
+              ${m.child_tickets.map(t => `
+                <li>
+                  <span class="ticket-title">
+                    ${t.is_completed ? '✅ ' : '⚪ '}
+                    ${t.url ? `<a href="${t.url}" target="_blank" style="color: inherit; text-decoration: none;">${escapeHtml(t.title)}</a>` : escapeHtml(t.title)}
+                  </span>
+                  <span class="ticket-badge ${t.is_completed ? 'done' : 'task'}">
+                    ${t.number ? `#${t.number}` : (t.is_completed ? 'DONE' : 'TICKET')}
+                  </span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        ` : '';
+
+        return `
+          <div class="map-card">
+            <div class="card-header">
+              <span class="repo-badge">📦 ${escapeHtml(m.repo)}</span>
+              <span class="state-badge ${m.state}">${m.state}</span>
+            </div>
+            <h2 class="card-title">
+              <a href="${m.html_url}" target="_blank" rel="noopener">
+                ${escapeHtml(m.title)}
+                <span class="issue-num">#${m.number}</span>
+              </a>
+            </h2>
+            ${destHtml}
+            ${decisionsHtml}
+            ${ticketsHtml}
+            <div class="card-footer">
+              <span>👤 ${escapeHtml(m.author || 'dev')}</span>
+              <span>Updated: ${formatDate(m.updated_at)}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      try {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    function resetFilters() {
+      document.getElementById('select-state').value = 'all';
+      document.getElementById('select-repo').value = 'all';
+      document.getElementById('input-search').value = '';
+      stateFilter = 'all';
+      repoFilter = 'all';
+      searchQuery = '';
+      renderCards();
+    }
+
+    // Event listeners
+    document.getElementById('select-state').addEventListener('change', (e) => {
+      stateFilter = e.target.value;
+      renderCards();
+    });
+
+    document.getElementById('select-repo').addEventListener('change', (e) => {
+      repoFilter = e.target.value;
+      renderCards();
+    });
+
+    document.getElementById('input-search').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderCards();
+    });
+
+    document.getElementById('btn-refresh').addEventListener('click', () => {
+      loadMaps(true);
+    });
+
+    // Initial load
+    loadMaps();
+  </script>
+</body>
+</html>
