@@ -288,30 +288,58 @@ class WayfinderService:
         rate_limit_status: Optional[RateLimitStatus] = None
         error_msg: Optional[str] = None
 
-        search_url = (
-            f"https://api.github.com/search/issues?q=label:wayfinder:map+user:{owner}"
-        )
+        search_base = "https://api.github.com/search/issues"
+        search_query = f"label:wayfinder:map user:{owner}"
 
         async with httpx.AsyncClient(timeout=timeout) as client:
             search_response = None
             try:
-                search_response = await client.get(search_url, headers=headers)
-                rate_limit_status = self._extract_rate_limit(search_response.headers)
+                # Paginate search (per_page=100, up to 5 pages) — first page
+                # alone misses repos when total >30 due to ranking.
+                search_ok = False
+                for page in range(1, 6):
+                    search_response = await client.get(
+                        search_base,
+                        headers=headers,
+                        params={
+                            "q": search_query,
+                            "per_page": 100,
+                            "page": page,
+                        },
+                    )
+                    rate_limit_status = self._extract_rate_limit(
+                        search_response.headers
+                    )
 
-                if search_response.status_code == 200:
-                    data = search_response.json()
-                    issues = data.get("items", [])
-                elif search_response.status_code in (403, 429):
-                    # Search API is rate limited. Fallback to querying individual repositories
-                    error_msg = "GitHub Search API rate limited. Attempting repository fallback."
-                    repo_issues = await self._fallback_repo_query(client, headers)
-                    issues = repo_issues
-                else:
-                    error_msg = f"GitHub Search API returned status {search_response.status_code}: {search_response.text}"
+                    if search_response.status_code == 200:
+                        data = search_response.json()
+                        page_items = data.get("items", [])
+                        issues.extend(page_items)
+                        search_ok = True
+                        # Last page when fewer than full page returned
+                        if len(page_items) < 100:
+                            break
+                    elif search_response.status_code in (403, 429):
+                        error_msg = "GitHub Search API rate limited. Attempting repository fallback."
+                        break
+                    else:
+                        error_msg = f"GitHub Search API returned status {search_response.status_code}: {search_response.text}"
+                        break
+
+                # Union with direct repo queries to guarantee DEFAULT_REPOS
+                # coverage (search ranking can omit repos on page 1).
+                try:
                     repo_issues = await self._fallback_repo_query(client, headers)
                     if repo_issues:
-                        issues = repo_issues
-                        error_msg = None
+                        if not issues:
+                            issues = repo_issues
+                        else:
+                            issues = issues + repo_issues
+                        if search_ok:
+                            error_msg = None
+                except Exception as inner_e:
+                    if not issues:
+                        error_msg = f"Failed GitHub API search and fallback: {str(inner_e)}"
             except Exception as e:
                 error_msg = f"Failed to connect to GitHub API: {str(e)}"
                 # Attempt fallback
@@ -376,9 +404,18 @@ class WayfinderService:
     async def _fallback_repo_query(
         self, client: httpx.AsyncClient, headers: Dict[str, str]
     ) -> List[Dict[str, Any]]:
-        """Fallback querying repos directly when search API is rate limited."""
+        """Direct per-repo queries — also unions with search for full coverage."""
         all_items: List[Dict[str, Any]] = []
-        for repo_name in DEFAULT_REPOS:
+        live_repos = [
+            r.strip()
+            for r in os.environ.get(
+                "GITHUB_REPOS",
+                "AI-OS,cron-system,orca-marine-intelligence,Vela,artify-bharat-sih,Vendor-Tracker,VelaVoice",
+            ).split(",")
+            if r.strip()
+        ]
+        repos_to_query = live_repos if live_repos else DEFAULT_REPOS
+        for repo_name in repos_to_query:
             repo_slug = (
                 repo_name
                 if "/" in repo_name
