@@ -16,7 +16,34 @@
       --danger-red: #ef4444;
       --gps-blue: #3b82f6;
       --cyan-accent: #06b6d4;
+      --map-water: #071026;
+      --map-grid: #1e293b;
+      --chip-bg: rgba(15, 23, 42, 0.85);
+      --chip-text: #06b6d4;
+      --card-bg-alpha: rgba(28, 37, 65, 0.95);
+      --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     }
+
+    /* Light theme overrides */
+    body.light-theme {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --safe-green: #059669;
+      --caution-amber: #d97706;
+      --danger-red: #dc2626;
+      --gps-blue: #2563eb;
+      --cyan-accent: #0891b2;
+      --map-water: #e0f2fe;
+      --map-grid: #bae6fd;
+      --chip-bg: rgba(255, 255, 255, 0.9);
+      --chip-text: #0e7490;
+      --card-bg-alpha: rgba(255, 255, 255, 0.95);
+      --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -24,20 +51,45 @@
       color: var(--text-main);
       padding: 16px;
       line-height: 1.5;
+      transition: background 0.25s ease, color 0.25s ease;
     }
     .container {
       max-width: 800px;
       margin: 0 auto;
     }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
     h1 {
       font-size: 1.4rem;
-      margin-bottom: 4px;
+      margin: 0 0 4px 0;
       color: var(--cyan-accent);
     }
     p.sub {
       color: var(--text-sub);
       font-size: 0.85rem;
-      margin-top: 0;
+      margin: 0;
+    }
+    .theme-toggle-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .theme-toggle-btn:hover {
+      border-color: var(--cyan-accent);
     }
     .grid {
       display: grid;
@@ -46,22 +98,23 @@
       margin-top: 16px;
     }
     .mock-map {
-      background: #071026;
+      background: var(--map-water);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       position: relative;
       height: 380px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--card-shadow);
+      transition: background 0.25s ease;
     }
     .status-chip {
       position: absolute;
       top: 12px;
       left: 12px;
-      background: rgba(15, 23, 42, 0.85);
+      background: var(--chip-bg);
       backdrop-filter: blur(4px);
       border: 1px solid var(--cyan-accent);
-      color: var(--cyan-accent);
+      color: var(--chip-text);
       padding: 4px 10px;
       border-radius: 9999px;
       font-size: 0.75rem;
@@ -76,29 +129,31 @@
       top: 48px;
       left: 12px;
       right: 12px;
-      background: rgba(239, 68, 68, 0.2);
+      background: rgba(220, 38, 38, 0.15);
       border: 1px solid var(--danger-red);
-      color: #fca5a5;
+      color: var(--danger-red);
       padding: 6px 12px;
       border-radius: 8px;
       font-size: 0.75rem;
-      font-weight: 500;
+      font-weight: 600;
       display: flex;
       align-items: center;
       justify-content: space-between;
       z-index: 10;
+      backdrop-filter: blur(4px);
     }
     .bottom-card {
       position: absolute;
       bottom: 12px;
       left: 12px;
       right: 12px;
-      background: rgba(28, 37, 65, 0.95);
+      background: var(--card-bg-alpha);
       backdrop-filter: blur(8px);
       border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 12px;
       z-index: 10;
+      box-shadow: var(--card-shadow);
     }
     .card-row {
       display: flex;
@@ -111,7 +166,7 @@
     .stat-val {
       font-size: 1.1rem;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-main);
     }
     .stat-lbl {
       font-size: 0.7rem;
@@ -120,14 +175,14 @@
     }
     .badge {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 4px;
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
     }
-    .badge-safe { background: rgba(16, 185, 129, 0.2); color: var(--safe-green); border: 1px solid var(--safe-green); }
-    .badge-caution { background: rgba(245, 158, 11, 0.2); color: var(--caution-amber); border: 1px solid var(--caution-amber); }
+    .badge-safe { background: rgba(16, 185, 129, 0.15); color: var(--safe-green); border: 1px solid var(--safe-green); }
+    .badge-caution { background: rgba(245, 158, 11, 0.15); color: var(--caution-amber); border: 1px solid var(--caution-amber); }
     
     /* SVG Map Elements */
     svg.canvas {
@@ -162,8 +217,16 @@
 </head>
 <body>
   <div class="container">
-    <h1>ORCA Marine Route Visual Language Prototype (T2)</h1>
-    <p class="sub">Demonstrating safe route polyline, MPA avoidance detour waypoints, vernacular labels, and offline status chip.</p>
+    <div class="header-row">
+      <div>
+        <h1>ORCA Marine Route Visual Language Prototype (T2)</h1>
+        <p class="sub">Theme-adaptive safe route polyline, MPA avoidance detour waypoints, vernacular labels, and offline status chip.</p>
+      </div>
+      <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()">
+        <span id="themeIcon">☀️</span>
+        <span id="themeLabel">Switch to Light Theme</span>
+      </button>
+    </div>
 
     <div class="grid">
       <!-- Prototype Canvas -->
@@ -177,48 +240,47 @@
         <!-- MPA Warning Banner -->
         <div class="warning-banner">
           <span>⚠️ Detour around Vembanad Sanctuary (+3.4 km)</span>
-          <span style="font-size: 0.65rem; opacity: 0.8;">തടസ്സം ഒഴിവാക്കി (Avoided)</span>
+          <span style="font-size: 0.65rem; opacity: 0.85;">തടസ്സം ഒഴിവാക്കി (Avoided)</span>
         </div>
 
         <!-- SVG Map Rendering -->
         <svg class="canvas" viewBox="0 0 400 380">
-          <!-- Water grid lines -->
           <defs>
             <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" style="color: var(--map-grid);" stroke-width="0.75"/>
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
 
           <!-- Marine Protected Area (MPA) Polygon -->
-          <polygon points="160,120 250,110 260,190 150,180" fill="rgba(239, 68, 68, 0.25)" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4, 4" />
-          <text x="165" y="155" fill="#fca5a5" font-size="10" font-weight="600">MPA: Vembanad</text>
-          <text x="165" y="168" fill="#fca5a5" font-size="8">No Fishing Zone</text>
+          <polygon points="160,120 250,110 260,190 150,180" fill="rgba(220, 38, 38, 0.2)" stroke="var(--danger-red)" stroke-width="1.5" stroke-dasharray="4, 4" />
+          <text x="165" y="155" fill="var(--danger-red)" font-size="10" font-weight="700">MPA: Vembanad</text>
+          <text x="165" y="168" fill="var(--danger-red)" font-size="8">No Fishing Zone</text>
 
           <!-- Direct path (blocked, dashed grey) -->
-          <line x1="70" y1="260" x2="310" y2="100" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3, 3" opacity="0.6"/>
+          <line x1="70" y1="260" x2="310" y2="100" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3, 3" opacity="0.6"/>
 
           <!-- Safe Detour Route (Amber + Green Polyline) -->
           <!-- Segment 1: User to Waypoint 1 -->
-          <line x1="70" y1="260" x2="140" y2="100" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="8, 6" />
+          <line x1="70" y1="260" x2="140" y2="100" stroke="var(--caution-amber)" stroke-width="3.5" stroke-dasharray="8, 6" />
           <!-- Segment 2: Waypoint 1 to Destination PFZ -->
-          <line x1="140" y1="100" x2="310" y2="100" stroke="#10b981" stroke-width="3.5" stroke-dasharray="8, 6" />
+          <line x1="140" y1="100" x2="310" y2="100" stroke="var(--safe-green)" stroke-width="3.5" stroke-dasharray="8, 6" />
 
           <!-- Origin GPS Blue Dot -->
-          <circle cx="70" cy="260" r="14" fill="#3b82f6" opacity="0.25" class="pulse-dot" />
-          <circle cx="70" cy="260" r="6" fill="#3b82f6" stroke="#ffffff" stroke-width="2" />
-          <text x="40" y="285" fill="#93c5fd" font-size="10" font-weight="bold">GPS (Kochi)</text>
-          <text x="40" y="296" fill="#64748b" font-size="8">നിങ്ങൾ (You)</text>
+          <circle cx="70" cy="260" r="14" fill="var(--gps-blue)" opacity="0.25" class="pulse-dot" />
+          <circle cx="70" cy="260" r="6" fill="var(--gps-blue)" stroke="#ffffff" stroke-width="2" />
+          <text x="40" y="285" fill="var(--gps-blue)" font-size="10" font-weight="bold">GPS (Kochi)</text>
+          <text x="40" y="296" fill="var(--text-sub)" font-size="8">നിങ്ങൾ (You)</text>
 
           <!-- Detour Waypoint Dot -->
-          <circle cx="140" cy="100" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="2" />
-          <text x="125" y="88" fill="#fcd34d" font-size="9" font-weight="bold">WP1 (Detour)</text>
+          <circle cx="140" cy="100" r="5" fill="var(--caution-amber)" stroke="#ffffff" stroke-width="2" />
+          <text x="125" y="88" fill="var(--caution-amber)" font-size="9" font-weight="bold">WP1 (Detour)</text>
 
           <!-- Destination PFZ Marker -->
-          <circle cx="310" cy="100" r="16" fill="#10b981" opacity="0.2" />
-          <circle cx="310" cy="100" r="8" fill="#10b981" stroke="#ffffff" stroke-width="2" />
-          <text x="280" y="78" fill="#6ee7b7" font-size="10" font-weight="bold">PFZ KC-04</text>
-          <text x="280" y="90" fill="#a7f3d0" font-size="8">Depth: 42m</text>
+          <circle cx="310" cy="100" r="16" fill="var(--safe-green)" opacity="0.2" />
+          <circle cx="310" cy="100" r="8" fill="var(--safe-green)" stroke="#ffffff" stroke-width="2" />
+          <text x="280" y="78" fill="var(--safe-green)" font-size="10" font-weight="bold">PFZ KC-04</text>
+          <text x="280" y="90" fill="var(--text-sub)" font-size="8">Depth: 42m</text>
         </svg>
 
         <!-- Floating Route Info Drawer -->
@@ -245,45 +307,60 @@
 
       <!-- Specs Summary -->
       <div>
-        <h3>Visual Specification Summary</h3>
+        <h3>Theme Adaptation & Specification</h3>
         <table class="specs-table">
           <thead>
             <tr>
               <th>Element</th>
-              <th>Visual Attributes</th>
-              <th>UX / 2G Behavior</th>
+              <th>Dark Theme (Tactical Night)</th>
+              <th>Light Theme (High Daylight Contrast)</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><strong>Safe Route Segment</strong></td>
-              <td>Emerald Green (<code>#10b981</code>), weight 3.5, dash <code>8, 6</code></td>
-              <td>High contrast against dark ocean tiles.</td>
+              <td>Vivid Emerald (<code>#10b981</code>), 3.5px dashed <code>8, 6</code></td>
+              <td>Deep Sea Emerald (<code>#059669</code>), 3.5px dashed <code>8, 6</code></td>
             </tr>
             <tr>
-              <td><strong>Detour Route Segment</strong></td>
-              <td>Amber Gold (<code>#f59e0b</code>), weight 3.5, dash <code>8, 6</code></td>
-              <td>Signals safe detour around hazard.</td>
+              <td><strong>Detour Segment</strong></td>
+              <td>Bright Amber (<code>#f59e0b</code>), 3.5px dashed <code>8, 6</code></td>
+              <td>Warm Amber (<code>#d97706</code>), 3.5px dashed <code>8, 6</code></td>
+            </tr>
+            <tr>
+              <td><strong>Breach / Danger Segment</strong></td>
+              <td>Crimson Red (<code>#ef4444</code>), 4px dashed <code>4, 4</code></td>
+              <td>Deep Crimson (<code>#dc2626</code>), 4px dashed <code>4, 4</code></td>
             </tr>
             <tr>
               <td><strong>Waypoints</strong></td>
-              <td>Amber circle (r: 5px, white stroke 2px)</td>
-              <td>Numbered WP1, WP2 along polyline.</td>
+              <td>Amber dot (r: 5px, white border 2px)</td>
+              <td>Amber dot (r: 5px, white border 2px + subtle shadow)</td>
             </tr>
             <tr>
-              <td><strong>Offline Chip</strong></td>
-              <td>Cyan border pill (<code>#06b6d4</code>), top-left</td>
-              <td>Informs user when route is computed offline via great-circle.</td>
-            </tr>
-            <tr>
-              <td><strong>Vernacular Labels</strong></td>
-              <td>Bilingual sub-labels (English + Malayalam/Tamil)</td>
-              <td>Ensures local fishermen can read vital cues instantly.</td>
+              <td><strong>Floating Cards & Chips</strong></td>
+              <td>Glass Dark <code>rgba(28, 37, 65, 0.95)</code>, Cyan accents</td>
+              <td>Clean White <code>rgba(255, 255, 255, 0.95)</code>, Deep Cyan accents</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
+
+  <script>
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle('light-theme');
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
+      if (isLight) {
+        icon.textContent = '🌙';
+        label.textContent = 'Switch to Dark Theme';
+      } else {
+        icon.textContent = '☀️';
+        label.textContent = 'Switch to Light Theme';
+      }
+    }
+  </script>
 </body>
 </html>
