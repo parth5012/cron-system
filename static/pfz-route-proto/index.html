@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ORCA Marine Intelligence — Route Visual Prototype (T2)</title>
+  <style>
+    :root {
+      --bg: #0b132b;
+      --card-bg: #1c2541;
+      --card-border: #3a506b;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --safe-green: #10b981;
+      --caution-amber: #f59e0b;
+      --danger-red: #ef4444;
+      --gps-blue: #3b82f6;
+      --cyan-accent: #06b6d4;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 16px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+      color: var(--cyan-accent);
+    }
+    p.sub {
+      color: var(--text-sub);
+      font-size: 0.85rem;
+      margin-top: 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .mock-map {
+      background: #071026;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      position: relative;
+      height: 380px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    .status-chip {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--cyan-accent);
+      color: var(--cyan-accent);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 10;
+    }
+    .warning-banner {
+      position: absolute;
+      top: 48px;
+      left: 12px;
+      right: 12px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--danger-red);
+      color: #fca5a5;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    .bottom-card {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      background: rgba(28, 37, 65, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      z-index: 10;
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stat-box {
+      text-align: center;
+    }
+    .stat-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stat-lbl {
+      font-size: 0.7rem;
+      color: var(--text-sub);
+      text-transform: uppercase;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-safe { background: rgba(16, 185, 129, 0.2); color: var(--safe-green); border: 1px solid var(--safe-green); }
+    .badge-caution { background: rgba(245, 158, 11, 0.2); color: var(--caution-amber); border: 1px solid var(--caution-amber); }
+    
+    /* SVG Map Elements */
+    svg.canvas {
+      width: 100%;
+      height: 100%;
+    }
+    .pulse-dot {
+      animation: pulse 2s infinite;
+      transform-origin: center;
+    }
+    @keyframes pulse {
+      0% { r: 6; opacity: 1; }
+      50% { r: 14; opacity: 0.3; }
+      100% { r: 6; opacity: 1; }
+    }
+    .specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.85rem;
+    }
+    .specs-table th, .specs-table td {
+      border: 1px solid var(--card-border);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .specs-table th {
+      background: var(--card-bg);
+      color: var(--cyan-accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ORCA Marine Route Visual Language Prototype (T2)</h1>
+    <p class="sub">Demonstrating safe route polyline, MPA avoidance detour waypoints, vernacular labels, and offline status chip.</p>
+
+    <div class="grid">
+      <!-- Prototype Canvas -->
+      <div class="mock-map">
+        <!-- Offline / Fallback Status Chip -->
+        <div class="status-chip">
+          <span>⚡</span>
+          <span>Great-circle GPS route (Offline calculation)</span>
+        </div>
+
+        <!-- MPA Warning Banner -->
+        <div class="warning-banner">
+          <span>⚠️ Detour around Vembanad Sanctuary (+3.4 km)</span>
+          <span style="font-size: 0.65rem; opacity: 0.8;">തടസ്സം ഒഴിവാക്കി (Avoided)</span>
+        </div>
+
+        <!-- SVG Map Rendering -->
+        <svg class="canvas" viewBox="0 0 400 380">
+          <!-- Water grid lines -->
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+
+          <!-- Marine Protected Area (MPA) Polygon -->
+          <polygon points="160,120 250,110 260,190 150,180" fill="rgba(239, 68, 68, 0.25)" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4, 4" />
+          <text x="165" y="155" fill="#fca5a5" font-size="10" font-weight="600">MPA: Vembanad</text>
+          <text x="165" y="168" fill="#fca5a5" font-size="8">No Fishing Zone</text>
+
+          <!-- Direct path (blocked, dashed grey) -->
+          <line x1="70" y1="260" x2="310" y2="100" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3, 3" opacity="0.6"/>
+
+          <!-- Safe Detour Route (Amber + Green Polyline) -->
+          <!-- Segment 1: User to Waypoint 1 -->
+          <line x1="70" y1="260" x2="140" y2="100" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="8, 6" />
+          <!-- Segment 2: Waypoint 1 to Destination PFZ -->
+          <line x1="140" y1="100" x2="310" y2="100" stroke="#10b981" stroke-width="3.5" stroke-dasharray="8, 6" />
+
+          <!-- Origin GPS Blue Dot -->
+          <circle cx="70" cy="260" r="14" fill="#3b82f6" opacity="0.25" class="pulse-dot" />
+          <circle cx="70" cy="260" r="6" fill="#3b82f6" stroke="#ffffff" stroke-width="2" />
+          <text x="40" y="285" fill="#93c5fd" font-size="10" font-weight="bold">GPS (Kochi)</text>
+          <text x="40" y="296" fill="#64748b" font-size="8">നിങ്ങൾ (You)</text>
+
+          <!-- Detour Waypoint Dot -->
+          <circle cx="140" cy="100" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="2" />
+          <text x="125" y="88" fill="#fcd34d" font-size="9" font-weight="bold">WP1 (Detour)</text>
+
+          <!-- Destination PFZ Marker -->
+          <circle cx="310" cy="100" r="16" fill="#10b981" opacity="0.2" />
+          <circle cx="310" cy="100" r="8" fill="#10b981" stroke="#ffffff" stroke-width="2" />
+          <text x="280" y="78" fill="#6ee7b7" font-size="10" font-weight="bold">PFZ KC-04</text>
+          <text x="280" y="90" fill="#a7f3d0" font-size="8">Depth: 42m</text>
+        </svg>
+
+        <!-- Floating Route Info Drawer -->
+        <div class="bottom-card">
+          <div class="card-row">
+            <div class="stat-box">
+              <div class="stat-val">34.2 <span style="font-size: 0.75rem;">km</span></div>
+              <div class="stat-lbl">Distance (18.5 nm)</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">284° <span style="font-size: 0.75rem;">WNW</span></div>
+              <div class="stat-lbl">Bearing</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">1h 22m</div>
+              <div class="stat-lbl">ETA (25 km/h)</div>
+            </div>
+            <div>
+              <span class="badge badge-caution">CAUTION (DETOUR)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Specs Summary -->
+      <div>
+        <h3>Visual Specification Summary</h3>
+        <table class="specs-table">
+          <thead>
+            <tr>
+              <th>Element</th>
+              <th>Visual Attributes</th>
+              <th>UX / 2G Behavior</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Safe Route Segment</strong></td>
+              <td>Emerald Green (<code>#10b981</code>), weight 3.5, dash <code>8, 6</code></td>
+              <td>High contrast against dark ocean tiles.</td>
+            </tr>
+            <tr>
+              <td><strong>Detour Route Segment</strong></td>
+              <td>Amber Gold (<code>#f59e0b</code>), weight 3.5, dash <code>8, 6</code></td>
+              <td>Signals safe detour around hazard.</td>
+            </tr>
+            <tr>
+              <td><strong>Waypoints</strong></td>
+              <td>Amber circle (r: 5px, white stroke 2px)</td>
+              <td>Numbered WP1, WP2 along polyline.</td>
+            </tr>
+            <tr>
+              <td><strong>Offline Chip</strong></td>
+              <td>Cyan border pill (<code>#06b6d4</code>), top-left</td>
+              <td>Informs user when route is computed offline via great-circle.</td>
+            </tr>
+            <tr>
+              <td><strong>Vernacular Labels</strong></td>
+              <td>Bilingual sub-labels (English + Malayalam/Tamil)</td>
+              <td>Ensures local fishermen can read vital cues instantly.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
