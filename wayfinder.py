@@ -77,6 +77,7 @@ class WayfinderResponse(BaseModel):
     cached: bool = False
     timestamp: str
     error: Optional[str] = None
+    authenticated: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -257,13 +258,22 @@ class WayfinderService:
         self._cached_response: Optional[WayfinderResponse] = None
         self._cached_time: float = 0.0
 
+    def _get_token(self) -> Optional[str]:
+        # Read live so Vercel/Render env changes apply without import reload.
+        # Strips accidental quotes/whitespace from dashboard copy-paste.
+        raw = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or GITHUB_TOKEN
+        if not raw:
+            return None
+        token = raw.strip().strip('"').strip("'")
+        return token or None
+
     def _get_headers(self) -> Dict[str, str]:
         headers = {
             "Accept": "application/vnd.github.v3+json",
             "User-Agent": "cron-system-wayfinder",
         }
-        if GITHUB_TOKEN:
-            headers["Authorization"] = f"Bearer {GITHUB_TOKEN}"
+        if self._get_token():
+            headers["Authorization"] = f"Bearer {self._get_token()}"
         return headers
 
     def _extract_rate_limit(self, response_headers: Any) -> RateLimitStatus:
@@ -399,6 +409,7 @@ class WayfinderService:
             cached=False,
             timestamp=now_iso,
             error=error_msg,
+            authenticated=bool(self._get_token()),
         )
 
     async def _fallback_repo_query(

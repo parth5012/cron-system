@@ -576,9 +576,12 @@
         const data = await res.json();
         allMaps = data.maps || [];
 
-        // Update rate limit pill
+        // Update rate limit pill + auth mode (private repos need token)
         if (data.rate_limit) {
-          ratePill.textContent = `GitHub API: ${data.rate_limit.remaining} left • Cached ${Math.round(data.cache_age_sec || 0)}s ago`;
+          const authMode = data.authenticated ? 'Auth' : 'Public - private repos hidden';
+          ratePill.textContent = `GitHub API: ${data.rate_limit.remaining} left • ${authMode} • Cached ${Math.round(data.cache_age_sec || 0)}s ago`;
+        } else if (data.authenticated === false) {
+          ratePill.textContent = 'Public mode - private repos hidden';
         }
 
         // Populate repo selector
