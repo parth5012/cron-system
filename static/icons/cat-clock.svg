@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="120" fill="#FFDAB9"/>
+  <circle cx="90" cy="400" r="16" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="430" cy="110" r="20" fill="#FFFFFF" opacity="0.6"/>
+  <!-- ears -->
+  <path d="M140 200 L120 100 L210 150 Z" fill="#F4A259" stroke="#D97B29" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M372 200 L392 100 L302 150 Z" fill="#F4A259" stroke="#D97B29" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M148 175 L138 125 L185 152 Z" fill="#FFB3C7"/>
+  <path d="M364 175 L374 125 L327 152 Z" fill="#FFB3C7"/>
+  <!-- head -->
+  <ellipse cx="256" cy="250" rx="130" ry="115" fill="#F4A259" stroke="#D97B29" stroke-width="8"/>
+  <!-- stripes -->
+  <line x1="220" y1="145" x2="220" y2="175" stroke="#D97B29" stroke-width="10" stroke-linecap="round"/>
+  <line x1="256" y1="140" x2="256" y2="170" stroke="#D97B29" stroke-width="10" stroke-linecap="round"/>
+  <line x1="292" y1="145" x2="292" y2="175" stroke="#D97B29" stroke-width="10" stroke-linecap="round"/>
+  <!-- eyes -->
+  <ellipse cx="205" cy="250" rx="26" ry="32" fill="#2B2D42"/>
+  <ellipse cx="307" cy="250" rx="26" ry="32" fill="#2B2D42"/>
+  <circle cx="214" cy="240" r="10" fill="#FFFFFF"/>
+  <circle cx="316" cy="240" r="10" fill="#FFFFFF"/>
+  <circle cx="208" cy="258" r="4" fill="#FFE66D"/>
+  <circle cx="310" cy="258" r="4" fill="#FFE66D"/>
+  <!-- blush -->
+  <ellipse cx="170" cy="290" rx="18" ry="10" fill="#FF8FA3"/>
+  <ellipse cx="342" cy="290" rx="18" ry="10" fill="#FF8FA3"/>
+  <!-- nose + mouth -->
+  <path d="M246 292 L266 292 L256 302 Z" fill="#D90429"/>
+  <path d="M256 302 Q256 314 242 314 M256 302 Q256 314 270 314" fill="none" stroke="#2B2D42" stroke-width="6" stroke-linecap="round"/>
+  <!-- clock being hugged -->
+  <g transform="translate(256 400)">
+    <ellipse cx="-95" cy="0" rx="22" ry="26" fill="#F4A259" stroke="#D97B29" stroke-width="7"/>
+    <ellipse cx="95" cy="0" rx="22" ry="26" fill="#F4A259" stroke="#D97B29" stroke-width="7"/>
+    <circle cx="0" cy="0" r="58" fill="#FFFFFF" stroke="#5B7FFF" stroke-width="10"/>
+    <circle cx="0" cy="-46" r="6" fill="#5B7FFF"/>
+    <circle cx="0" cy="46" r="6" fill="#5B7FFF"/>
+    <circle cx="-46" cy="0" r="6" fill="#5B7FFF"/>
+    <circle cx="46" cy="0" r="6" fill="#5B7FFF"/>
+    <line x1="0" y1="0" x2="0" y2="-30" stroke="#EF4444" stroke-width="8" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="22" y2="12" stroke="#2B2D42" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="8" fill="#EF4444" stroke="#FFFFFF" stroke-width="3"/>
+  </g>
+</svg>

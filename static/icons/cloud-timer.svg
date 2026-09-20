@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="120" fill="#DDD6FE"/>
+  <g fill="#FFFFFF">
+    <ellipse cx="256" cy="270" rx="140" ry="80"/>
+    <circle cx="170" cy="230" r="60"/>
+    <circle cx="250" cy="200" r="70"/>
+    <circle cx="330" cy="235" r="55"/>
+  </g>
+  <!-- stars -->
+  <g fill="#FFE66D">
+    <path d="M100 110 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6 z"/>
+    <path d="M400 90 l5 11 11 5 -11 5 -5 11 -5 -11 -11 -5 11 -5 z"/>
+    <path d="M420 380 l5 11 11 5 -11 5 -5 11 -5 -11 -11 -5 11 -5 z"/>
+  </g>
+  <!-- sleepy closed eyes -->
+  <path d="M190 270 Q210 285 230 270" fill="none" stroke="#4C1D95" stroke-width="9" stroke-linecap="round"/>
+  <path d="M282 270 Q302 285 322 270" fill="none" stroke="#4C1D95" stroke-width="9" stroke-linecap="round"/>
+  <!-- blush -->
+  <ellipse cx="175" cy="295" rx="16" ry="9" fill="#F9A8D4"/>
+  <ellipse cx="337" cy="295" rx="16" ry="9" fill="#F9A8D4"/>
+  <!-- tiny smile -->
+  <path d="M246 300 Q256 308 266 300" fill="none" stroke="#4C1D95" stroke-width="7" stroke-linecap="round"/>
+  <!-- Zzz -->
+  <text x="360" y="170" font-family="system-ui, sans-serif" font-size="44" font-weight="800" fill="#7C3AED">z</text>
+  <text x="388" y="135" font-family="system-ui, sans-serif" font-size="56" font-weight="800" fill="#7C3AED">z</text>
+  <text x="422" y="90" font-family="system-ui, sans-serif" font-size="70" font-weight="800" fill="#7C3AED">Z</text>
+  <!-- little alarm clock belly -->
+  <g transform="translate(256 360)">
+    <line x1="-28" y1="-28" x2="-40" y2="-44" stroke="#7C3AED" stroke-width="8" stroke-linecap="round"/>
+    <line x1="28" y1="-28" x2="40" y2="-44" stroke="#7C3AED" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="-40" cy="-46" r="7" fill="#FFE66D"/>
+    <circle cx="40" cy="-46" r="7" fill="#FFE66D"/>
+    <circle cx="0" cy="0" r="44" fill="#8B5CF6"/>
+    <circle cx="0" cy="0" r="32" fill="#FFFFFF"/>
+    <line x1="0" y1="0" x2="0" y2="-20" stroke="#EF4444" stroke-width="6" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="13" y2="6" stroke="#4C1D95" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="5" fill="#EF4444"/>
+  </g>
+</svg>

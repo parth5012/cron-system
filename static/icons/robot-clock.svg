@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="120" fill="#AEE1FF"/>
+  <circle cx="90" cy="100" r="18" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="430" cy="400" r="24" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="420" cy="90" r="12" fill="#FFE66D"/>
+  <!-- antenna -->
+  <line x1="256" y1="90" x2="256" y2="130" stroke="#5B7FFF" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="256" cy="78" r="20" fill="#FFE66D"/>
+  <circle cx="256" cy="78" r="8" fill="#FF9F1C"/>
+  <!-- head -->
+  <rect x="136" y="130" width="240" height="190" rx="70" fill="#FFFFFF"/>
+  <rect x="136" y="130" width="240" height="190" rx="70" fill="none" stroke="#5B7FFF" stroke-width="10"/>
+  <!-- ears -->
+  <circle cx="136" cy="230" r="22" fill="#FFB3C7"/>
+  <circle cx="376" cy="230" r="22" fill="#FFB3C7"/>
+  <!-- eyes -->
+  <ellipse cx="206" cy="220" rx="24" ry="30" fill="#2B2D42"/>
+  <ellipse cx="306" cy="220" rx="24" ry="30" fill="#2B2D42"/>
+  <circle cx="214" cy="210" r="9" fill="#FFFFFF"/>
+  <circle cx="314" cy="210" r="9" fill="#FFFFFF"/>
+  <!-- blush -->
+  <ellipse cx="176" cy="264" rx="18" ry="10" fill="#FFB3C7"/>
+  <ellipse cx="336" cy="264" rx="18" ry="10" fill="#FFB3C7"/>
+  <!-- smile -->
+  <path d="M232 268 Q256 288 280 268" fill="none" stroke="#2B2D42" stroke-width="8" stroke-linecap="round"/>
+  <!-- body with clock -->
+  <rect x="176" y="320" width="160" height="120" rx="40" fill="#FFFFFF" stroke="#5B7FFF" stroke-width="10"/>
+  <circle cx="256" cy="376" r="36" fill="#F8F9FA" stroke="#5B7FFF" stroke-width="8"/>
+  <line x1="256" y1="376" x2="256" y2="356" stroke="#FF5964" stroke-width="7" stroke-linecap="round"/>
+  <line x1="256" y1="376" x2="270" y2="382" stroke="#2B2D42" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="256" cy="376" r="6" fill="#FF5964"/>
+  <!-- arms -->
+  <ellipse cx="150" cy="370" rx="16" ry="30" fill="#5B7FFF"/>
+  <ellipse cx="362" cy="370" rx="16" ry="30" fill="#5B7FFF"/>
+</svg>

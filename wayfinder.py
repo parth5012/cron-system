@@ -481,6 +481,7 @@ FALLBACK_HTML = """<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wayfinder - Strategic Project Maps</title>
+  <link rel="icon" type="image/svg+xml" href="/icons/ghost.svg">
   <style>
     :root {
       --bg: #0f172a;
