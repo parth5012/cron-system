@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production-Grade Agentic RAG | Social Content Draft</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --text-bright: #f0f6fc;
+      --accent: #58a6ff;
+      --accent-subtle: rgba(56, 139, 253, 0.15);
+      --tag-bg: #21262d;
+      --code-bg: #090d13;
+      --success: #3fb950;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 {
+      color: var(--text-bright);
+      font-size: 1.85rem;
+      margin-bottom: 0.5rem;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: #8b949e;
+      align-items: center;
+    }
+    .tag {
+      background: var(--tag-bg);
+      color: var(--accent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+    .badge {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    h2 {
+      color: var(--text-bright);
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    h3 {
+      color: var(--accent);
+      font-size: 1.05rem;
+      margin: 1rem 0 0.5rem;
+    }
+    ul, ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    li {
+      margin-bottom: 0.4rem;
+    }
+    .tweet-card {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+      position: relative;
+    }
+    .tweet-num {
+      display: inline-block;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+      font-size: 0.85rem;
+    }
+    .slide-box {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+      border-radius: 0 6px 6px 0;
+    }
+    .script-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem;
+      font-family: monospace;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      color: #e6edf3;
+    }
+    .cta-note {
+      font-size: 0.9rem;
+      color: #8b949e;
+      text-align: center;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">Social Media Ready Draft</span>
+      <h1>Production-Grade Agentic RAG: Hybrid Search & LangGraph</h1>
+      <div class="meta">
+        <span>📅 Date: 2026-09-20</span>
+        <span>👤 Author: @parth__chawla</span>
+        <span class="tag">#AgenticRAG</span>
+        <span class="tag">#LangGraph</span>
+        <span class="tag">#FastAPI</span>
+        <span class="tag">#pgvector</span>
+      </div>
+    </header>
+
+    <div class="section">
+      <h2>🎯 Extract & Strategy</h2>
+      <p><strong>Niche:</strong> Production AI Engineering, Agentic RAG Systems, High-Performance Retrieval & Vector Databases (pgvector, Cohere Rerank, BM25, LangGraph, FastAPI).</p>
+      
+      <h3>🔥 3 Viral Angles</h3>
+      <ul>
+        <li><strong>Stop naive top-k vector search:</strong> Cosine similarity fails on 40%+ of enterprise queries; Agentic dynamic routing solves it.</li>
+        <li><strong>Hybrid Search (Dense + Sparse) + Cross-Encoder Reranking:</strong> 3-tier retrieval pipeline cutting hallucinations by 80%.</li>
+        <li><strong>Self-Reflective RAG (CRAG/Self-RAG):</strong> LangGraph evaluator nodes that score chunks and rewrite queries before generation.</li>
+      </ul>
+
+      <h3>💡 5 High-Impact Hooks</h3>
+      <ol>
+        <li>Naive RAG is dead. If you're still just chunking text, saving to a vector DB, and querying top-k, here is the production Agentic RAG architecture you need.</li>
+        <li>4 reasons your RAG pipeline hallucinates in production (and the exact LangGraph grading loop to fix it).</li>
+        <li>The production blueprint for sub-50ms Hybrid Search (BM25 + pgvector HNSW) with Cohere Reranking.</li>
+        <li>Don't let an LLM answer blind queries. How Self-Reflective RAG grades and rewrites retrieval state before response generation.</li>
+        <li>How top engineering teams build resilient Agentic RAG with FastAPI, LangGraph, and PostgreSQL pgvector.</li>
+      </ol>
+
+      <h3>💰 Monetization Angle</h3>
+      <ul>
+        <li><strong>High-Ticket Consulting:</strong> Enterprise Knowledge Base & Customer Support RAG architecture audits and implementation.</li>
+        <li><strong>Digital Boilerplate:</strong> Production Agentic RAG Starter Kit (FastAPI + pgvector HNSW + BM25 RRF + LangGraph Self-RAG grading loops + Cohere Rerank).</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>🧵 X Thread (7 Tweets)</h2>
+      
+      <div class="tweet-card">
+        <span class="tweet-num">Tweet 1/7</span>
+        <p>Naive RAG (embed query -> top-k vector search -> inject prompt) fails on 40%+ of enterprise queries.<br><br>Complex questions need query decomposition, hybrid search, and deterministic grading.<br><br>Here is the battle-tested Agentic RAG architecture with LangGraph & FastAPI: 🧵👇</p>
+      </div>
+
+      <div class="tweet-card">
+        <span class="tweet-num">Tweet 2/7</span>
+        <p>Why Naive RAG breaks in production:<br>❌ Complex multi-part queries retrieve generic, noisy chunks<br>❌ Semantic search misses exact keywords, SKU codes, and acronyms<br>❌ Hallucinations happen when retrieved context is irrelevant<br><br>Production fix: Agentic Retrieval + Document Grading. 👇</p>
+      </div>
+
+      <div class="tweet-card">
+        <span class="tweet-num">Tweet 3/7</span>
+        <p>1️⃣ Hybrid Retrieval (Dense + Sparse)<br>Never rely on vector similarity alone. Combine:<br>• Dense embeddings (text-embedding-3-large) for semantic nuance<br>• Sparse search (BM25 / PostgreSQL full-text search) for exact keywords<br>• Reciprocal Rank Fusion (RRF) to merge and normalize scores.</p>
+      </div>
+
+      <div class="tweet-card">
+        <span class="tweet-num">Tweet 4/7</span>
+        <p>2️⃣ Cross-Encoder Reranking<br>Vector search gives you candidate recall (top 30-50).<br>Run candidates through a Cross-Encoder (e.g., Cohere Rerank / BGE-Reranker) to extract top 5 precision chunks.<br><br>Reranking alone boosts retrieval relevance by 30-40%.</p>
+      </div>
+
+      <div class="tweet-card">
+        <span class="tweet-num">Tweet 5/7</span>
+        <p>3️⃣ Self-Reflective LangGraph Loop (CRAG)<br>Structure your retrieval in a cyclic state graph:<br>1. <code>Retrieve</code>: Fetch candidate chunks<br>2. <code>Grade Documents</code>: Fast LLM/classifier scores chunk relevance<br>3. Decision branch:<br>   - If relevant -> <code>Generate Answer</code><br>   - If irrelevant -> <code>Rewrite Query</code> -> Fallback</p>
+      </div>
+
+      <div class="tweet-card">
+        <span class="tweet-num">Tweet 6/7</span>
+        <p>4️⃣ FastAPI Async Streaming & pgvector HNSW<br>• Store embeddings in PostgreSQL with <code>pgvector</code> HNSW indexes for sub-10ms similarity queries.<br>• Wrap the LangGraph graph in an async FastAPI service.<br>• Stream token responses via SSE while preserving OpenTelemetry traces.</p>
+      </div>
+
+      <div class="tweet-card">
+        <span class="tweet-num">Tweet 7/7</span>
+        <p>Summary:<br>1. Hybrid Search (pgvector HNSW + BM25 RRF)<br>2. Cross-Encoder Reranking<br>3. LangGraph Document Grading & Query Rewriter loops<br>4. Async FastAPI Streaming<br><br>Stop shipping naive RAG. Build deterministic, self-correcting agentic pipelines! 🚀</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📸 Instagram Carousel (5 Slides)</h2>
+      
+      <div class="slide-box">
+        <strong>Slide 1 (Hook):</strong> Why Naive RAG Fails in Production ❌<br>
+        <em>Subtitle:</em> (And how Agentic RAG with Self-Correction fixes it)<br>
+        <em>Visual:</em> Comparison diagram: "Naive RAG" (Query -> Top-k -> Hallucination) vs "Agentic RAG" (Query -> Hybrid Search -> Rerank -> Document Grader -> Grounded Answer).
+      </div>
+
+      <div class="slide-box">
+        <strong>Slide 2 (The Flaw):</strong> The 3 Traps of Semantic-Only Search<br>
+        • Misses exact identifiers (SKUs, IDs, method names, error codes).<br>
+        • High semantic similarity chunks that contain zero answer relevance.<br>
+        • Leaves LLMs vulnerable to hallucinating answers over weak context.
+      </div>
+
+      <div class="slide-box">
+        <strong>Slide 3 (The Triad):</strong> The 3-Tier Retrieval Pipeline<br>
+        1. Hybrid Search: Dense Vector + BM25 Keyword Search<br>
+        2. Reciprocal Rank Fusion (RRF): Merge ranked candidate lists<br>
+        3. Cross-Encoder Reranker: Score top 5 precision contexts for the prompt.
+      </div>
+
+      <div class="slide-box">
+        <strong>Slide 4 (The Loop):</strong> Self-Reflective RAG (LangGraph)<br>
+        • <strong>Step 1: Document Grading</strong> (Judge chunk relevance before generation)<br>
+        • <strong>Step 2: Query Transformation</strong> (Decompose and rewrite vague queries)<br>
+        • <strong>Step 3: Hallucination Check</strong> (Verify answer claims directly against citations)
+      </div>
+
+      <div class="slide-box">
+        <strong>Slide 5 (Summary & CTA):</strong> The Production Stack<br>
+        • Database: PostgreSQL + <code>pgvector</code> (HNSW indexing)<br>
+        • Orchestration: <code>LangGraph</code> State Graph<br>
+        • API: <code>FastAPI</code> (Async streaming & background telemetry)<br>
+        <em>CTA:</em> Save this post for your next AI system build! 📌
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📝 Instagram Caption</h2>
+      <p style="white-space: pre-wrap; background: var(--code-bg); padding: 1rem; border-radius: 6px; border: 1px solid var(--border);">Stop building toy RAG pipelines with basic cosine similarity. ❌
+
+In production, naive RAG breaks the moment users throw complex questions, acronyms, or exact product codes at your system. If your context window receives noisy or irrelevant chunks, hallucination is inevitable.
+
+To make retrieval-augmented generation rock solid, enterprise AI engineering requires **Agentic RAG**:
+1️⃣ **Hybrid Search**: Combine Dense Vector Search (pgvector HNSW) with Sparse Keyword Search (BM25) via Reciprocal Rank Fusion (RRF).
+2️⃣ **Cross-Encoder Reranking**: Filter top 50 candidates down to top 5 ultra-relevant chunks.
+3️⃣ **Self-Reflective Loops**: Use LangGraph state machines to grade document relevance and automatically rewrite poor queries before generating responses.
+4️⃣ **Async FastAPI Streaming**: Deliver sub-second time-to-first-token while maintaining strict evaluation guardrails.
+
+Save this post to reference when architecting your next AI backend! 🚀
+
+#ArtificialIntelligence #MachineLearning #AIEngineering #RAG #LangGraph #FastAPI #Python #VectorDatabase #pgvector #SoftwareEngineering #DataEngineering #SystemDesign #OpenAI #GenerativeAI #BackendDeveloper</p>
+    </div>
+
+    <div class="section">
+      <h2>🎬 Reel Script (30 Seconds)</h2>
+      <div class="script-box">
+[00:00 - 00:05 | Hook]
+(Split screen showing "Naive RAG" crashing with hallucinations vs "Agentic RAG" returning accurate citations)
+"If you are still just embedding text, saving to a vector DB, and passing top-k chunks to an LLM... your RAG pipeline is broken."
+
+[00:05 - 00:15 | The Problem & Fix]
+"Naive semantic search completely misses exact keywords and injects noisy context. To fix this, production systems use Hybrid Search—combining BM25 keyword matching with pgvector HNSW embeddings, then passing candidates through a Cross-Encoder Reranker."
+
+[00:15 - 00:25 | The Agentic Twist]
+"Next, wrap your pipeline in a LangGraph state graph. If the document evaluator grades retrieved chunks as irrelevant, it halts generation, rewrites the query, and fetches better context automatically."
+
+[00:25 - 00:30 | Call to Action]
+"That’s how you eliminate hallucinations and build enterprise-grade AI. Check the caption for the full architecture breakdown!"
+      </div>
+    </div>
+
+    <p class="cta-note">Generated autonomously by Hermes AI-OS Content Pipeline • Profile: @social</p>
+  </div>
+</body>
+</html>
