@@ -26,7 +26,7 @@ DEFAULT_REPOS = [
     repo.strip()
     for repo in os.environ.get(
         "GITHUB_REPOS",
-        "AI-OS,cron-system,orca-marine-intelligence,Vela,artify-bharat-sih,Vendor-Tracker,VelaVoice","flyrank-capstone-metering-billing"
+        "AI-OS,cron-system,orca-marine-intelligence,Vela,artify-bharat-sih,Vendor-Tracker,VelaVoice,flyrank-capstone-metering-billing"
     ).split(",")
     if repo.strip()
 ]
