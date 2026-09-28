@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d6efd">
+  <meta name="description" content="Cron System PWA - Content Hub, Wayfinder Maps, and Jobs Monitor">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Cron System">
+  <link rel="apple-touch-icon" href="/pwa/icons/icon-192.png">
+  <link rel="manifest" href="/pwa/manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/icons/ghost.svg">
+  <title>Cron System PWA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0a0f1d;
+      --bg-card: #111827;
+      --bg-secondary: #1f2937;
+      --bg-hover: #263346;
+      --border-color: #374151;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+    .header {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.85rem 1.25rem;
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .brand-badge {
+      font-size: 0.7rem;
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--accent-blue);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      padding: 0.15rem 0.45rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent-green);
+    }
+    .status-dot.offline {
+      background-color: var(--accent-red);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--bg-secondary);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent-blue);
+    }
+    .btn-primary {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+    .nav-tabs {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 1.25rem;
+    }
+    .tabs-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+    .tab-btn {
+      padding: 0.85rem 1rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+    .tab-btn.active {
+      color: var(--accent-blue);
+      border-bottom-color: var(--accent-blue);
+    }
+    .tab-count {
+      font-size: 0.72rem;
+      background: var(--bg-secondary);
+      padding: 0.1rem 0.4rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .tab-btn.active .tab-count {
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--accent-blue);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem;
+    }
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .section-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+    .search-input {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      min-width: 220px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--accent-blue);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .card-top {
+      margin-bottom: 1rem;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      word-break: break-word;
+    }
+    .card-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .card-title a:hover {
+      color: var(--accent-blue);
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .badge-blue {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .badge-green {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-yellow {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-gray {
+      background: #1f2937;
+      color: #9ca3af;
+      border: 1px solid var(--border-color);
+    }
+    .card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.85rem;
+      margin-top: 0.85rem;
+    }
+    .card-link {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .card-link:hover {
+      text-decoration: underline;
+    }
+    .tickets-list {
+      list-style: none;
+      margin-top: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .ticket-item {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .ticket-item.completed {
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+    .dropzone {
+      border: 2px dashed var(--border-color);
+      border-radius: 0.75rem;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    .dropzone.dragover {
+      border-color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.05);
+    }
+    .dropzone-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--accent-blue);
+    }
+    .dropzone-text {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .dropzone-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .upload-form-group {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .upload-form-group label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .upload-form-group input {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .upload-form-group input:focus {
+      border-color: var(--accent-blue);
+    }
+    .upload-status {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      display: none;
+    }
+    .upload-status.success {
+      display: block;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--accent-green);
+      color: #34d399;
+    }
+    .upload-status.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--accent-red);
+      color: #f87171;
+    }
+    .state-banner {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .state-banner-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 2px solid var(--border-color);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @media (max-width: 640px) {
+      .header-content { flex-direction: column; align-items: stretch; }
+      .header-actions { justify-content: space-between; }
+      .search-input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="/pwa/" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span class="brand-title">Cron System</span>
+        <span class="brand-badge">PWA</span>
+      </a>
+      <div class="header-actions">
+        <div class="status-pill" id="networkStatus">
+          <span class="status-dot" id="networkDot"></span>
+          <span id="networkText">Online</span>
+        </div>
+        <button class="btn" id="installBtn" style="display: none;">
+          <span>📲</span> Install
+        </button>
+        <button class="btn" id="refreshBtn" title="Refresh Current Tab">
+          <span>🔄</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav-tabs">
+    <div class="tabs-wrapper">
+      <button class="tab-btn active" data-tab="content">
+        <span>📂</span> Content Hub
+        <span class="tab-count" id="contentCount">-</span>
+      </button>
+      <button class="tab-btn" data-tab="wayfinder">
+        <span>🗺️</span> Wayfinder
+        <span class="tab-count" id="wayfinderCount">-</span>
+      </button>
+      <button class="tab-btn" data-tab="jobs">
+        <span>⏱️</span> Jobs
+        <span class="tab-count" id="jobsCount">-</span>
+      </button>
+      <button class="tab-btn" data-tab="upload">
+        <span>📤</span> Upload
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Content Hub Tab -->
+    <section class="tab-pane active" id="tab-content">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Content Hub Directories</h2>
+          <p class="section-desc">Mounted static assets and generated interactive reports</p>
+        </div>
+        <input type="search" class="search-input" id="contentSearch" placeholder="Filter directories...">
+      </div>
+      <div id="contentList" class="grid">
+        <div class="state-banner">
+          <div class="spinner"></div>
+          <p style="margin-top: 0.75rem;">Loading directories...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wayfinder Tab -->
+    <section class="tab-pane" id="tab-wayfinder">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Wayfinder Maps</h2>
+          <p class="section-desc">Active architecture decision roadmaps and execution tickets</p>
+        </div>
+        <input type="search" class="search-input" id="wayfinderSearch" placeholder="Filter maps...">
+      </div>
+      <div id="wayfinderList" class="grid">
+        <div class="state-banner">
+          <div class="spinner"></div>
+          <p style="margin-top: 0.75rem;">Loading Wayfinder maps...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Jobs Tab -->
+    <section class="tab-pane" id="tab-jobs">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Cron Engine & Scheduled Jobs</h2>
+          <p class="section-desc">Scheduled job definitions, execution heartbeats, and runner status</p>
+        </div>
+      </div>
+      <div id="jobsList" class="grid">
+        <div class="state-banner">
+          <div class="spinner"></div>
+          <p style="margin-top: 0.75rem;">Checking engine health...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Upload Tab -->
+    <section class="tab-pane" id="tab-upload">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Static Content Upload</h2>
+          <p class="section-desc">Upload reports, images, HTML bundles, or assets directly into /uploads</p>
+        </div>
+      </div>
+      <div style="max-width: 600px; margin: 0 auto;">
+        <div class="dropzone" id="uploadDropzone">
+          <div class="dropzone-icon">☁️</div>
+          <div class="dropzone-text">Drop file here or click to browse</div>
+          <div class="dropzone-hint">HTML, Images, Video, PDF (Max 50MB)</div>
+          <input type="file" id="uploadInput" style="display: none;">
+        </div>
+        <div class="upload-form-group">
+          <label for="adminSecretInput">Admin Secret (X-Admin-Secret)</label>
+          <input type="password" id="adminSecretInput" placeholder="Enter admin secret for authorization...">
+        </div>
+        <div id="uploadStatus" class="upload-status"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ---------------------------------------------------------------------------
+    // Service Worker Registration
+    // ---------------------------------------------------------------------------
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/pwa/sw.js', { scope: '/pwa/' })
+          .catch(function(err) {
+            // Service worker registration handled gracefully
+          });
+      });
+    }
+
+    // ---------------------------------------------------------------------------
+    // PWA Install Prompt Handling
+    // ---------------------------------------------------------------------------
+    var deferredInstallPrompt = null;
+    var installBtn = document.getElementById('installBtn');
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      if (installBtn) installBtn.style.display = 'inline-flex';
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async function() {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        var choice = await deferredInstallPrompt.userChoice;
+        if (choice.outcome === 'accepted') {
+          installBtn.style.display = 'none';
+        }
+        deferredInstallPrompt = null;
+      });
+    }
+
+    // ---------------------------------------------------------------------------
+    // Network Status Tracking
+    // ---------------------------------------------------------------------------
+    function updateNetworkStatus() {
+      var isOnline = navigator.onLine;
+      var dot = document.getElementById('networkDot');
+      var text = document.getElementById('networkText');
+      if (dot && text) {
+        if (isOnline) {
+          dot.classList.remove('offline');
+          text.textContent = 'Online';
+        } else {
+          dot.classList.add('offline');
+          text.textContent = 'Offline';
+        }
+      }
+    }
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    updateNetworkStatus();
+
+    // ---------------------------------------------------------------------------
+    // Tab Navigation
+    // ---------------------------------------------------------------------------
+    var currentTab = 'content';
+    var tabButtons = document.querySelectorAll('.tab-btn');
+    var tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var targetTab = btn.getAttribute('data-tab');
+        switchTab(targetTab);
+      });
+    });
+
+    function switchTab(tabName) {
+      currentTab = tabName;
+      tabButtons.forEach(function(b) {
+        if (b.getAttribute('data-tab') === tabName) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      tabPanes.forEach(function(pane) {
+        if (pane.id === 'tab-' + tabName) {
+          pane.classList.add('active');
+        } else {
+          pane.classList.remove('active');
+        }
+      });
+      loadTabData(tabName);
+    }
+
+    var refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function() {
+        loadTabData(currentTab, true);
+      });
+    }
+
+    // ---------------------------------------------------------------------------
+    // Helper Formatting
+    // ---------------------------------------------------------------------------
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 B';
+      var k = 1024;
+      var sizes = ['B', 'KB', 'MB', 'GB'];
+      var i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // ---------------------------------------------------------------------------
+    // Tab 1: Content Hub Data
+    // ---------------------------------------------------------------------------
+    var staticDirectories = [];
+
+    async function fetchContentData() {
+      var container = document.getElementById('contentList');
+      var countBadge = document.getElementById('contentCount');
+      try {
+        var res = await fetch('/admin/static');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        staticDirectories = await res.json();
+        if (countBadge) countBadge.textContent = staticDirectories.length;
+        renderContentList(staticDirectories);
+      } catch (err) {
+        if (container) {
+          container.innerHTML = '<div class="state-banner"><div class="state-banner-icon">⚠️</div><p>Unable to load directories: ' + escapeHtml(err.message) + '</p><button class="btn btn-primary" style="margin-top:0.75rem;" onclick="fetchContentData()">Retry</button></div>';
+        }
+      }
+    }
+
+    function renderContentList(dirs) {
+      var container = document.getElementById('contentList');
+      if (!container) return;
+      if (!dirs || dirs.length === 0) {
+        container.innerHTML = '<div class="state-banner"><div class="state-banner-icon">📂</div><p>No static directories found.</p></div>';
+        return;
+      }
+      container.innerHTML = dirs.map(function(d) {
+        var mountUrl = d.mounted_at || '/' + d.slug;
+        return '<div class="card">' +
+          '<div class="card-top">' +
+            '<div class="card-title">' +
+              '<span>📁</span>' +
+              '<a href="' + escapeHtml(mountUrl) + '" target="_blank">' + escapeHtml(d.slug) + '</a>' +
+            '</div>' +
+            '<div class="card-meta">' +
+              '<span class="badge badge-blue">' + (d.file_count || 0) + ' files</span>' +
+              '<span class="badge badge-gray">' + formatBytes(d.total_bytes || 0) + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<span style="font-size:0.75rem; color:var(--text-muted);">' + escapeHtml(mountUrl) + '</span>' +
+            '<a href="' + escapeHtml(mountUrl) + '" class="card-link" target="_blank">Open ↗</a>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    var contentSearch = document.getElementById('contentSearch');
+    if (contentSearch) {
+      contentSearch.addEventListener('input', function(e) {
+        var query = e.target.value.toLowerCase().trim();
+        var filtered = staticDirectories.filter(function(d) {
+          return d.slug.toLowerCase().includes(query) || (d.mounted_at && d.mounted_at.toLowerCase().includes(query));
+        });
+        renderContentList(filtered);
+      });
+    }
+
+    // ---------------------------------------------------------------------------
+    // Tab 2: Wayfinder Data
+    // ---------------------------------------------------------------------------
+    var wayfinderMaps = [];
+
+    async function fetchWayfinderData() {
+      var container = document.getElementById('wayfinderList');
+      var countBadge = document.getElementById('wayfinderCount');
+      try {
+        var res = await fetch('/api/wayfinder');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var data = await res.json();
+        wayfinderMaps = data.maps || [];
+        if (countBadge) countBadge.textContent = wayfinderMaps.length;
+        renderWayfinderList(wayfinderMaps);
+      } catch (err) {
+        if (container) {
+          container.innerHTML = '<div class="state-banner"><div class="state-banner-icon">🗺️</div><p>Unable to load Wayfinder maps: ' + escapeHtml(err.message) + '</p><button class="btn btn-primary" style="margin-top:0.75rem;" onclick="fetchWayfinderData()">Retry</button></div>';
+        }
+      }
+    }
+
+    function renderWayfinderList(maps) {
+      var container = document.getElementById('wayfinderList');
+      if (!container) return;
+      if (!maps || maps.length === 0) {
+        container.innerHTML = '<div class="state-banner"><div class="state-banner-icon">🗺️</div><p>No active Wayfinder maps found.</p></div>';
+        return;
+      }
+      container.innerHTML = maps.map(function(m) {
+        var stateBadgeClass = m.state === 'open' ? 'badge-green' : 'badge-gray';
+        var ticketsHtml = '';
+        if (m.child_tickets && m.child_tickets.length > 0) {
+          ticketsHtml = '<ul class="tickets-list">' +
+            m.child_tickets.slice(0, 4).map(function(t) {
+              var checked = t.is_completed ? '☑' : '☐';
+              var completedClass = t.is_completed ? 'completed' : '';
+              return '<li class="ticket-item ' + completedClass + '"><span>' + checked + '</span> ' + escapeHtml(t.title) + '</li>';
+            }).join('') +
+            (m.child_tickets.length > 4 ? '<li class="ticket-item" style="color:var(--accent-blue);">+ ' + (m.child_tickets.length - 4) + ' more tickets</li>' : '') +
+          '</ul>';
+        }
+        var decisionsHtml = '';
+        if (m.decisions_so_far && m.decisions_so_far.length > 0) {
+          decisionsHtml = '<div style="margin-top:0.5rem; font-size:0.75rem; color:var(--text-muted);">' +
+            '<strong>Decisions:</strong> ' + escapeHtml(m.decisions_so_far[0]) +
+          '</div>';
+        }
+
+        return '<div class="card">' +
+          '<div class="card-top">' +
+            '<div class="card-title">' +
+              '<a href="' + escapeHtml(m.html_url) + '" target="_blank">#' + m.number + ' ' + escapeHtml(m.title) + '</a>' +
+            '</div>' +
+            '<div class="card-meta">' +
+              '<span class="badge badge-blue">' + escapeHtml(m.repo) + '</span>' +
+              '<span class="badge ' + stateBadgeClass + '">' + escapeHtml(m.state) + '</span>' +
+            '</div>' +
+            (m.destination ? '<p style="font-size:0.82rem; color:var(--text-muted); margin-top:0.5rem;">🎯 ' + escapeHtml(m.destination) + '</p>' : '') +
+            decisionsHtml +
+            ticketsHtml +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<span style="font-size:0.75rem; color:var(--text-muted);">' + (m.child_tickets ? m.child_tickets.length : 0) + ' tickets</span>' +
+            '<a href="' + escapeHtml(m.html_url) + '" class="card-link" target="_blank">GitHub Issue ↗</a>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    var wayfinderSearch = document.getElementById('wayfinderSearch');
+    if (wayfinderSearch) {
+      wayfinderSearch.addEventListener('input', function(e) {
+        var query = e.target.value.toLowerCase().trim();
+        var filtered = wayfinderMaps.filter(function(m) {
+          return m.title.toLowerCase().includes(query) || (m.repo && m.repo.toLowerCase().includes(query));
+        });
+        renderWayfinderList(filtered);
+      });
+    }
+
+    // ---------------------------------------------------------------------------
+    // Tab 3: Jobs Data
+    // ---------------------------------------------------------------------------
+    async function fetchJobsData() {
+      var container = document.getElementById('jobsList');
+      var countBadge = document.getElementById('jobsCount');
+      var healthData = null;
+      var jobsData = null;
+
+      try {
+        var healthRes = await fetch('/health');
+        if (healthRes.ok) {
+          healthData = await healthRes.json();
+        }
+      } catch (err) {
+        // health fetch failed
+      }
+
+      try {
+        var jobsRes = await fetch('/api/jobs');
+        if (jobsRes.ok) {
+          jobsData = await jobsRes.json();
+        }
+      } catch (err) {
+        // jobs endpoint not available yet or errored
+      }
+
+      var defaultJobs = [
+        { name: 'warmup', schedule: '*/10 * * * *', timeout_sec: 30, description: 'Keep Render awake 24/7' },
+        { name: 'freelance-ingest', schedule: '0 11,17 * * *', timeout_sec: 60, description: 'Scan freelance email alerts & push to Discord' },
+        { name: 'backup', schedule: '0 3 * * *', timeout_sec: 120, description: 'Nightly database backup to external storage' }
+      ];
+
+      var renderedJobs = (jobsData && Array.isArray(jobsData.jobs)) ? jobsData.jobs : defaultJobs;
+      if (countBadge) countBadge.textContent = renderedJobs.length;
+
+      var healthStatusHtml = healthData && healthData.status === 'ok'
+        ? '<span class="badge badge-green">Healthy (ok)</span>'
+        : '<span class="badge badge-yellow">Standalone Mode</span>';
+
+      if (!container) return;
+
+      var html = '<div class="card" style="grid-column: 1 / -1;">' +
+        '<div class="card-top">' +
+          '<div class="card-title">' +
+            '<span>⚙️</span> FastApi Engine Heartbeat' +
+          '</div>' +
+          '<div class="card-meta">' +
+            healthStatusHtml +
+            '<span class="badge badge-gray">Endpoint: /health</span>' +
+          '</div>' +
+          '<p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.5rem;">' +
+            'Cron Engine orchestrates scheduled automated workflows via cron.yaml and cron-job.org webhooks.' +
+          '</p>' +
+        '</div>' +
+      '</div>';
+
+      html += renderedJobs.map(function(job) {
+        var lastRunHtml = '';
+        if (job.last_status) {
+          var statusBadge = job.last_status === 'ok' ? 'badge-green' : 'badge-yellow';
+          lastRunHtml = '<div style="margin-top:0.5rem; font-size:0.8rem;">' +
+            'Last Run: <span class="badge ' + statusBadge + '">' + escapeHtml(job.last_status) + '</span> ' +
+            (job.duration_ms ? '<span class="badge badge-gray">' + job.duration_ms + 'ms</span>' : '') +
+          '</div>';
+        }
+        return '<div class="card">' +
+          '<div class="card-top">' +
+            '<div class="card-title">' +
+              '<span>⏰</span> ' + escapeHtml(job.name) +
+            '</div>' +
+            '<div class="card-meta">' +
+              '<span class="badge badge-blue">Cron: ' + escapeHtml(job.schedule) + '</span>' +
+              '<span class="badge badge-gray">Timeout: ' + (job.timeout_sec || 60) + 's</span>' +
+            '</div>' +
+            '<p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.65rem;">' +
+              escapeHtml(job.description || 'Configured automated cron task') +
+            '</p>' +
+            lastRunHtml +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<span style="font-size:0.75rem; color:var(--text-muted);">Trigger: POST /cron/' + escapeHtml(job.name) + '</span>' +
+            '<a href="/health" class="card-link" target="_blank">Status ↗</a>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      container.innerHTML = html;
+    }
+
+    // ---------------------------------------------------------------------------
+    // Tab 4: Upload Handling
+    // ---------------------------------------------------------------------------
+    var dropzone = document.getElementById('uploadDropzone');
+    var uploadInput = document.getElementById('uploadInput');
+    var adminSecretInput = document.getElementById('adminSecretInput');
+    var uploadStatus = document.getElementById('uploadStatus');
+
+    if (adminSecretInput) {
+      var savedSecret = localStorage.getItem('cron_admin_secret') || '';
+      adminSecretInput.value = savedSecret;
+      adminSecretInput.addEventListener('change', function() {
+        localStorage.setItem('cron_admin_secret', adminSecretInput.value);
+      });
+    }
+
+    if (dropzone && uploadInput) {
+      dropzone.addEventListener('click', function() {
+        uploadInput.click();
+      });
+
+      dropzone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+
+      dropzone.addEventListener('dragleave', function() {
+        dropzone.classList.remove('dragover');
+      });
+
+      dropzone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) {
+          executeUpload(e.dataTransfer.files[0]);
+        }
+      });
+
+      uploadInput.addEventListener('change', function() {
+        if (uploadInput.files.length) {
+          executeUpload(uploadInput.files[0]);
+        }
+      });
+    }
+
+    async function executeUpload(file) {
+      if (!uploadStatus) return;
+      var secret = (adminSecretInput ? adminSecretInput.value : '') || localStorage.getItem('cron_admin_secret') || '';
+      if (!secret) {
+        secret = prompt('Enter Admin Secret for upload:');
+        if (!secret) {
+          uploadStatus.className = 'upload-status error';
+          uploadStatus.textContent = 'Upload cancelled: Admin Secret required.';
+          return;
+        }
+        if (adminSecretInput) adminSecretInput.value = secret;
+        localStorage.setItem('cron_admin_secret', secret);
+      }
+
+      var formData = new FormData();
+      formData.append('file', file);
+
+      uploadStatus.className = 'upload-status';
+      uploadStatus.style.display = 'block';
+      uploadStatus.style.background = 'var(--bg-secondary)';
+      uploadStatus.style.color = 'var(--text-main)';
+      uploadStatus.textContent = 'Uploading ' + file.name + ' (' + formatBytes(file.size) + ')...';
+
+      try {
+        var res = await fetch('/admin/upload', {
+          method: 'POST',
+          headers: { 'X-Admin-Secret': secret },
+          body: formData
+        });
+        var data = await res.json();
+        if (res.ok) {
+          uploadStatus.className = 'upload-status success';
+          uploadStatus.innerHTML = '✅ Upload successful! <a href="' + escapeHtml(data.url) + '" target="_blank" style="color:inherit; text-decoration:underline;">View uploaded file (' + escapeHtml(data.filename) + ') ↗</a>';
+          // Refresh content list if available
+          fetchContentData();
+        } else {
+          uploadStatus.className = 'upload-status error';
+          uploadStatus.textContent = 'Upload failed: ' + (data.detail || ('HTTP ' + res.status));
+        }
+      } catch (err) {
+        uploadStatus.className = 'upload-status error';
+        uploadStatus.textContent = 'Upload failed: ' + err.message;
+      }
+    }
+
+    // ---------------------------------------------------------------------------
+    // Tab Data Dispatcher
+    // ---------------------------------------------------------------------------
+    function loadTabData(tabName, force) {
+      if (tabName === 'content') {
+        if (force || staticDirectories.length === 0) fetchContentData();
+      } else if (tabName === 'wayfinder') {
+        if (force || wayfinderMaps.length === 0) fetchWayfinderData();
+      } else if (tabName === 'jobs') {
+        fetchJobsData();
+      }
+    }
+
+    // ---------------------------------------------------------------------------
+    // Initial Load
+    // ---------------------------------------------------------------------------
+    fetchContentData();
+    fetchWayfinderData();
+    fetchJobsData();
+  </script>
+</body>
+</html>

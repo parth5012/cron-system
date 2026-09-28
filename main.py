@@ -1,16 +1,17 @@
 import os
 import shutil
-from datetime import datetime
+from dataclasses import asdict
+from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import FastAPI, Header, HTTPException, UploadFile, File
+from fastapi import FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from cron_engine import get_engine
 from wayfinder import router as wayfinder_router
-
 
 # ---------------------------------------------------------------------------
 # Constants & Config
@@ -22,9 +23,17 @@ class CacheControlMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
         path = request.url.path
-        if path.endswith('/') or 'index.html' in path:
+        if path.endswith('/sw.js') or path == '/sw.js':
+            response.headers['Cache-Control'] = 'no-cache, no-store'
+        elif path.endswith('/') or 'index.html' in path:
             response.headers['Cache-Control'] = 'no-cache'
-        elif any(path.endswith(ext) for ext in ['.html', '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.mp4', '.webm', '.mov', '.pdf', '.svg']):
+        elif any(
+            path.endswith(ext)
+            for ext in [
+                '.html', '.css', '.js', '.png', '.jpg', '.jpeg',
+                '.gif', '.webp', '.mp4', '.webm', '.mov', '.pdf', '.svg',
+            ]
+        ):
             response.headers['Cache-Control'] = 'public, max-age=86400'
         return response
 
@@ -32,7 +41,10 @@ app = FastAPI(title="Cron System", version="1.0.0")
 
 
 ADMIN_SECRET = os.environ.get('ADMIN_SECRET', '')
-ALLOWED_EXTENSIONS = {'.html', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.mp4', '.webm', '.mov', '.pdf', '.svg', '.ico'}
+ALLOWED_EXTENSIONS = {
+    '.html', '.png', '.jpg', '.jpeg', '.gif', '.webp',
+    '.mp4', '.webm', '.mov', '.pdf', '.svg', '.ico',
+}
 MAX_UPLOAD_SIZE = 50 * 1024 * 1024  # 50MB
 
 def verify_admin(x_admin_secret: str = Header(None)):
@@ -80,7 +92,10 @@ async def static_status(slug: str):
         'slug': slug,
         'file_count': len(files),
         'total_bytes': sum(f.stat().st_size for f in files),
-        'files': [{'name': str(f.relative_to(target)), 'size': f.stat().st_size} for f in sorted(files)],
+        'files': [
+            {'name': str(f.relative_to(target)), 'size': f.stat().st_size}
+            for f in sorted(files)
+        ],
         'mounted_at': f'/{slug}'
     }
 
@@ -96,27 +111,28 @@ async def delete_static(slug: str, x_admin_secret: str = Header(None)):
 
 @app.post('/admin/upload')
 async def upload_file(
-    file: UploadFile = File(...),
-    x_admin_secret: str = Header(None)
+    file: UploadFile = File(...),  # noqa: B008
+    x_admin_secret: str = Header(None),
 ):
     verify_admin(x_admin_secret)
-    
+
     ext = Path(file.filename).suffix.lower()
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(status_code=400, detail=f'File type {ext} not allowed')
-    
+
     content = await file.read()
     if len(content) > MAX_UPLOAD_SIZE:
-        raise HTTPException(status_code=413, detail=f'File too large. Max {MAX_UPLOAD_SIZE // (1024*1024)}MB')
-    
+        max_mb = MAX_UPLOAD_SIZE // (1024 * 1024)
+        raise HTTPException(status_code=413, detail=f'File too large. Max {max_mb}MB')
+
     upload_dir = STATIC_DIR / 'uploads'
     upload_dir.mkdir(parents=True, exist_ok=True)
-    
+
     dest = upload_dir / file.filename
     if dest.exists():
         stem = dest.stem
-        dest = upload_dir / f'{stem}_{int(datetime.now().timestamp())}{ext}'
-    
+        dest = upload_dir / f'{stem}_{int(datetime.now(timezone.utc).timestamp())}{ext}'
+
     dest.write_bytes(content)
     return {'url': f'/uploads/{dest.name}', 'size': len(content), 'filename': dest.name}
 
@@ -129,15 +145,21 @@ async def index():
                 files = list(sub.rglob('*'))
                 file_list = [f for f in files if f.is_file()]
                 total_bytes = sum(f.stat().st_size for f in file_list)
+                size_mb = total_bytes / (1024 * 1024)
+                size_kb = total_bytes / 1024
+                formatted_size = (
+                    f"{size_mb:.2f} MB" if total_bytes > 1024 * 1024 else f"{size_kb:.2f} KB"
+                )
                 directories.append({
                     'slug': sub.name,
                     'file_count': len(file_list),
-                    'total_size': f"{total_bytes / (1024*1024):.2f} MB" if total_bytes > 1024*1024 else f"{total_bytes / 1024:.2f} KB",
-                    'url': f'/{sub.name}'
+                    'total_size': formatted_size,
+                    'url': f'/{sub.name}',
                 })
-    
+
     dirs_html = "".join([
-        f"<div class='dir-card'><h3><a href='{d['url']}'>{d['slug']}</a></h3><p>{d['file_count']} files • {d['total_size']}</p></div>"
+        f"<div class='dir-card'><h3><a href='{d['url']}'>{d['slug']}</a></h3>"
+        f"<p>{d['file_count']} files • {d['total_size']}</p></div>"
         for d in directories
     ])
 
@@ -166,10 +188,26 @@ async def index():
                     --primary: #0d6efd;
                 }}
             }}
-            body {{ font-family: system-ui, sans-serif; margin: 0; padding: 20px; background: var(--bg); color: var(--text); }}
+            body {{
+                font-family: system-ui, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background: var(--bg);
+                color: var(--text);
+            }}
             .container {{ max-width: 800px; margin: 0 auto; }}
-            .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }}
-            .dir-card {{ background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; }}
+            .grid {{
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+                margin-bottom: 30px;
+            }}
+            .dir-card {{
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 15px;
+            }}
             .dir-card a {{ color: var(--primary); text-decoration: none; }}
             .dir-card p {{ margin: 5px 0 0; font-size: 0.9em; opacity: 0.8; }}
             #dropzone {{
@@ -227,13 +265,13 @@ async def index():
                     if(!pwd) return;
                     sessionStorage.setItem('admin_secret', pwd);
                 }}
-                
+
                 const formData = new FormData();
                 formData.append('file', file);
-                
+
                 status.textContent = 'Uploading...';
                 status.style.color = 'inherit';
-                
+
                 try {{
                     const res = await fetch('/admin/upload', {{
                         method: 'POST',
@@ -264,6 +302,55 @@ async def index():
 app.include_router(wayfinder_router)
 
 
+# ---------------------------------------------------------------------------
+# PWA Routes (Manifest & Service Worker)
+# ---------------------------------------------------------------------------
+@app.get('/pwa/manifest.webmanifest')
+async def pwa_manifest():
+    manifest_path = STATIC_DIR / 'pwa' / 'manifest.webmanifest'
+    if not manifest_path.exists():
+        raise HTTPException(status_code=404, detail='Manifest not found')
+    return FileResponse(manifest_path, media_type='application/manifest+json')
+
+
+@app.get('/pwa/sw.js')
+async def pwa_sw():
+    sw_path = STATIC_DIR / 'pwa' / 'sw.js'
+    if not sw_path.exists():
+        raise HTTPException(status_code=404, detail='Service worker not found')
+    return FileResponse(
+        sw_path,
+        media_type='application/javascript',
+        headers={'Cache-Control': 'no-cache, no-store'},
+    )
+
+
+# ---------------------------------------------------------------------------
+# Cron System APIs
+# ---------------------------------------------------------------------------
+@app.get('/api/jobs')
+async def list_jobs():
+    engine = get_engine()
+    return [
+        {
+            'name': job.name,
+            'schedule': job.schedule,
+            'description': job.description,
+            'timeout_sec': job.timeout_sec,
+        }
+        for job in engine.jobs.values()
+    ]
+
+
+@app.get('/api/cron/{name}/logs')
+async def get_cron_logs(name: str, limit: int = 50):
+    engine = get_engine()
+    if not engine.is_valid_job(name):
+        raise HTTPException(status_code=404, detail=f'Job not found: {name}')
+    logs = engine.get_logs(name, limit=limit)
+    return [asdict(r) for r in logs]
+
+
 def mount_static_dirs(app):
     if not STATIC_DIR.exists():
         return
@@ -271,10 +358,18 @@ def mount_static_dirs(app):
         if sub.is_dir():
             if sub.name == "wayfinder":
                 continue
-            app.mount(f"/{sub.name}", StaticFiles(directory=str(sub), html=True), name=f"static-{sub.name}")
+            app.mount(
+                f"/{sub.name}",
+                StaticFiles(directory=str(sub), html=True),
+                name=f"static-{sub.name}",
+            )
             for child in sorted(sub.iterdir()):
                 if child.is_dir():
-                    app.mount(f"/{sub.name}/{child.name}", StaticFiles(directory=str(child), html=True), name=f"static-{sub.name}-{child.name}")
+                    app.mount(
+                        f"/{sub.name}/{child.name}",
+                        StaticFiles(directory=str(child), html=True),
+                        name=f"static-{sub.name}-{child.name}",
+                    )
 
 
 mount_static_dirs(app)
