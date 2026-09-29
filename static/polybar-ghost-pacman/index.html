@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost + Pacman Workspaces — your old style, restored</title>
+<style>
+  :root{
+    --base:#232136; --surface:#2a273f; --overlay:#393552;
+    --muted:#6e6a86; --subtle:#908caa; --text:#e0def4;
+    --love:#eb6f92; --gold:#f6c177; --rose:#ea9a97;
+    --pine:#3e8fb0; --foam:#9ccfd8; --iris:#c4a7e7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--base);color:var(--text);
+    font-family:"DejaVu Sans","Noto Sans",sans-serif;padding:32px 16px 64px}
+  .wrap{max-width:920px;margin:0 auto}
+  h1{font-size:21px;margin:0 0 6px}
+  .sub{color:var(--subtle);font-size:14px;margin-bottom:18px;line-height:1.6}
+  .sub b{color:var(--foam)}
+  .note{background:var(--surface);border:1px solid var(--overlay);border-radius:10px;
+    padding:14px 18px;font-size:13.5px;color:var(--subtle);margin-bottom:24px;line-height:1.65}
+  .note b{color:var(--gold)}
+  .card{background:var(--surface);border:1px solid var(--overlay);
+    border-radius:10px;padding:18px 20px;margin-bottom:20px}
+  .card h2{font-size:15.5px;margin:0 0 4px;display:flex;gap:10px;align-items:baseline}
+  .card h2 .num{color:var(--foam);font-family:monospace}
+  .card p.desc{color:var(--subtle);font-size:13.5px;margin:0 0 12px}
+  .mock{background:var(--base);border:1px solid var(--overlay);border-radius:6px;
+    display:inline-block;padding:6px 8px;line-height:0}
+  .mock img{height:44px;width:auto;display:block;border-radius:3px}
+  pre{background:var(--base);border:1px solid var(--overlay);border-radius:6px;
+    padding:12px 14px;font-size:12.5px;line-height:1.55;overflow-x:auto;
+    font-family:"DejaVu Sans Mono",monospace;color:var(--subtle);margin:12px 0 0}
+  pre .k{color:var(--iris)} pre .v{color:var(--foam)} pre .c{color:var(--muted)}
+  code{background:var(--base);padding:1px 6px;border-radius:4px;font-size:12.5px;color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Ghost + Pacman — your old style, actually rendering this time</h1>
+  <div class="sub">
+    Found your original: <b>round-1 preview, option 8</b> (“Pacman, custom script”) using
+    <code style="color:var(--gold)">ᗧ</code> + <code style="color:var(--gold)">○</code>, plus your
+    <code style="color:var(--gold)">pacman.sh</code> helper. Problem: <b>ᗧ (U+15E7) is in no font on your
+    system</b> — that's why it was blank. Your JetBrainsMono Nerd Font has real ghost &amp; pacman glyphs
+    instead, so below is your style rebuilt with glyphs that work.
+    All 6 mocks below are rendered from <b>your actual font file</b> — exactly what polybar draws.
+  </div>
+
+  <div class="note">
+    <b>Preview verified via polybar's own stdout dump</b> (your screen is locked by light-locker, so X
+    screenshots were stale — ignored). Every glyph codepoint was checked against the TTF cmap first.
+  </div>
+
+  <!-- V1 -->
+  <div class="card">
+    <h2><span class="num">V1</span> Ghost + Pac + Pellets — the restored combo</h2>
+    <p class="desc">Active = filled ghost, occupied = pacman slice, empty = ○ pellets. This is “ghost + pacman for active” as you remember it.</p>
+    <div class="mock"><img src="var-V1.png" alt="V1: ghost active, pacman occupied, circles empty"></div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = <span class="v"></span>
+<span class="k">label-active-foreground</span>   = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied</span>  = <span class="v"></span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#ea9a97</span>
+<span class="k">label-empty</span>     = <span class="v">○</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- V2 -->
+  <div class="card">
+    <h2><span class="num">V2</span> Outline set</h2>
+    <p class="desc">Outline ghost + outline pac-notch. Quieter, stroke-only look.</p>
+    <div class="mock"><img src="var-V2.png" alt="V2: outline ghost, outline notch, circles"></div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = <span class="v"></span>
+<span class="k">label-occupied</span>  = <span class="v"></span>
+<span class="k">label-empty</span>     = <span class="v">○</span>
+<span class="c">; same foregrounds as V1</span></pre>
+  </div>
+
+  <!-- V3 -->
+  <div class="card">
+    <h2><span class="num">V3</span> Pac leading, ghosts behind</h2>
+    <p class="desc">Flip: pacman is active (big body, small mouth), ghost = occupied.</p>
+    <div class="mock"><img src="var-V3.png" alt="V3: pacman active, ghost occupied"></div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = <span class="v"></span>
+<span class="k">label-occupied</span>  = <span class="v"></span>
+<span class="k">label-empty</span>     = <span class="v">○</span></pre>
+  </div>
+
+  <!-- V4 -->
+  <div class="card">
+    <h2><span class="num">V4</span> Ghost + pellets only</h2>
+    <p class="desc">Exactly your pacman.sh pattern (active glyph + ○ ○ ○) but with a ghost that renders.</p>
+    <div class="mock"><img src="var-V4.png" alt="V4: ghost active, all others circles"></div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = <span class="v"></span>
+<span class="k">label-occupied</span>  = <span class="v">○</span>
+<span class="k">label-empty</span>     = <span class="v">○</span></pre>
+  </div>
+
+  <!-- V5 -->
+  <div class="card">
+    <h2><span class="num">V5</span> Big Pac + dots</h2>
+    <p class="desc">Pacman in gold chomping through ● dots. Most literal “pacman” reading.</p>
+    <div class="mock"><img src="var-V5.png" alt="V5: gold pacman, filled dots"></div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = <span class="v"></span>
+<span class="k">label-active-foreground</span>   = <span class="v">#f6c177</span>
+<span class="k">label-occupied</span>  = <span class="v">●</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#ea9a97</span>
+<span class="k">label-empty</span>     = <span class="v">○</span></pre>
+  </div>
+
+  <!-- V6 -->
+  <div class="card">
+    <h2><span class="num">V6</span> Filled / outline ghost</h2>
+    <p class="desc">Ghost duo: filled active, outline occupied. No pacman, all spirit.</p>
+    <div class="mock"><img src="var-V6.png" alt="V6: filled ghost, outline ghost"></div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = <span class="v"></span>
+<span class="k">label-occupied</span>  = <span class="v"></span>
+<span class="k">label-empty</span>     = <span class="v">○</span></pre>
+  </div>
+
+  <div class="note">
+    <b>Pick V1–V6</b> (or say “V3 but gold”) → I patch <code>~/.config/polybar/config.ini</code>,
+    rewrite <code>pacman.sh</code> to the working glyph, relaunch, sync to
+    <code>fleet/configs/polybar/</code>. Bonus: your other nerd-font icons (󰍛󰥔󰐥) were re-tested
+    and <b>they render fine now</b> too — the old blank problem was font-loading, not the glyphs.
+  </div>
+</div>
+</body>
+</html>
