@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polybar Workspaces — Round 4 (12 more)</title>
+<style>
+  :root{
+    --base:#232136; --surface:#2a273f; --overlay:#393552;
+    --muted:#6e6a86; --subtle:#908caa; --text:#e0def4;
+    --love:#eb6f92; --gold:#f6c177; --rose:#ea9a97;
+    --pine:#3e8fb0; --foam:#9ccfd8; --iris:#c4a7e7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--base);color:var(--text);
+    font-family:"DejaVu Sans","Noto Sans",sans-serif;padding:32px 16px 64px}
+  .wrap{max-width:960px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--subtle);font-size:14px;margin-bottom:8px}
+  .legend{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .legend b{color:var(--text);font-weight:600}
+  .note{background:var(--surface);border:1px solid var(--foam);border-radius:10px;
+    padding:14px 18px;font-size:13.5px;color:var(--subtle);margin-bottom:26px;line-height:1.65}
+  .note b{color:var(--foam)}
+  .note.warn{border-color:var(--gold)}
+  .note.warn b{color:var(--gold)}
+  .card{background:var(--surface);border:1px solid var(--overlay);
+    border-radius:10px;padding:18px 20px;margin-bottom:22px}
+  .card h2{font-size:16px;margin:0 0 2px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .card h2 .num{color:var(--foam);font-family:monospace}
+  .tag{font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--overlay);
+    color:var(--muted)}
+  .tag.ok{color:var(--foam);border-color:var(--pine)}
+  .tag.script{color:var(--gold);border-color:var(--gold)}
+  .card p.desc{color:var(--subtle);font-size:13.5px;margin:0 0 14px}
+  .bar{background:var(--base);border:1px solid var(--overlay);border-radius:6px;
+    height:38px;display:flex;align-items:center;padding:0 12px;
+    font-family:"JetBrains Mono","DejaVu Sans Mono","Symbola","Droid Sans Fallback",monospace;
+    font-size:17px;overflow-x:auto;white-space:nowrap}
+  .bar .sep{color:var(--muted);margin:0 10px;font-size:14px}
+  .bar .mod{color:var(--text);font-size:14px}
+  .state{padding:2px 8px;border-radius:4px;margin-right:6px;display:inline-block}
+  pre{background:var(--base);border:1px solid var(--overlay);border-radius:6px;
+    padding:12px 14px;font-size:12.5px;line-height:1.55;overflow-x:auto;
+    font-family:"DejaVu Sans Mono",monospace;color:var(--subtle);margin:14px 0 0}
+  pre .k{color:var(--iris)} pre .v{color:var(--foam)} pre .c{color:var(--muted)}
+  code{background:var(--base);padding:1px 6px;border-radius:4px;font-size:12.5px;color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Workspace styles — round 4: 12 more</h1>
+  <div class="sub">Every glyph below is <b style="color:var(--text)">verified rendering on your actual polybar right now</b> (test bar at y=60 under your main bar — unlock to see). No nerd fonts.</div>
+  <div class="legend">Mock: <b>1st</b> = active &nbsp;·&nbsp; <b>2nd</b> = occupied &nbsp;·&nbsp; <b>rest</b> = empty</div>
+
+  <div class="note">
+    <b>Font lines used below</b> (add to <code>[bar/main]</code> as needed; polybar auto-falls-back through listed fonts):<br>
+    <code>font-1 = "Symbola:size=10;2"</code> → emoji, dice, romans, moon phases<br>
+    <code>font-2 = "Droid Sans Fallback:size=10;2"</code> → kanji
+  </div>
+
+  <!-- 1 -->
+  <div class="card">
+    <h2><span class="num">1</span> Big &amp; bold <span class="tag ok">no glyphs</span></h2>
+    <p class="desc">Active workspace literally gets bigger and bolder. Pure typography, zero icons.</p>
+    <div class="bar">
+      <span class="state" style="font-size:26px;font-weight:700;color:var(--foam)">1</span><span class="state" style="color:var(--subtle)">2</span><span class="state" style="color:var(--muted)">3</span><span class="state" style="color:var(--muted)">4</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[bar/main]</span>
+<span class="k">font-1</span> = <span class="v">"JetBrainsMono NF:size=16;4"</span>
+
+<span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = %name%
+<span class="k">label-active-font</span> = <span class="v">2</span>   <span class="c">; 1-based → font-1 (the big one)</span>
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied-foreground</span> = <span class="v">#908caa</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <h2><span class="num">2</span> Roman numerals Ⅰ Ⅱ Ⅲ Ⅳ <span class="tag ok">live-tested</span></h2>
+    <p class="desc">Classy old-world numbering. Renders from Symbola/DejaVu, tinted theme color.</p>
+    <div class="bar">
+      <span class="state" style="color:var(--foam)">Ⅰ</span><span class="state" style="color:var(--rose)">Ⅱ</span><span class="state" style="color:var(--muted)">Ⅲ</span><span class="state" style="color:var(--muted)">Ⅳ</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">icon-0</span> = 1;Ⅰ
+<span class="k">icon-1</span> = 2;Ⅱ
+<span class="k">icon-2</span> = 3;Ⅲ
+<span class="k">icon-3</span> = 4;Ⅳ
+<span class="k">label-active</span>   = %icon%
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <h2><span class="num">3</span> Dice ⚀ ⚂ ⚄ <span class="tag ok">live-tested</span></h2>
+    <p class="desc">Workspace = dice pip. Playful and position-distinguishable.</p>
+    <div class="bar">
+      <span class="state" style="color:var(--foam)">⚀</span><span class="state" style="color:var(--rose)">⚁</span><span class="state" style="color:var(--muted)">⚂</span><span class="state" style="color:var(--muted)">⚃</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">icon-0</span> = 1;⚀
+<span class="k">icon-1</span> = 2;⚁
+<span class="k">icon-2</span> = 3;⚂
+<span class="k">icon-3</span> = 4;⚃
+<span class="k">label-active</span>   = %icon%
+<span class="k">label-active-foreground</span> = <span class="v">#f6c177</span>
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <h2><span class="num">4</span> Moon phases 🌑🌒🌓🌔 <span class="tag ok">live-tested</span></h2>
+    <p class="desc">Waxing sequence across workspaces — very on-theme for a Moon rice.</p>
+    <div class="bar">
+      <span class="state" style="color:var(--foam)">🌑</span><span class="state" style="color:var(--rose)">🌒</span><span class="state" style="color:var(--muted)">🌓</span><span class="state" style="color:var(--muted)">🌔</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">icon-0</span> = 1;🌑
+<span class="k">icon-1</span> = 2;🌒
+<span class="k">icon-2</span> = 3;🌓
+<span class="k">icon-3</span> = 4;🌔
+<span class="k">label-active</span>   = %icon%
+<span class="k">label-active-foreground</span> = <span class="v">#c4a7e7</span>
+<span class="k">label-occupied-foreground</span> = <span class="v">#908caa</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <h2><span class="num">5</span> Kanji 一二三四 <span class="tag ok">live-tested</span></h2>
+    <p class="desc">East-meets-west minimalism. Needs the Droid Sans Fallback line (already on your system).</p>
+    <div class="bar">
+      <span class="state" style="color:var(--foam)">一</span><span class="state" style="color:var(--rose)">二</span><span class="state" style="color:var(--muted)">三</span><span class="state" style="color:var(--muted)">四</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[bar/main]</span>
+<span class="k">font-2</span> = <span class="v">"Droid Sans Fallback:size=10;2"</span>
+
+<span class="c">[module/workspaces]</span>
+<span class="k">icon-0</span> = 1;一
+<span class="k">icon-1</span> = 2;二
+<span class="k">icon-2</span> = 3;三
+<span class="k">icon-3</span> = 4;四
+<span class="k">label-active</span>   = %icon%
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <h2><span class="num">6</span> Pets 🐱🐶🦊🐨 <span class="tag ok">live-tested</span></h2>
+    <p class="desc">Each state is a different critter. What more do you want from a taskbar.</p>
+    <div class="bar">
+      <span class="state">🐱</span><span class="state" style="color:var(--rose)">🐶</span><span class="state" style="color:var(--muted)">🦊</span><span class="state" style="color:var(--muted)">🐨</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">icon-0</span> = 1;🐱
+<span class="k">icon-1</span> = 2;🐶
+<span class="k">icon-2</span> = 3;🦊
+<span class="k">icon-3</span> = 4;🐨
+<span class="k">label-active</span>   = %icon%
+<span class="k">label-active-foreground</span> = <span class="v">#f6c177</span>
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 7 -->
+  <div class="card">
+    <h2><span class="num">7</span> Coffee &amp; donuts ☕🍩 <span class="tag ok">live-tested</span></h2>
+    <p class="desc">Caffeinated workflow: active = coffee, occupied = donut, empty = donut.</p>
+    <div class="bar">
+      <span class="state">☕</span><span class="state" style="color:var(--rose)">🍩</span><span class="state" style="color:var(--muted)">🍩</span><span class="state" style="color:var(--muted)">🍩</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = ☕
+<span class="k">label-occupied</span>  = 🍩
+<span class="k">label-empty</span>     = 🍩
+<span class="k">label-active-foreground</span>   = <span class="v">#f6c177</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#eb6f92</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 8 -->
+  <div class="card">
+    <h2><span class="num">8</span> Music 🎸🥁 <span class="tag ok">live-tested</span></h2>
+    <p class="desc">Guitar active, drum occupied, notes empty.</p>
+    <div class="bar">
+      <span class="state">🎸</span><span class="state" style="color:var(--rose)">🥁</span><span class="state" style="color:var(--muted)">🎶</span><span class="state" style="color:var(--muted)">🎶</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 🎸
+<span class="k">label-occupied</span>  = 🥁
+<span class="k">label-empty</span>     = 🎶
+<span class="k">label-active-foreground</span>   = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 9 -->
+  <div class="card">
+    <h2><span class="num">9</span> Gaming 🎮🎯 <span class="tag ok">live-tested</span></h2>
+    <p class="desc">Controller active, target occupied, die empty.</p>
+    <div class="bar">
+      <span class="state">🎮</span><span class="state" style="color:var(--rose)">🎯</span><span class="state" style="color:var(--muted)">🎲</span><span class="state" style="color:var(--muted)">🎲</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 🎮
+<span class="k">label-occupied</span>  = 🎯
+<span class="k">label-empty</span>     = 🎲
+<span class="k">label-active-foreground</span>   = <span class="v">#eb6f92</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#f6c177</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 10 -->
+  <div class="card">
+    <h2><span class="num">10</span> Weather 🌈 <span class="tag ok">live-tested</span></h2>
+    <p class="desc">Rainbow active, sun-behind-cloud occupied, snow empty.</p>
+    <div class="bar">
+      <span class="state">🌈</span><span class="state" style="color:var(--gold)">⛅</span><span class="state" style="color:var(--muted)">❄</span><span class="state" style="color:var(--muted)">❄</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 🌈
+<span class="k">label-occupied</span>  = ⛅
+<span class="k">label-empty</span>     = ❄
+<span class="k">label-active-foreground</span>   = <span class="v">#c4a7e7</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#f6c177</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 11 -->
+  <div class="card">
+    <h2><span class="num">11</span> Emoji + number hybrid 🚀1 <span class="tag ok">readable</span></h2>
+    <p class="desc">Cute AND unambiguous: active shows emoji+number, others stay plain numbers.</p>
+    <div class="bar">
+      <span class="state">🚀1</span><span class="state" style="color:var(--rose)">2</span><span class="state" style="color:var(--muted)">3</span><span class="state" style="color:var(--muted)">4</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 🚀%name%
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied</span>  = %name%
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty</span>     = %name%
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 12 -->
+  <div class="card">
+    <h2><span class="num">12</span> Rainbow per-workspace <span class="tag script">needs small script</span></h2>
+    <p class="desc">Each workspace keeps its OWN color always (1=love, 2=gold, 3=pine, 4=iris), active = filled pill. xworkspaces can’t do per-index colors, so this uses a custom/script emitting color tags — I’ll write it if you pick this.</p>
+    <div class="bar">
+      <span class="state" style="background:var(--love);color:var(--base);font-weight:700">1</span><span class="state" style="color:var(--gold)">2</span><span class="state" style="color:var(--pine)">3</span><span class="state" style="color:var(--iris)">4</span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">type</span> = custom/script
+<span class="k">exec</span> = <span class="v">$HOME/.config/polybar/scripts/rainbow-ws.sh</span>
+<span class="k">interval</span> = 1
+<span class="k">click-left</span> = <span class="v">...wm-specific switch...</span>
+
+<span class="c"># emits: %{F#eb6f92}1%{F-} %{F#f6c177}2%{F-} ...</span>
+<span class="c"># active ws gets %{O#9ccfd8} pill via %{+u} etc.</span></pre>
+  </div>
+
+  <div class="note warn">
+    <b>Pick:</b> reply with one or more numbers (e.g. “4 + 11”). I’ll patch
+    <code>~/.config/polybar/config.ini</code> (+ any font lines / script), relaunch, and sync to
+    <code>fleet/configs/polybar/</code>. Cross-round mixes are fine: “dice but active = 🚀”.
+    <br><br>
+    <b>Total so far:</b> round 2 = 8 glyph/color styles · round 3 = 8 emoji themes · round 4 = 12 here → 28 options.
+    Screen still locked (light-locker) — test bar is live at y=60 when you unlock.
+  </div>
+</div>
+</body>
+</html>
