@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Polybar Workspace Styles</title>
+<style>
+body { background: #232136; color: #e0def4; font-family: 'JetBrains Mono', monospace; padding: 20px; }
+.option { background: #2a273f; border: 1px solid #393552; border-radius: 8px; padding: 20px; margin: 16px 0; }
+.option h3 { color: #9ccfd8; margin-top: 0; }
+.preview { background: #232136; padding: 12px 16px; border-radius: 4px; margin: 12px 0; font-size: 18px; letter-spacing: 2px; }
+.active { color: #9ccfd8; background: #44415a; padding: 2px 6px; border-radius: 3px; }
+.occupied { color: #ea9a97; }
+.empty { color: #6e6a86; }
+.urgent { color: #eb6f92; }
+.label { color: #6e6a86; font-size: 12px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<h2>Polybar Workspace Module Options</h2>
+
+<div class="option">
+<h3>1. Chess Pieces</h3>
+<div class="preview">
+<span class="active">♚</span>
+<span class="occupied">♛</span>
+<span class="occupied">♜</span>
+<span class="empty">♝</span>
+<span class="empty">♞</span>
+<span class="empty">♟</span>
+<span class="empty">♚</span>
+<span class="empty">♛</span>
+<span class="empty">♜</span>
+<span class="empty">♝</span>
+</div>
+<div class="label">icon-0=♚ icon-1=♛ icon-2=♜ icon-3=♝ icon-4=♞ icon-5=♟</div>
+</div>
+
+<div class="option">
+<h3>2. Numbered Circles</h3>
+<div class="preview">
+<span class="active">❶</span>
+<span class="occupied">❷</span>
+<span class="occupied">❸</span>
+<span class="empty">❹</span>
+<span class="empty">❺</span>
+<span class="empty">❻</span>
+<span class="empty">❼</span>
+<span class="empty">❽</span>
+<span class="empty">❾</span>
+<span class="empty">❿</span>
+</div>
+<div class="label">icon-0=❶ icon-1=❷ icon-2=❸ ... icon-9=❿</div>
+</div>
+
+<div class="option">
+<h3>3. Dots (Filled/Empty)</h3>
+<div class="preview">
+<span class="active">●</span>
+<span class="occupied">●</span>
+<span class="occupied">●</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+</div>
+<div class="label">label-active=● label-occupied=● label-empty=○</div>
+</div>
+
+<div class="option">
+<h3>4. Nerd Font Icons</h3>
+<div class="preview">
+<span class="active">󰎤</span>
+<span class="occupied">󰎧</span>
+<span class="occupied">󰎪</span>
+<span class="empty">󰎭</span>
+<span class="empty">󰎱</span>
+<span class="empty">󰎳</span>
+<span class="empty">󰎶</span>
+<span class="empty">󰎹</span>
+<span class="empty">󰎼</span>
+<span class="empty">󰽽</span>
+</div>
+<div class="label">icon-0=󰎤 icon-1=󰎧 icon-2=󰎪 ... icon-9=󰽽</div>
+</div>
+
+<div class="option">
+<h3>5. Powerline Dots</h3>
+<div class="preview">
+<span class="active">󰊠</span>
+<span class="occupied">󰊠</span>
+<span class="occupied">󰊠</span>
+<span class="empty">󰊠</span>
+<span class="empty">󰊠</span>
+<span class="empty">󰊠</span>
+<span class="empty">󰊠</span>
+<span class="empty">󰊠</span>
+<span class="empty">󰊠</span>
+<span class="empty">󰊠</span>
+</div>
+<div class="label">All same icon, color changes for active/occupied/empty</div>
+</div>
+
+<div class="option">
+<h3>6. Triangles</h3>
+<div class="preview">
+<span class="active">▲</span>
+<span class="occupied">▲</span>
+<span class="occupied">▲</span>
+<span class="empty">△</span>
+<span class="empty">△</span>
+<span class="empty">△</span>
+<span class="empty">△</span>
+<span class="empty">△</span>
+<span class="empty">△</span>
+<span class="empty">△</span>
+</div>
+<div class="label">label-active=▲ label-occupied=▲ label-empty=△</div>
+</div>
+
+<div class="option">
+<h3>7. Squares</h3>
+<div class="preview">
+<span class="active">■</span>
+<span class="occupied">■</span>
+<span class="occupied">■</span>
+<span class="empty">□</span>
+<span class="empty">□</span>
+<span class="empty">□</span>
+<span class="empty">□</span>
+<span class="empty">□</span>
+<span class="empty">□</span>
+<span class="empty">□</span>
+</div>
+<div class="label">label-active=■ label-occupied=■ label-empty=□</div>
+</div>
+
+<div class="option">
+<h3>8. Pacman (Custom Script)</h3>
+<div class="preview">
+<span class="active">ᗧ</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+<span class="empty">○</span>
+</div>
+<div class="label">Custom script with ᗧ for active, ○ for empty</div>
+</div>
+
+</body>
+</html>
