@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polybar Workspaces — Round 3 (cute emojis)</title>
+<style>
+  :root{
+    --base:#232136; --surface:#2a273f; --overlay:#393552;
+    --muted:#6e6a86; --subtle:#908caa; --text:#e0def4;
+    --love:#eb6f92; --gold:#f6c177; --rose:#ea9a97;
+    --pine:#3e8fb0; --foam:#9ccfd8; --iris:#c4a7e7; --hlmed:#44415a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--base);color:var(--text);
+    font-family:"DejaVu Sans","Noto Sans",sans-serif;padding:32px 16px 64px}
+  .wrap{max-width:960px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--subtle);font-size:14px;margin-bottom:8px}
+  .legend{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .legend b{color:var(--text);font-weight:600}
+  .note{background:var(--surface);border:1px solid var(--foam);border-radius:10px;
+    padding:14px 18px;font-size:13.5px;color:var(--subtle);margin-bottom:26px;line-height:1.6}
+  .note b{color:var(--foam)}
+  .note.warn{border-color:var(--gold)}
+  .note.warn b{color:var(--gold)}
+  .card{background:var(--surface);border:1px solid var(--overlay);
+    border-radius:10px;padding:18px 20px;margin-bottom:22px}
+  .card h2{font-size:16px;margin:0 0 2px;display:flex;gap:10px;align-items:baseline}
+  .card h2 .num{color:var(--foam);font-family:monospace}
+  .card p.desc{color:var(--subtle);font-size:13.5px;margin:0 0 14px}
+  .bar{background:var(--base);border:1px solid var(--overlay);border-radius:6px;
+    height:36px;display:flex;align-items:center;gap:0;padding:0 12px;
+    font-family:"JetBrains Mono","DejaVu Sans Mono","Symbola",monospace;font-size:17px;
+    overflow-x:auto;white-space:nowrap}
+  .bar .sep{color:var(--muted);margin:0 10px;font-size:14px}
+  .bar .mod{color:var(--text);font-size:14px}
+  .ws{display:inline-flex;gap:4px;align-items:center}
+  .state{padding:2px 8px;border-radius:4px}
+  pre{background:var(--base);border:1px solid var(--overlay);border-radius:6px;
+    padding:12px 14px;font-size:12.5px;line-height:1.55;overflow-x:auto;
+    font-family:"DejaVu Sans Mono",monospace;color:var(--subtle);margin:14px 0 0}
+  pre .k{color:var(--iris)} pre .v{color:var(--foam)} pre .c{color:var(--muted)}
+  code{background:var(--base);padding:1px 6px;border-radius:4px;font-size:12.5px;color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Workspace styles — round 3: cute emojis 🎉</h1>
+  <div class="sub">Yes — emojis work in your polybar. Verified live on your machine: Symbola is already installed, so emoji render <b style="color:var(--text)">tinted to your theme colors</b> (monochrome outlines), no nerd font needed.</div>
+  <div class="legend">Mock shows: <b>1st</b> = active &nbsp;·&nbsp; <b>2nd</b> = occupied &nbsp;·&nbsp; <b>rest</b> = empty</div>
+
+  <div class="note">
+    <b>One line to enable:</b> add to <code>[bar/main]</code>: <br>
+    <code>font-1 = "Symbola:size=10;2"</code> &nbsp;(shift the other font-N up if needed)<br><br>
+    <b>Optional full COLOR emoji:</b> run <code>sudo apt install fonts-noto-color-emoji</code>,
+    then add <code>font-2 = "Noto Color Emoji:size=10;2"</code>. Note: monochrome Symbola (default)
+    actually matches the Rosé Pine bar better — color emoji can look loud next to muted tones.
+  </div>
+
+  <!-- 1 -->
+  <div class="card">
+    <h2><span class="num">1</span> Space 🚀</h2>
+    <p class="desc">Rocket for active, moon for occupied, star for empty.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state">🚀</span><span class="state" style="color:var(--rose)">🌙</span>
+        <span class="state" style="color:var(--muted)">⭐</span><span class="state" style="color:var(--muted)">⭐</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 🚀
+<span class="k">label-occupied</span>  = 🌙
+<span class="k">label-empty</span>     = ⭐
+<span class="k">label-active-foreground</span>   = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <h2><span class="num">2</span> Pac-night 👻</h2>
+    <p class="desc">Closest to pacman you'll get without a nerd font: ghost chomping through ● pellets.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state">👻</span><span class="state" style="color:var(--rose)">●</span>
+        <span class="state" style="color:var(--muted)">●</span><span class="state" style="color:var(--muted)">●</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 👻
+<span class="k">label-occupied</span>  = ●
+<span class="k">label-empty</span>     = ●
+<span class="k">label-active-foreground</span>   = <span class="v">#c4a7e7</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#393552</span></pre>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <h2><span class="num">3</span> Snacks 🍕</h2>
+    <p class="desc">Pizza active, cherries occupied, lemon empty. Important decisions only.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state">🍕</span><span class="state" style="color:var(--rose)">🍒</span>
+        <span class="state" style="color:var(--muted)">🍋</span><span class="state" style="color:var(--muted)">🍋</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 🍕
+<span class="k">label-occupied</span>  = 🍒
+<span class="k">label-empty</span>     = 🍋
+<span class="k">label-active-foreground</span>   = <span class="v">#f6c177</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <h2><span class="num">4</span> Ocean 🐙</h2>
+    <p class="desc">Octopus active, fish occupied, raindrop empty.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state">🐙</span><span class="state" style="color:var(--rose)">🐟</span>
+        <span class="state" style="color:var(--muted)">💧</span><span class="state" style="color:var(--muted)">💧</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 🐙
+<span class="k">label-occupied</span>  = 🐟
+<span class="k">label-empty</span>     = 💧
+<span class="k">label-active-foreground</span>   = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#3e8fb0</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <h2><span class="num">5</span> Arcade 👾</h2>
+    <p class="desc">Space invader active, star occupied, outlined star empty.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state">👾</span><span class="state" style="color:var(--rose)">★</span>
+        <span class="state" style="color:var(--muted)">★</span><span class="state" style="color:var(--muted)">★</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 👾
+<span class="k">label-occupied</span>  = ★
+<span class="k">label-empty</span>     = ★
+<span class="k">label-active-foreground</span>   = <span class="v">#eb6f92</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#f6c177</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#393552</span></pre>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <h2><span class="num">6</span> Faces ☺</h2>
+    <p class="desc">Cool sunglasses active, smiley occupied, dot empty.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state">😎</span><span class="state" style="color:var(--rose)">☺</span>
+        <span class="state" style="color:var(--muted)">·</span><span class="state" style="color:var(--muted)">·</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 😎
+<span class="k">label-occupied</span>  = ☺
+<span class="k">label-empty</span>     = ·
+<span class="k">label-active-foreground</span>   = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 7 -->
+  <div class="card">
+    <h2><span class="num">7</span> Garden 🌸</h2>
+    <p class="desc">Blossom active, herb occupied, tiny leaf empty.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state">🌸</span><span class="state" style="color:var(--rose)">🌿</span>
+        <span class="state" style="color:var(--muted)">·</span><span class="state" style="color:var(--muted)">·</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 🌸
+<span class="k">label-occupied</span>  = 🌿
+<span class="k">label-empty</span>     = ·
+<span class="k">label-active-foreground</span>   = <span class="v">#eb6f92</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#3e8fb0</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 8 -->
+  <div class="card">
+    <h2><span class="num">8</span> Hearts ♥</h2>
+    <p class="desc">Purple heart active, red heart occupied, dot empty.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state">💜</span><span class="state" style="color:var(--love)">❤</span>
+        <span class="state" style="color:var(--muted)">·</span><span class="state" style="color:var(--muted)">·</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = 💜
+<span class="k">label-occupied</span>  = ❤
+<span class="k">label-empty</span>     = ·
+<span class="k">label-active-foreground</span>   = <span class="v">#c4a7e7</span>
+<span class="k">label-occupied-foreground</span>  = <span class="v">#eb6f92</span>
+<span class="k">label-empty-foreground</span>     = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <div class="note warn">
+    <b>How to pick:</b> reply with the number (e.g. “2”). I’ll patch
+    <code>~/.config/polybar/config.ini</code> (workspace module + the Symbola font line),
+    relaunch the bar, and sync to <code>fleet/configs/polybar/</code>.
+    Mix with round-2 styles too — e.g. “pill numbers but active = 🚀”.
+    <br><br>
+    <b>Heads-up:</b> your screen is currently locked (light-locker) — there’s a live emoji test bar
+    waiting at the top of your screen (below your normal bar). Unlock to see it.
+  </div>
+</div>
+</body>
+</html>
