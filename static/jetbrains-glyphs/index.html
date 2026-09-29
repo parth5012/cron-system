@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JetBrainsMono Nerd Font — glyph browser</title>
+<style>
+  :root{
+    --base:#232136; --surface:#2a273f; --overlay:#393552;
+    --muted:#6e6a86; --subtle:#908caa; --text:#e0def4; --foam:#9ccfd8; --gold:#f6c177;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--base);color:var(--text);
+    font-family:"DejaVu Sans",sans-serif;padding:32px 16px 64px}
+  .wrap{max-width:1100px;margin:0 auto}
+  h1{font-size:21px;margin:0 0 6px}
+  h2{font-size:16px;margin:34px 0 10px;color:var(--foam)}
+  .sub{color:var(--subtle);font-size:14px;line-height:1.65;margin-bottom:8px}
+  .sub b{color:var(--foam)}
+  .note{background:var(--surface);border:1px solid var(--gold);border-radius:10px;
+    padding:13px 17px;font-size:13.5px;color:var(--subtle);margin:18px 0 4px;line-height:1.65}
+  .note b{color:var(--gold)}
+  .sheet{background:var(--surface);border:1px solid var(--overlay);border-radius:10px;
+    padding:12px;overflow-x:auto}
+  .sheet img{display:block;max-width:100%;height:auto;border-radius:6px}
+  .cap{color:var(--muted);font-size:12px;margin:6px 2px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>JetBrainsMono Nerd Font — what's actually inside</h1>
+  <div class="sub">
+    <b>12,226 named glyphs</b> in the font you already have (6,896 Material Design, 1,476 Font Awesome,
+    601 devicons, 540 codicons, 310 Octicons, 228 weather…). Below: 320 curated candidates in 10 themed
+    sheets, every one rendered from <b>your exact TTF</b> at bar size — if it shows here, polybar draws it.
+    The label under each glyph is its name (prefix stripped).
+  </div>
+  <div class="note">
+    <b>To pick:</b> tell me <b>sheet + name</b> (e.g. “animals: cat”, “space: rocket”, “music: vinyl”)
+    for active / occupied / empty — or just screenshot-circle what you like. I’ll wire it into
+    <code>config.ini</code>, relaunch, sync to fleet. Nerd glyphs render fine now (the old “blank”
+    problem was font-loading, not the font).
+  </div>
+
+  <h2>🐾 Animals</h2>
+  <div class="sheet"><img src="animals.png" alt="animal glyphs"></div>
+
+  <h2>🍕 Food</h2>
+  <div class="sheet"><img src="food.png" alt="food glyphs"></div>
+
+  <h2>🚀 Space</h2>
+  <div class="sheet"><img src="space.png" alt="space glyphs"></div>
+
+  <h2>🌤 Weather</h2>
+  <div class="sheet"><img src="weather.png" alt="weather glyphs"></div>
+
+  <h2>🌿 Nature</h2>
+  <div class="sheet"><img src="nature.png" alt="nature glyphs"></div>
+
+  <h2>🎵 Music</h2>
+  <div class="sheet"><img src="music.png" alt="music glyphs"></div>
+
+  <h2>🎮 Gaming</h2>
+  <div class="sheet"><img src="gaming.png" alt="gaming glyphs"></div>
+
+  <h2>🙂 Faces</h2>
+  <div class="sheet"><img src="faces.png" alt="face glyphs"></div>
+
+  <h2>🔑 Objects</h2>
+  <div class="sheet"><img src="objects.png" alt="object glyphs"></div>
+
+  <h2>✨ Symbols</h2>
+  <div class="sheet"><img src="symbols.png" alt="symbol glyphs"></div>
+
+  <div class="note">
+    Not enough? The font also has full <b>Weather set (228)</b>, <b>Octicons</b>, <b>linux distro logos</b>,
+    <b>seti file-icons</b> and every Material Design icon ever drawn — say “show me &lt;anything&gt;”
+    and I’ll render another sheet on demand.
+  </div>
+</div>
+</body>
+</html>
