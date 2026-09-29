@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polybar Workspaces — Round 2 (no nerd fonts)</title>
+<style>
+  :root{
+    --base:#232136; --surface:#2a273f; --overlay:#393552;
+    --muted:#6e6a86; --subtle:#908caa; --text:#e0def4;
+    --love:#eb6f92; --gold:#f6c177; --rose:#ea9a97;
+    --pine:#3e8fb0; --foam:#9ccfd8; --iris:#c4a7e7;
+    --hlmed:#44415a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--base);color:var(--text);
+    font-family:"DejaVu Sans","Noto Sans",sans-serif;padding:32px 16px 64px}
+  .wrap{max-width:960px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--subtle);font-size:14px;margin-bottom:8px}
+  .legend{color:var(--muted);font-size:13px;margin-bottom:28px}
+  .legend b{color:var(--text);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--overlay);
+    border-radius:10px;padding:18px 20px;margin-bottom:22px}
+  .card h2{font-size:16px;margin:0 0 2px;display:flex;gap:10px;align-items:baseline}
+  .card h2 .num{color:var(--foam);font-family:monospace}
+  .card p.desc{color:var(--subtle);font-size:13.5px;margin:0 0 14px}
+  .bar{background:var(--base);border:1px solid var(--overlay);border-radius:6px;
+    height:34px;display:flex;align-items:center;gap:0;padding:0 12px;
+    font-family:"JetBrains Mono","DejaVu Sans Mono",monospace;font-size:14px;
+    overflow-x:auto;white-space:nowrap}
+  .bar .sep{color:var(--muted);margin:0 10px}
+  .bar .mod{color:var(--text)}
+  .ws{display:inline-flex;gap:2px}
+  .state{padding:3px 7px;border-radius:4px;margin-right:6px}
+  pre{background:var(--base);border:1px solid var(--overlay);border-radius:6px;
+    padding:12px 14px;font-size:12.5px;line-height:1.55;overflow-x:auto;
+    font-family:"DejaVu Sans Mono",monospace;color:var(--subtle);margin:14px 0 0}
+  pre .k{color:var(--iris)} pre .v{color:var(--foam)} pre .c{color:var(--muted)}
+  .tag{font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--overlay);
+    color:var(--muted);font-weight:normal}
+  .tag.ok{color:var(--foam);border-color:var(--pine)}
+  .tag.warn{color:var(--gold);border-color:var(--gold)}
+  .note{background:var(--surface);border:1px solid var(--gold);border-radius:10px;
+    padding:14px 18px;font-size:13.5px;color:var(--subtle);margin-bottom:26px}
+  .note b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Workspace styles — round 2</h1>
+  <div class="sub">Zero nerd-font / powerline glyphs. Every glyph below is verified present in <b style="color:var(--text)">JetBrainsMono NF</b> (or DejaVu, noted).</div>
+  <div class="legend">Mock shows: <b>1</b> = active &nbsp;·&nbsp; <b>2</b> = occupied &nbsp;·&nbsp; <b>3 4</b> = empty</div>
+
+  <!-- 1 -->
+  <div class="card">
+    <h2><span class="num">1</span> Pill <span class="tag ok">JBM only</span></h2>
+    <p class="desc">Plain numbers. Active gets a solid foam pill. Cleanest, zero glyphs.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state" style="background:var(--foam);color:var(--base)">1</span>
+        <span class="state" style="color:var(--rose)">2</span>
+        <span class="state" style="color:var(--muted)">3</span>
+        <span class="state" style="color:var(--muted)">4</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = %name%
+<span class="k">label-active-foreground</span> = <span class="v">#232136</span>
+<span class="k">label-active-background</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-active-padding</span> = 2
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <h2><span class="num">2</span> Brackets <span class="tag ok">JBM only</span></h2>
+    <p class="desc">Retro terminal style. Active framed in [brackets] + foam.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state" style="color:var(--foam)">[1]</span>
+        <span class="state" style="color:var(--rose)">2</span>
+        <span class="state" style="color:var(--muted)">3</span>
+        <span class="state" style="color:var(--muted)">4</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = [%name%]
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-active-padding</span> = 1
+<span class="k">label-occupied</span>  = %name%
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <h2><span class="num">3</span> Underline <span class="tag ok">pure color</span></h2>
+    <p class="desc">No glyphs at all — active is a colored number with a 3px foam underline. macOS/VSCode tabs vibe.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state" style="color:var(--text);border-bottom:3px solid var(--foam);padding-bottom:1px">1</span>
+        <span class="state" style="color:var(--rose)">2</span>
+        <span class="state" style="color:var(--muted)">3</span>
+        <span class="state" style="color:var(--muted)">4</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = %name%
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-active-underline</span>  = <span class="v">#9ccfd8</span>
+<span class="k">label-active-underline-size</span> = 3
+<span class="k">label-occupied-foreground</span> = <span class="v">#908caa</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <h2><span class="num">4</span> Stripes <span class="tag ok">block glyphs</span></h2>
+    <p class="desc">dwm-style blocks: full █ active, half ▌ occupied, light ░ empty. Number stays after the block.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state" style="color:var(--foam)">█1</span>
+        <span class="state" style="color:var(--rose)">▌2</span>
+        <span class="state" style="color:var(--overlay)">░3</span>
+        <span class="state" style="color:var(--overlay)">░4</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = █%name%
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied</span>  = ▌%name%
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty</span>     = ░%name%
+<span class="k">label-empty-foreground</span> = <span class="v">#393552</span></pre>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <h2><span class="num">5</span> Chomp ▶ <span class="tag ok">pacman stand-in</span></h2>
+    <p class="desc">Closest visible thing to pacman: active = ▶ mouth (foam), occupied = ● pellet (rose), empty = · dot (muted). No nerd font needed.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state" style="color:var(--foam)">▶ 1</span>
+        <span class="state" style="color:var(--rose)">● 2</span>
+        <span class="state" style="color:var(--muted)">· 3</span>
+        <span class="state" style="color:var(--muted)">· 4</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = ▶ %name%
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied</span>  = ● %name%
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty</span>     = · %name%
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <h2><span class="num">6</span> Diamonds <span class="tag ok">JBM only</span></h2>
+    <p class="desc">◆ active / ◇ occupied / · empty. Geometric, quiet, reads well small.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state" style="color:var(--foam)">◆1</span>
+        <span class="state" style="color:var(--rose)">◇2</span>
+        <span class="state" style="color:var(--muted)">·3</span>
+        <span class="state" style="color:var(--muted)">·4</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = ◆%name%
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied</span>  = ◇%name%
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty</span>     = ·%name%
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 7 -->
+  <div class="card">
+    <h2><span class="num">7</span> Reverse video <span class="tag ok">pure color</span></h2>
+    <p class="desc">Active flips colors: foam background, dark text, bold. Loudest option, zero glyphs.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state" style="background:var(--foam);color:var(--base);font-weight:700">1</span>
+        <span class="state" style="color:var(--subtle)">2</span>
+        <span class="state" style="color:var(--muted)">3</span>
+        <span class="state" style="color:var(--muted)">4</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = %name%
+<span class="k">label-active-foreground</span> = <span class="v">#232136</span>
+<span class="k">label-active-background</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-active-padding</span> = 3
+<span class="k">label-occupied-foreground</span> = <span class="v">#908caa</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <!-- 8 -->
+  <div class="card">
+    <h2><span class="num">8</span> Circled ①②③ <span class="tag warn">needs DejaVu fallback line</span></h2>
+    <p class="desc">Enclosed numerals. ① is NOT in JetBrainsMono — requires one extra font line (below) so polybar falls back to DejaVu Sans. Still no nerd font.</p>
+    <div class="bar">
+      <span class="ws">
+        <span class="state" style="color:var(--foam)">①</span>
+        <span class="state" style="color:var(--rose)">②</span>
+        <span class="state" style="color:var(--muted)">③</span>
+        <span class="state" style="color:var(--muted)">④</span>
+      </span>
+      <span class="sep">|</span><span class="mod">12:00</span>
+    </div>
+    <pre><span class="c">[bar/main]  — add one fallback font:</span>
+<span class="k">font-4</span> = <span class="v">"DejaVu Sans:size=10;2"</span>
+
+<span class="c">[module/workspaces]</span>
+<span class="k">label-active</span>   = ①  <span class="c">; via icon-N = 1;① like current config</span>
+<span class="k">label-active-foreground</span> = <span class="v">#9ccfd8</span>
+<span class="k">label-occupied-foreground</span> = <span class="v">#ea9a97</span>
+<span class="k">label-empty-foreground</span> = <span class="v">#6e6a86</span></pre>
+  </div>
+
+  <div class="note">
+    <b>How to pick:</b> reply with the number (e.g. “5”). I’ll patch <code>~/.config/polybar/config.ini</code>,
+    relaunch the bar, and sync it to <code>fleet/configs/polybar/</code>. Combining is fine too
+    (e.g. “3 + 7 for urgent”).
+  </div>
+</div>
+</body>
+</html>
