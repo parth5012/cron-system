@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCMRWF Marine & Atmospheric Intelligence Hub — Project ORCA (SIH26176)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        marine: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        ocean: {
+                            900: '#0a1128',
+                            950: '#000814',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+        .glass {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-[#070d18] text-slate-100 min-h-screen custom-scrollbar">
+
+    <!-- Top Navigation Bar -->
+    <nav class="sticky top-0 z-50 glass border-b border-slate-800/80 px-6 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 ring-1 ring-white/20">
+                <i data-lucide="waves" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-lg text-white tracking-tight">ORCA × NCMRWF</span>
+                    <span class="text-[10px] px-2 py-0.5 font-bold uppercase tracking-wider rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">SIH 2026 Ready</span>
+                </div>
+                <p class="text-xs text-slate-400 font-medium">Authoritative Marine Forecast & Reanalysis Intelligence Engine</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="hidden md:flex items-center gap-2 bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-slate-300 font-medium">Catalog Synced: <span class="text-white font-mono">rds.ncmrwf.gov.in</span></span>
+            </div>
+            <a href="https://rds.ncmrwf.gov.in/datasets" target="_blank" class="text-xs bg-marine-600 hover:bg-marine-500 text-white font-semibold px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-md shadow-marine-600/20">
+                <span>Official Portal</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+
+        <!-- SIH Strategic Alignment Banner -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-950/80 via-slate-900/90 to-indigo-950/80 border border-blue-500/30 p-6 md:p-8 shadow-2xl">
+            <div class="absolute right-0 top-0 translate-x-12 -translate-y-12 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-3 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                        <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                        <span>NRSC / ISRO Mentor Recommendation Integrated</span>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                        NCMRWF Marine Environmental Ingestion & Verification
+                    </h1>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Replacing unverified third-party APIs with India's official <strong class="text-cyan-400">NCMRWF NEMO Ocean Analysis (N2OA)</strong> and <strong class="text-cyan-400">IMDAA 12 km Regional Reanalysis</strong>. Gives Project ORCA scientifically grounded wind, sea-surface temperature, wave dynamics, and rainfall for robust SIH evaluation.
+                    </p>
+                </div>
+                <div class="flex flex-row lg:flex-col gap-3 shrink-0">
+                    <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 text-center min-w-[140px]">
+                        <div class="text-xs text-slate-400 font-medium">Spatial Resolution</div>
+                        <div class="text-xl font-bold text-cyan-400 mt-0.5">12 km / 4 km</div>
+                        <div class="text-[10px] text-slate-500">IMDAA & MERA</div>
+                    </div>
+                    <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 text-center min-w-[140px]">
+                        <div class="text-xs text-slate-400 font-medium">Temporal Span</div>
+                        <div class="text-xl font-bold text-emerald-400 mt-0.5">1979 – 2026</div>
+                        <div class="text-[10px] text-slate-500">47 Years Climate Data</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Executive KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass-card rounded-xl p-5 border-l-4 border-cyan-500">
+                <div class="flex items-center justify-between text-slate-400">
+                    <span class="text-xs font-medium uppercase tracking-wider">Cataloged Datasets</span>
+                    <i data-lucide="database" class="w-5 h-5 text-cyan-400"></i>
+                </div>
+                <div class="text-3xl font-extrabold text-white mt-2" id="kpi-total-datasets">9</div>
+                <div class="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                    <span class="text-cyan-400 font-semibold">9 Core Suites</span> in MoES/NCMRWF
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-5 border-l-4 border-blue-500">
+                <div class="flex items-center justify-between text-slate-400">
+                    <span class="text-xs font-medium uppercase tracking-wider">Atmospheric & Ocean Variables</span>
+                    <i data-lucide="activity" class="w-5 h-5 text-blue-400"></i>
+                </div>
+                <div class="text-3xl font-extrabold text-white mt-2" id="kpi-total-vars">146+</div>
+                <div class="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                    <span class="text-blue-400 font-semibold">Wind, SST, SSH, Waves, Rain</span>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-5 border-l-4 border-emerald-500">
+                <div class="flex items-center justify-between text-slate-400">
+                    <span class="text-xs font-medium uppercase tracking-wider">High-Priority Marine Datasets</span>
+                    <i data-lucide="compass" class="w-5 h-5 text-emerald-400"></i>
+                </div>
+                <div class="text-3xl font-extrabold text-white mt-2">4 Critical</div>
+                <div class="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                    <span class="text-emerald-400 font-semibold">N2OA Ocean, IMDAA Hourly, MERA</span>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-5 border-l-4 border-purple-500">
+                <div class="flex items-center justify-between text-slate-400">
+                    <span class="text-xs font-medium uppercase tracking-wider">SIH Impact Score</span>
+                    <i data-lucide="award" class="w-5 h-5 text-purple-400"></i>
+                </div>
+                <div class="text-3xl font-extrabold text-white mt-2">100% Traceable</div>
+                <div class="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                    <span class="text-purple-400 font-semibold">Official Ground-Truth Ready</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Temporal & Spatial Breakdown -->
+            <div class="glass-card rounded-2xl p-6 lg:col-span-1 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i data-lucide="pie-chart" class="w-4 h-4 text-cyan-400"></i>
+                        <span>Product Type Distribution</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Classification across Indian Monsoon, Global & Marine models</p>
+                </div>
+                <div class="my-4 h-56 flex items-center justify-center">
+                    <canvas id="productTypeChart"></canvas>
+                </div>
+                <div class="text-[11px] text-slate-400 border-t border-slate-800/80 pt-3">
+                    IMDAA regional models provide the highest resolution (12 km) for coastal fisheries.
+                </div>
+            </div>
+
+            <!-- Marine Parameter Matrix for Project ORCA -->
+            <div class="glass-card rounded-2xl p-6 lg:col-span-2 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4 text-blue-400"></i>
+                            <span>ORCA Multi-Agent Ingestion Mapping</span>
+                        </h3>
+                        <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-md border border-slate-700">SIH26176 Pipeline</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1">How NCMRWF datasets directly feed ORCA's 4 specialized decision agents</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-4">
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-cyan-500/40 transition">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold text-cyan-400">sea_checker (Ocean Dynamics)</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono">ocean-data</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-snug">Ingests 3-hourly <strong>SST</strong>, <strong>SSS</strong>, <strong>SSH</strong>, and <strong>Mixed-Layer Depth</strong> from NEMOVAR (N2OA) to compute upwelling & ocean state.</p>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-blue-500/40 transition">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold text-blue-400">weather_agent (Atmospheric)</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono">hourly-single-levels</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-snug">Extracts hourly <strong>10m/50m U/V Winds</strong>, <strong>Wind Gusts</strong>, <strong>Visibility</strong>, and MSLP pressure gradients over coastal sectors.</p>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-emerald-500/40 transition">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold text-emerald-400">danger_agent (Severe Weather)</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">mera</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-snug">Blends <strong>4 km MERA Radar/Satellite Rainfall</strong> to trigger storm-risk vetoes and safety warnings for small fishing crafts.</p>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-purple-500/40 transition">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold text-purple-400">fish_finder (PFZ Validation)</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">imdaa-daily</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-snug">Correlates thermal fronts and chlorophyll upwelling proxy signals against official <strong>INCOIS PFZ polygons</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="text-[11px] text-slate-400 border-t border-slate-800/80 pt-3 flex items-center justify-between">
+                    <span>Replaces generic Open-Meteo with MoES peer-reviewed NCMRWF models</span>
+                    <span class="text-emerald-400 font-medium">✓ Zero External API Rate Limits</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Dataset Catalog Explorer -->
+        <div class="glass-card rounded-2xl p-6 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="database" class="w-5 h-5 text-cyan-400"></i>
+                        <span>NCMRWF Datasets Explorer</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Filter, inspect parameters, and view NetCDF4 download specifications</p>
+                </div>
+
+                <!-- Filters & Search -->
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+                        <input type="text" id="searchInput" placeholder="Search variables, slug..." class="bg-slate-900 border border-slate-700/70 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 w-48 sm:w-64 transition">
+                    </div>
+
+                    <select id="typeFilter" class="bg-slate-900 border border-slate-700/70 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 transition">
+                        <option value="ALL">All Types</option>
+                        <option value="Ocean">Ocean</option>
+                        <option value="IMDAA">IMDAA</option>
+                        <option value="Rainfall">Rainfall (MERA)</option>
+                        <option value="NGFS">NGFS</option>
+                        <option value="Subseasonal-to-seasonal">S2S</option>
+                    </select>
+
+                    <select id="temporalFilter" class="bg-slate-900 border border-slate-700/70 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 transition">
+                        <option value="ALL">All Frequencies</option>
+                        <option value="Hourly">Hourly</option>
+                        <option value="Three Hourly">Three Hourly</option>
+                        <option value="Six Hourly">Six Hourly</option>
+                        <option value="Daily">Daily</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dataset Cards Grid -->
+            <div id="datasetGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Dynamically Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Detail Modal -->
+        <div id="detailModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+            <div class="glass border border-slate-700 rounded-2xl max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                            <i data-lucide="file-text" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 id="modalTitle" class="text-base font-bold text-white">Dataset Details</h3>
+                            <span id="modalSlug" class="text-xs font-mono text-cyan-400">slug</span>
+                        </div>
+                    </div>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <div class="p-6 overflow-y-auto custom-scrollbar space-y-6 text-xs text-slate-300">
+                    <div>
+                        <h4 class="text-slate-100 font-bold uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
+                            <i data-lucide="info" class="w-3.5 h-3.5 text-cyan-400"></i>
+                            <span>Overview & Scientific Background</span>
+                        </h4>
+                        <div id="modalOverview" class="space-y-2 text-slate-300 leading-relaxed bg-slate-900/40 p-4 rounded-xl border border-slate-800"></div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-slate-100 font-bold uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
+                            <i data-lucide="check-square" class="w-3.5 h-3.5 text-emerald-400"></i>
+                            <span>Marine Parameters & Variables List</span>
+                        </h4>
+                        <div id="modalVariables" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto custom-scrollbar bg-slate-950/60 p-3 rounded-xl border border-slate-800"></div>
+                    </div>
+
+                    <div class="bg-blue-950/40 border border-blue-500/30 rounded-xl p-4">
+                        <h4 class="text-blue-300 font-bold text-xs mb-1 flex items-center gap-1.5">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i>
+                            <span>ORCA Operational Integration Guide</span>
+                        </h4>
+                        <p id="modalIntegration" class="text-slate-300 text-xs leading-relaxed">
+                            How this dataset can be sampled for the SIH demo using xarray / NetCDF4 in Python.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="p-4 border-t border-slate-800 bg-slate-900/80 flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-mono">Format: NetCDF4 / GeoTIFF</span>
+                    <button onclick="closeModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs transition">Close</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 glass mt-16 py-6 text-center text-xs text-slate-500">
+        <p>Project ORCA — ISRO SIH26176 Marine Intelligence Platform • Ingesting NCMRWF & INCOIS Data</p>
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        const datasets = [{"slug": "hourly-pressure", "title": "IMDAA 3-hourly data on pressure levels from 1979 to 2020", "short_desc": "The dataset available here includes three hourly pressure level data.", "product_type": "IMDAA", "spatial": "Global", "temporal": "Three Hourly", "timespan": "1979 \u2013 2022", "variables_count": 5, "variables": [{"group": "Variables", "name": "U component wind in pressure level", "code": "UGRD-prl", "freq": ""}, {"group": "Variables", "name": "V component wind in pressure level", "code": "VGRD-prl", "freq": ""}, {"group": "Variables", "name": "Temperature in pressure level", "code": "TMP-prl", "freq": ""}, {"group": "Variables", "name": "Geopotential height in pressure level", "code": "HGT-prl", "freq": ""}, {"group": "Variables", "name": "Relative humidity in pressure level", "code": "RH-prl", "freq": ""}], "orca_relevance": "High", "overview": ["The IMDAA pressure-level reanalysis dataset provides three-hourly atmospheric fields over the Indian region for the period 1979\u20132020. It includes essential upper-air variables such as U wind, V wind, temperature, geopotential height, and relative humidity on standard pressure levels ranging from 1000 hPa to 10 hPa.", "The dataset is designed to support a wide range of applications, including weather analysis, climate diagnostics, monsoon studies, extreme event assessment, and model verification. Users can download data by selecting the required year, month, day, time, and geographical domain, either for the whole area or for custom coordinates.", "Data are currently available in NetCDF4 (experimental) format, allowing easy use in scientific analysis and visualization tools such as Python.", "For advanced atmospheric studies, this dataset offers valuable information on the vertical structure, circulation, thermodynamics, and moisture distribution of the atmosphere over India and surrounding regions."], "applications": [["IMDAA is intended for a wide range of applications, including monsoon diagnostics, weather and climate analysis, extreme event studies, land\u2013atmosphere interaction research, forecast verification, and model evaluation."]]}, {"slug": "imdaa-daily", "title": "IMDAA daily data on single level from 1979 to 2020", "short_desc": "The dataset available here includes daily surface level data", "product_type": "IMDAA", "spatial": "Regional", "temporal": "Daily", "timespan": "1979 \u2013 2020", "variables_count": 7, "variables": [{"group": "Daily Sum", "name": "Total precipitation", "code": "APCP-sfc", "freq": ""}, {"group": "Daily Mean", "name": "Mean surface temperature", "code": "Tmean", "freq": ""}, {"group": "Daily Mean", "name": "Mean 2m surface temperature", "code": "T2m_mean", "freq": ""}, {"group": "Daily Maximum", "name": "Maximum surface temperature ", "code": "Tmax", "freq": ""}, {"group": "Daily Maximum", "name": "Maximum 2m surface temperature", "code": "T2m_max", "freq": ""}, {"group": "Daily Minimum", "name": "Minimum surface temperature", "code": "Tmin", "freq": ""}, {"group": "Daily Minimum", "name": "Minimum 2m surface temperature", "code": "T2m_min", "freq": ""}], "orca_relevance": "High", "overview": ["The IMDAA daily dataset provides daily gridded atmospheric fields over the Indian region for the period 1979\u20132020. This dataset is designed to support weather and climate studies at daily time scales and offers key parameters relevant to hydrometeorology, land\u2013atmosphere interactions, and climate variability.", "The daily products currently available here include daily total precipitation, daily mean surface temperature, daily maximum surface temperature, and daily minimum surface temperature. These variables are particularly useful for analysing rainfall distribution, temperature variability, seasonal cycles, monsoon behaviour, dry and wet spells, heat and cold extremes, and long-term climate characteristics over India and surrounding regions.", "Users can select data by year, month, and day, and download either for the whole area or for user-defined coordinates. This enables flexible access for regional studies, site-specific analysis, and model evaluation applications.", "Data are currently provided in NetCDF4 (Experimental) format, with downloads available as ZIP files. The dataset can be readily used in scientific analysis and visualization tools such as Python, MATLAB, NCL, CDO, and GIS-based platforms.", "This daily dataset provides a practical resource for researchers, forecasters, and students working on rainfall analysis, temperature extremes, monsoon diagnostics, climate monitoring, and related environmental applications."], "applications": [["IMDAA is intended for a wide range of applications, including monsoon diagnostics, weather and climate analysis, extreme event studies, land\u2013atmosphere interaction research, forecast verification, and model evaluation."]]}, {"slug": "hourly-pressure-ngfs", "title": "NGFS 6-hourly data on pressure levels from 1999 to 2018", "short_desc": "The dataset available here includes six hourly pressure level data.", "product_type": "NGFS", "spatial": "Global", "temporal": "Six Hourly", "timespan": "1999 \u2013 2018", "variables_count": 5, "variables": [{"group": "Variables", "name": "U component wind in pressure level", "code": "UGRD-prl", "freq": ""}, {"group": "Variables", "name": "V component wind in pressure level", "code": "VGRD-prl", "freq": ""}, {"group": "Variables", "name": "Temperature in pressure level", "code": "TMP-prl", "freq": ""}, {"group": "Variables", "name": "Geopotential height in pressure level", "code": "HGT-prl", "freq": ""}, {"group": "Variables", "name": "Relative humidity in pressure level", "code": "RH-prl", "freq": ""}], "orca_relevance": "Medium", "overview": ["The NGFS 6-hourly pressure-level dataset provides gridded upper-air atmospheric fields over the Indian region for the period 1999\u20132018. It is intended for the analysis of the three-dimensional structure and evolution of the atmosphere at standard pressure levels, and supports a wide range of meteorological, climatological, and dynamical studies.", "The dataset includes key atmospheric variables such as u-component wind, v-component wind, temperature, geopotential height, and relative humidity on standard pressure levels ranging from 1 hPa to 1000 hPa. These fields are useful for examining atmospheric circulation, vertical structure, thermodynamic conditions, moisture distribution, synoptic systems, upper-air variability, and large-scale weather processes.", "Data are available at 6-hourly intervals (00:00, 06:00, 12:00, and 18:00 UTC), enabling detailed study of atmospheric evolution through the day. Users can select data by year, month, day, time, and pressure level, and may download either the whole area or a custom geographical region using selected coordinates.", "The dataset is especially useful for applications such as weather diagnostics, monsoon studies, circulation analysis, model evaluation, forecast verification, climate research, and process-based investigation of atmospheric variability over India and neighbouring regions.", "Data are currently provided in NetCDF4 (Experimental) format, with downloads available as ZIP files. This allows convenient use in standard scientific analysis and visualization tools such as Python, MATLAB, NCL, CDO, GrADS, and GIS-based platforms."], "applications": [[]]}, {"slug": "ngfs-daily", "title": "NGFS daily data on single levels from 1999 to 2018", "short_desc": "The dataset available here includes daily aggregated atmospheric data.", "product_type": "NGFS", "spatial": "Global", "temporal": "Daily", "timespan": "1999 \u2013 2018", "variables_count": 3, "variables": [{"group": "Daily Mean", "name": "Mean surface temperature", "code": "Tmean", "freq": ""}, {"group": "Daily Maximum", "name": "Maximum surface temperature", "code": "Tmax", "freq": ""}, {"group": "Daily Minimum", "name": "Minimum surface temperature", "code": "Tmin", "freq": ""}], "orca_relevance": "Medium", "overview": ["The NGFS daily dataset provides daily aggregated atmospheric fields over the Indian region for the period 1999\u20132018. It is derived from high-frequency NGFS analysis data and is designed for studying daily-scale variability in weather and climate.", "The dataset includes key parameters such as daily mean temperature, daily accumulated precipitation, daily maximum and minimum temperature, and near-surface atmospheric conditions useful for climate diagnostics and hydrometeorological studies.", "Users can select data by year, month, and day, and download data either for the entire domain or for selected geographical coordinates, enabling flexible analysis workflows.", "The dataset is particularly useful for studying monsoon behaviour, rainfall distribution, extreme temperature events, and long-term climate variability.", "Data are provided in NetCDF4 (Experimental) format and distributed as ZIP files for convenient use in tools such as Python, MATLAB, NCL, CDO, and GIS platforms."], "applications": [[]]}, {"slug": "s2s-daily", "title": "S2S global sub-seasonal to seasonal re forecast since 1993  to 2015", "short_desc": "36-day ensemble hindcast dataset for extended-range weather prediction", "product_type": "Subseasonal-to-seasonal", "spatial": "Global", "temporal": "Daily", "timespan": "1993 \u2013 2015", "variables_count": 56, "variables": [{"group": "Initialization Day", "name": "01", "code": "01", "freq": ""}, {"group": "Initialization Day", "name": "09", "code": "09", "freq": ""}, {"group": "Initialization Day", "name": "17", "code": "17", "freq": ""}, {"group": "Initialization Day", "name": "25", "code": "25", "freq": ""}, {"group": "Forecast Day", "name": "T", "code": "day00", "freq": ""}, {"group": "Forecast Day", "name": "T+1", "code": "day01", "freq": ""}, {"group": "Forecast Day", "name": "T+2", "code": "day02", "freq": ""}, {"group": "Forecast Day", "name": "T+3", "code": "day03", "freq": ""}, {"group": "Forecast Day", "name": "T+4", "code": "day04", "freq": ""}, {"group": "Forecast Day", "name": "T+5", "code": "day05", "freq": ""}, {"group": "Forecast Day", "name": "T+6", "code": "day06", "freq": ""}, {"group": "Forecast Day", "name": "T+7", "code": "day07", "freq": ""}, {"group": "Forecast Day", "name": "T+8", "code": "day08", "freq": ""}, {"group": "Forecast Day", "name": "T+9", "code": "day09", "freq": ""}, {"group": "Forecast Day", "name": "T+10", "code": "day10", "freq": ""}, {"group": "Forecast Day", "name": "T+11", "code": "day11", "freq": ""}, {"group": "Forecast Day", "name": "T+12", "code": "day12", "freq": ""}, {"group": "Forecast Day", "name": "T+13", "code": "day13", "freq": ""}, {"group": "Forecast Day", "name": "T+14", "code": "day14", "freq": ""}, {"group": "Forecast Day", "name": "T+15", "code": "day15", "freq": ""}, {"group": "Forecast Day", "name": "T+16", "code": "day16", "freq": ""}, {"group": "Forecast Day", "name": "T+17", "code": "day17", "freq": ""}, {"group": "Forecast Day", "name": "T+18", "code": "day18", "freq": ""}, {"group": "Forecast Day", "name": "T+19", "code": "day19", "freq": ""}, {"group": "Forecast Day", "name": "T+20", "code": "day20", "freq": ""}, {"group": "Forecast Day", "name": "T+21", "code": "day21", "freq": ""}, {"group": "Forecast Day", "name": "T+22", "code": "day22", "freq": ""}, {"group": "Forecast Day", "name": "T+23", "code": "day23", "freq": ""}, {"group": "Forecast Day", "name": "T+24", "code": "day24", "freq": ""}, {"group": "Forecast Day", "name": "T+25", "code": "day25", "freq": ""}, {"group": "Forecast Day", "name": "T+26", "code": "day26", "freq": ""}, {"group": "Forecast Day", "name": "T+27", "code": "day27", "freq": ""}, {"group": "Forecast Day", "name": "T+28", "code": "day28", "freq": ""}, {"group": "Forecast Day", "name": "T+29", "code": "day29", "freq": ""}, {"group": "Forecast Day", "name": "T+30", "code": "day30", "freq": ""}, {"group": "Forecast Day", "name": "T+31", "code": "day31", "freq": ""}, {"group": "Forecast Day", "name": "T+32", "code": "day32", "freq": ""}, {"group": "Forecast Day", "name": "T+33", "code": "day33", "freq": ""}, {"group": "Forecast Day", "name": "T+34", "code": "day34", "freq": ""}, {"group": "Forecast Day", "name": "T+35", "code": "day35", "freq": ""}, {"group": "Forecast Day", "name": "T+36", "code": "day36", "freq": ""}, {"group": "Instantaneous", "name": "U-component of Wind", "code": "UGRD-prl", "freq": ""}, {"group": "Instantaneous", "name": "V-component of Wind", "code": "VGRD-prl", "freq": ""}, {"group": "Instantaneous", "name": "Temperature", "code": "TMP-prl", "freq": ""}, {"group": "Instantaneous", "name": "Geopotential Height", "code": "HGT-prl", "freq": ""}, {"group": "Instantaneous", "name": "Specific Humidity", "code": "SPH-prl", "freq": ""}, {"group": "Instantaneous", "name": "10 Metre U Wind Component", "code": "UGRD-10m", "freq": ""}, {"group": "Instantaneous", "name": "10 Metre V Wind Component", "code": "VGRD-10m", "freq": ""}, {"group": "Instantaneous", "name": "Mean Sea Level Pressure", "code": "PRMSL-msl", "freq": ""}, {"group": "Instantaneous", "name": "Surface Pressure", "code": "PRES-sfc", "freq": ""}, {"group": "Instantaneous", "name": "Orography", "code": "MTERH-sfc", "freq": ""}, {"group": "Instantaneous", "name": "Land Mask", "code": "LAND-sfc", "freq": ""}, {"group": "Accumulated", "name": "Total Precipitation Amount", "code": "APCP-sfc", "freq": ""}, {"group": "Averaged", "name": "Total Downward Surface SW Flux", "code": "DSWRF-sfc", "freq": ""}, {"group": "Averaged", "name": "Net Down Surface LW Radiation Flux", "code": "NLWRF-sfc", "freq": ""}, {"group": "Averaged", "name": "Surface Latent Heat Flux", "code": "LHTFL-sfc", "freq": ""}], "orca_relevance": "Medium", "overview": ["The Subseasonal-to-Seasonal (S2S) Hindcast Dataset is a 23-year retrospective forecast dataset generated using a fully coupled global prediction system. It covers the period from 1993 to 2015 and provides forecasts up to 36 days, supporting the assessment and development of multi-week prediction capabilities.", "The prediction system couples the atmosphere, ocean, sea ice, and land-surface components to realistically represent their interactions across subseasonal timescales. The atmospheric model is based on the Met Office Unified Model at N216 resolution with 85 vertical levels, while the ocean component uses the NEMO model at eddy-permitting resolution with 75 vertical levels.", "Hindcasts are initialized on the 1st, 9th, 17th, and 25th of every month and consist of six ensemble members generated using lagged initial conditions. The dataset includes daily outputs of atmospheric and surface variables such as winds, temperature, specific humidity, geopotential height, rainfall, sea surface temperature, surface pressure, soil moisture, and surface energy fluxes.", "The dataset provides a consistent long-term archive for studying subseasonal climate variability, extended-range forecast skill, and coupled atmosphere\u2013ocean processes over the Indian region and globally.", "It supports research on Indian monsoon predictability, active and break spells, rainfall extremes, droughts, heatwaves, forecast verification, bias correction, model climatology, anomaly generation, and the development of AI/ML-based extended-range prediction systems.", "Gupta, A., A. K. Mitra, and E. N. Rajagopal, 2019a: Implementation of Unified Model based global Coupled Modelling System at NCMRWF. NCMRWF Tech. Rep. NMRF/TR/01/2019, 59 pp., DOI: https://nwp.ncmrwf.gov.in/publications/tr/10.64349/nmrf.tr.1.2019", "Gupta, A., A. K. Mitra, and E. N. Rajagopal, 2019b: Implementation of sub-seasonal to seasonal forecast system with NCMRWF global coupled model. NCMRWF Tech. Rep. NMRF/TR/04/2019, 69 pp.,  DOI:  https://nwp.ncmrwf.gov.in/publications/tr/10.64349/nmrf.tr.4.2019"], "applications": [[]]}, {"slug": "ocean-data", "title": "Ocean Analysis Dataset from 2016 to 2026", "short_desc": "NCMRWF NEMO OCEAN ANALYSIS (N2OA)", "product_type": "Ocean", "spatial": "Global", "temporal": "Daily", "timespan": "2016 \u2013 2026", "variables_count": 4, "variables": [{"group": "Variables", "name": "Sea Surface Temperature", "code": "SST-sfc", "freq": ""}, {"group": "Variables", "name": "Sea Surface Salinity", "code": "SSS-sfc", "freq": ""}, {"group": "Variables", "name": "Sea Surface Height", "code": "SSH-sfc", "freq": ""}, {"group": "Variables", "name": "Ocean Mixed Layer Thickness", "code": "MLD-sfc", "freq": ""}], "orca_relevance": "High", "overview": ["The Ocean Analysis Dataset provides regularly updated three-dimensional estimates of the ocean state by integrating numerical ocean model simulations with in-situ and satellite observations using a 3DVAR First Guess at Appropriate Time (FGAT) ocean data assimilation system (NEMOVAR). A key feature of the system is its multivariate analysis, which utilizes cross-variable error covariances to produce dynamically consistent analyses by simultaneously updating temperature, salinity, sea surface height, and ocean currents.", "Developed at NCMRWF using the NEMO-based NEMOVAR data assimilation system, the dataset provides high-quality ocean analyses over the global and Indian Ocean regions.", "The dataset includes key ocean surface variables such as sea surface temperature (SST), sea surface salinity (SSS), sea surface height (SSH), and mixed-layer depth at 3-hourly temporal resolution.", "Continuous assimilation of observations significantly improves the representation of ocean temperature, salinity, currents, and other physical variables, providing a consistent record of ocean state conditions.", "The dataset supports ocean state monitoring, marine weather forecasting, coupled atmosphere\u2013ocean prediction, climate studies, ocean circulation analysis, and model validation. Data are available in NetCDF4 format for seamless integration with scientific analysis and visualization tools.", "Momin, I. M., Mitra, A. K., Waters, J., Lea, D., Martin, M. J., and Bhatla, R., 2023: Use and impact of satellite-derived SST data in a global ocean assimilation system over the Tropical Indian Ocean. Journal of the Indian Society of Remote Sensing, 51(2), 269\u2013287. https://doi.org/10.1007/s12524-022-01586-9", "Momin, I. M., Mitra, A. K., Waters, J., Martin, M. J., Lea, D., and Bhatla, R., 2023: Evaluation of global ocean analysis and forecast system in the Tropical Indian Ocean. Journal of Earth System Science, 132, Article 104. https://doi.org/10.1007/s12040-023-02118-w"], "applications": [[]]}, {"slug": "hourly-single-levels", "title": "IMDAA hourly data on single levels from 1979 to 2020", "short_desc": "The dataset available here includes hourly single-level atmospheric data.", "product_type": "IMDAA", "spatial": "Regional", "temporal": "Hourly", "timespan": "1979 \u2013 2022", "variables_count": 47, "variables": [{"group": "Soil", "name": "Soil temperature level 1", "code": "TSOIL-L1", "freq": "3h"}, {"group": "Soil", "name": "Soil temperature level 2", "code": "TSOIL-L2", "freq": "3h"}, {"group": "Soil", "name": "Soil temperature level 3", "code": "TSOIL-L3", "freq": "3h"}, {"group": "Soil", "name": "Soil temperature level 4", "code": "TSOIL-L4", "freq": "3h"}, {"group": "Soil", "name": "Soil moisture level 1", "code": "CISOILM-L1", "freq": "3h"}, {"group": "Soil", "name": "Soil moisture level 2", "code": "CISOILM-L2", "freq": "3h"}, {"group": "Soil", "name": "Soil moisture level 3", "code": "CISOILM-L3", "freq": "3h"}, {"group": "Soil", "name": "Soil moisture level 4", "code": "CISOILM-L4", "freq": "3h"}, {"group": "Wind", "name": "Wind gust", "code": "GUST-10m", "freq": "3h"}, {"group": "Wind", "name": "10-meter U wind", "code": "UGRD-10m", "freq": "1h"}, {"group": "Wind", "name": "10-meter V wind", "code": "VGRD-10m", "freq": "1h"}, {"group": "Wind", "name": "50-meter U wind", "code": "UGRD-50m", "freq": "1h"}, {"group": "Wind", "name": "50-meter V wind", "code": "VGRD-50m", "freq": "1h"}, {"group": "Cloud", "name": "Very low cloud cover", "code": "VLCDC-atmc", "freq": "1h"}, {"group": "Cloud", "name": "Low cloud amount", "code": "LCDC-atmc", "freq": "1h"}, {"group": "Cloud", "name": "Medium cloud amount", "code": "MCDC-atmc", "freq": "1h"}, {"group": "Cloud", "name": "High cloud amount", "code": "HCDC-atmc", "freq": "1h"}, {"group": "Cloud", "name": "Total cloud amount - random overlap", "code": "TCDCRO-atmc", "freq": "1h"}, {"group": "Others", "name": "2-meter relative humidity", "code": "RH-2m", "freq": "1h"}, {"group": "Others", "name": "2-m visibility", "code": "VIS-2m", "freq": "1h"}, {"group": "Others", "name": "Land mask", "code": "LAND-sfc", "freq": "1h"}, {"group": "Others", "name": "Evaporation rate from canopy", "code": "EVARCA-sfc", "freq": "3h"}, {"group": "Others", "name": "Evaporation rate from soil surface", "code": "EVARSS-sfc", "freq": "3h"}, {"group": "Others", "name": "Boundary layer depth", "code": "HPBL-sfc", "freq": "3h"}, {"group": "Others", "name": "Frac of sea ice in sea", "code": "ICEC-sfc", "freq": "3h"}, {"group": "Others", "name": "Sea ice depth (mean over ice)", "code": "ICETK-sfc", "freq": "3h"}, {"group": "Others", "name": "Snow amount over land", "code": "WEASD-sfc", "freq": "3h"}, {"group": "Others", "name": "Roughness length after boundary layer", "code": "ROHLENABL-sfc", "freq": "3h"}, {"group": "Rain And Snow", "name": "Total precipitation amount", "code": "APCP-sfc", "freq": "1h"}, {"group": "Rain And Snow", "name": "Convective snow amount", "code": "SNOC-sfc", "freq": "1h"}, {"group": "Rain And Snow", "name": "Large scale snow amount", "code": "SNOL-sfc", "freq": "1h"}, {"group": "Rain And Snow", "name": "Water equivalent accumulated snow depth", "code": "WEASD-sfc", "freq": "3h"}, {"group": "Rain And Snow", "name": "Convective rain amount", "code": "CWP-sfc", "freq": "1h"}, {"group": "Rain And Snow", "name": "Large scale rain amount", "code": "LSWP-sfc", "freq": "1h"}, {"group": "Radiation And Heat", "name": "Incoming Sw rad flux (TOA)", "code": "DSWRF-toa", "freq": "3h"}, {"group": "Radiation And Heat", "name": "Outgoing lw rad flux (TOA)", "code": "ULWRF-toa", "freq": "3h"}, {"group": "Radiation And Heat", "name": "Net down surface lw rad flux", "code": "NLWRF-sfc", "freq": "3h"}, {"group": "Radiation And Heat", "name": "Downward lw rad flux: surface", "code": "DLWRF-sfc", "freq": "3h"}, {"group": "Radiation And Heat", "name": "Net down surface sw flux", "code": "NSWRF-sfc", "freq": "3h"}, {"group": "Radiation And Heat", "name": "Total downward surface sw flux", "code": "DSWRF-sfc", "freq": "3h"}, {"group": "Radiation And Heat", "name": "Surface latent heat flux", "code": "LHTFL-sfc", "freq": "3h"}, {"group": "Radiation And Heat", "name": "Surface sensible heat flux", "code": "SHTFL-sfc", "freq": "3h"}, {"group": "Radiation And Heat", "name": "Outgoing sw rad flux", "code": "NSWRF-toa", "freq": "3h"}, {"group": "Temperature And Pressure", "name": "Surface temperature", "code": "TMP-sfc", "freq": "3h"}, {"group": "Temperature And Pressure", "name": "2-meter temperature", "code": "TMP-2m", "freq": "1h"}, {"group": "Temperature And Pressure", "name": "Surface pressure", "code": "PRES-sfc", "freq": "1h"}, {"group": "Temperature And Pressure", "name": "Mean sea level pressure", "code": "PRMSL-msl", "freq": "1h"}], "orca_relevance": "High", "overview": ["The IMDAA hourly single-level dataset provides hourly near-surface and land-surface atmospheric fields over the Indian region for the period 1979\u20132020. It includes a comprehensive set of variables related to soil conditions, wind, cloud cover, radiation, surface heat fluxes, precipitation, snow, temperature, and pressure, making it a valuable resource for weather monitoring, land\u2013atmosphere studies, climate diagnostics, and model evaluation.", "Available parameters include soil temperature and soil moisture at four levels, 10 m and 50 m winds, wind gust, cloud cover at multiple layers, 2 m temperature, 2 m relative humidity, surface pressure, mean sea level pressure, surface temperature, visibility, boundary layer depth, surface radiation fluxes, latent and sensible heat fluxes, and precipitation and snow-related variables.", "The dataset is designed to support diverse applications such as surface weather analysis, monsoon research, hydrometeorological studies, land-surface process assessment, renewable energy applications, and forecast verification. Users can select data by year, month, day, hour, and geographical region, either for the whole area or for custom coordinates.", "Data are currently available in NetCDF4 (experimental) format, with downloads provided in ZIP format. This allows convenient use in scientific data-processing and visualization tools such as Python, MATLAB, NCL, CDO, and GIS-based applications.", "For studies focused on near-surface weather and land\u2013atmosphere interactions, this dataset provides detailed hourly information on the state of the atmosphere, surface energy balance, hydrological processes, and boundary-layer conditions over India and surrounding regions."], "applications": [["IMDAA is intended for a wide range of applications, including monsoon diagnostics, weather and climate analysis, extreme event studies, land\u2013atmosphere interaction research, forecast verification, and model evaluation."]]}, {"slug": "hourly-single-levels-ngfs", "title": "NGFS 6-hourly data on single levels from 1999 to 2018", "short_desc": "The dataset available here includes hourly single-level atmospheric data.", "product_type": "NGFS", "spatial": "Global", "temporal": "Six Hourly", "timespan": "1999 \u2013 2018", "variables_count": 18, "variables": [{"group": "Soil", "name": "Soil temperature level 1", "code": "TSOIL-L1", "freq": ""}, {"group": "Soil", "name": "Soil temperature level 2", "code": "TSOIL-L2", "freq": ""}, {"group": "Soil", "name": "Soil temperature level 3", "code": "TSOIL-L3", "freq": ""}, {"group": "Soil", "name": "Soil temperature level 4", "code": "TSOIL-L4", "freq": ""}, {"group": "Wind", "name": "Wind gust", "code": "GUST-sfc", "freq": ""}, {"group": "Wind", "name": "10-meter U wind", "code": "UGRD-10m-agl", "freq": ""}, {"group": "Wind", "name": "10-meter V wind", "code": "VGRD-10m-agl", "freq": ""}, {"group": "Others", "name": "2-meter relative humidity", "code": "RH-2m-agl", "freq": ""}, {"group": "Others", "name": "Surface visibility", "code": "VIS-sfc", "freq": ""}, {"group": "Others", "name": "Land mask", "code": "LAND-sfc", "freq": ""}, {"group": "Others", "name": "Boundary layer depth", "code": "HPBL-sfc", "freq": ""}, {"group": "Others", "name": "Frac of sea ice in sea", "code": "ICEC-sfc", "freq": ""}, {"group": "Others", "name": "Sea ice depth (mean over ice)", "code": "ICETK-sfc", "freq": ""}, {"group": "Others", "name": "Snow amount over land", "code": "WEASD-sfc", "freq": ""}, {"group": "Temperature And Pressure", "name": "Surface temperature", "code": "TMP-sfc", "freq": ""}, {"group": "Temperature And Pressure", "name": "2-meter temperature", "code": "TMP-2m-agl", "freq": ""}, {"group": "Temperature And Pressure", "name": "Surface pressure", "code": "PRES-sfc", "freq": ""}, {"group": "Temperature And Pressure", "name": "Mean sea level pressure", "code": "PRMSL-msl", "freq": ""}], "orca_relevance": "Medium", "overview": ["The NGFS hourly single-level dataset provides near-surface and land-surface atmospheric fields over the Indian region for the period 1999\u20132018. It is designed to support the analysis of surface meteorological conditions, land-surface processes, and short-timescale atmospheric variability, and is useful for a broad range of weather and climate applications.", "The dataset includes key variables related to soil conditions, near-surface wind, temperature, pressure, humidity, precipitation, and other surface characteristics. Available parameters include soil temperature at four levels, wind gust, 10-metre u- and v-wind components, total precipitation amount, surface temperature, 2-metre temperature, surface pressure, mean sea level pressure, 2-metre relative humidity, surface visibility, land mask, boundary layer depth, fraction of sea ice in sea, sea ice depth, and snow amount over land.", "Data are available at regular time intervals through the day, allowing users to examine the temporal evolution of near-surface atmospheric and land-surface conditions. Users can select data by year, month, day, and time, and download either for the whole area or for a custom geographical region using selected coordinates.", "This dataset is useful for applications such as surface weather analysis, land\u2013atmosphere interaction studies, hydrometeorological assessment, temperature and precipitation diagnostics, boundary-layer studies, forecast verification, and climate variability analysis over India and surrounding regions.", "Data are currently provided in NetCDF4 (Experimental) format, with downloads available as ZIP files. This enables convenient use in standard scientific analysis and visualization tools such as Python, MATLAB, NCL, CDO, and GIS-based applications."], "applications": [[]]}, {"slug": "mera", "title": "MERA Analysis Dataset from 2020 to 2025", "short_desc": "High-resolution hourly rainfall dataset integrating satellite and weather radar observations across India.", "product_type": "Rainfall", "spatial": "India", "temporal": "Hourly", "timespan": "2020 \u2013 2025", "variables_count": 1, "variables": [{"group": "Variables", "name": "Rain", "code": "APCP-sfc", "freq": ""}], "orca_relevance": "High", "overview": ["The Multi-source Ensemble Rainfall Analysis (MERA) dataset, developed at NCMRWF, is a high-resolution precipitation product that integrates multiple satellite observations with weather radar data to provide accurate rainfall estimates across India.", "The dataset provides hourly temporal resolution and 4 km spatial resolution, enabling detailed representation of the spatial and temporal variability of precipitation.", "MERA combines information from multiple satellite precipitation products using bias correction, weighted blending, and ensemble techniques to improve rainfall estimation.", "The integration of weather radar observations enhances the detection and characterization of convective systems and localized heavy rainfall events, particularly over regions with complex terrain and rapidly changing weather.", "The dataset supports applications including numerical weather prediction model verification, hydrological modeling, flood forecasting, climate studies, and extreme rainfall analysis.", "Reference: Amarjyothi, K., Kumar, D. Preveen, Reddy, M. Venkatarami, Mitra, Ashis K., Sreevathsa, M. N. Raghavendra, Rajput, M. Neha, Prasad, V. S. (2025). How well do multi-source ensemble rainfall products capture precipitation during monsoons in India? Meteorology and Atmospheric Physics, 137. https://doi.org/10.1007/s00703-025-01098-4"], "applications": [[]]}];
+
+        function renderCards(list) {
+            const grid = document.getElementById('datasetGrid');
+            grid.innerHTML = '';
+
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-500">
+                        <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                        <p class="text-sm font-medium">No datasets found matching criteria</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-xl p-5 flex flex-col justify-between hover:border-cyan-500/50 hover:shadow-xl hover:shadow-cyan-950/30 transition duration-200 group";
+                
+                const typeBadgeColor = 
+                    item.product_type === 'Ocean' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' :
+                    item.product_type === 'IMDAA' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30' :
+                    item.product_type === 'Rainfall' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
+                    'bg-purple-500/20 text-purple-300 border-purple-500/30';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${typeBadgeColor}">
+                                ${item.product_type}
+                            </span>
+                            <span class="text-[11px] font-mono text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800">
+                                ${item.temporal}
+                            </span>
+                        </div>
+                        <h4 class="text-sm font-bold text-white group-hover:text-cyan-400 transition leading-snug">
+                            ${item.title}
+                        </h4>
+                        <p class="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                            ${item.short_desc}
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-3.5 border-t border-slate-800/80 space-y-3">
+                        <div class="flex items-center justify-between text-[11px] text-slate-400">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-500"></i>
+                                ${item.timespan}
+                            </span>
+                            <span class="flex items-center gap-1 font-semibold text-slate-300">
+                                <i data-lucide="layers" class="w-3.5 h-3.5 text-cyan-400"></i>
+                                ${item.variables_count > 0 ? item.variables_count + ' Vars' : 'Multi-layer'}
+                            </span>
+                        </div>
+                        
+                        <button onclick="openModal('${item.slug}')" class="w-full py-1.5 rounded-lg bg-slate-900 hover:bg-cyan-600 text-slate-300 hover:text-white text-xs font-semibold border border-slate-700/80 hover:border-transparent transition flex items-center justify-center gap-1.5">
+                            <span>Inspect Parameters</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function filterDatasets() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const type = document.getElementById('typeFilter').value;
+            const temporal = document.getElementById('temporalFilter').value;
+
+            const filtered = datasets.filter(d => {
+                const matchesSearch = d.title.toLowerCase().includes(search) || 
+                                      d.slug.toLowerCase().includes(search) || 
+                                      d.short_desc.toLowerCase().includes(search) ||
+                                      d.variables.some(v => v.name.toLowerCase().includes(search) || v.code.toLowerCase().includes(search));
+                const matchesType = type === 'ALL' || d.product_type === type;
+                const matchesTemporal = temporal === 'ALL' || d.temporal === temporal;
+                return matchesSearch && matchesType && matchesTemporal;
+            });
+
+            renderCards(filtered);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterDatasets);
+        document.getElementById('typeFilter').addEventListener('change', filterDatasets);
+        document.getElementById('temporalFilter').addEventListener('change', filterDatasets);
+
+        // Modal Handlers
+        function openModal(slug) {
+            const item = datasets.find(d => d.slug === slug);
+            if (!item) return;
+
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalSlug').innerText = item.slug;
+            
+            const overviewBox = document.getElementById('modalOverview');
+            overviewBox.innerHTML = item.overview.length > 0 ? 
+                item.overview.map(p => `<p>${p}</p>`).join('') : 
+                `<p>${item.short_desc}</p>`;
+
+            const varsBox = document.getElementById('modalVariables');
+            if (item.variables.length > 0) {
+                varsBox.innerHTML = item.variables.map(v => `
+                    <div class="bg-slate-900 border border-slate-800 p-2 rounded-lg flex items-center justify-between">
+                        <div>
+                            <div class="font-medium text-white">${v.name}</div>
+                            <div class="text-[10px] text-slate-500 font-mono">${v.group}</div>
+                        </div>
+                        <span class="text-[10px] font-mono bg-cyan-950 text-cyan-400 px-1.5 py-0.5 rounded border border-cyan-800">${v.code}</span>
+                    </div>
+                `).join('');
+            } else {
+                varsBox.innerHTML = `<div class="col-span-full text-slate-500 italic">Multi-level gridded variables configured at download request.</div>`;
+            }
+
+            const intBox = document.getElementById('modalIntegration');
+            if (item.slug === 'ocean-data') {
+                intBox.innerHTML = "<strong>sea_checker Agent:</strong> Use xarray to extract sea surface temperature (SST) anomalies and mixed-layer thickness along selected coastal waypoints to confirm upwelling zone stability.";
+            } else if (item.slug === 'hourly-single-levels') {
+                intBox.innerHTML = "<strong>weather_agent:</strong> Query 10m U/V wind vectors (UGRD-10m, VGRD-10m) to calculate resultant wind speed in knots and Beaufort scale danger rating.";
+            } else if (item.slug === 'mera') {
+                intBox.innerHTML = "<strong>danger_agent:</strong> Sample 4km grid rainfall intensity in mm/hr to trigger localized squall & heavy precipitation alerts for fishing boats.";
+            } else {
+                intBox.innerHTML = `<strong>ORCA Verification:</strong> Benchmark regional simulation outputs against historical INCOIS bulletins for long-term consistency validation.`;
+            }
+
+            document.getElementById('detailModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        // Initialize Chart
+        function initCharts() {
+            const ctx = document.getElementById('productTypeChart').getContext('2d');
+            
+            const counts = {};
+            datasets.forEach(d => {
+                counts[d.product_type] = (counts[d.product_type] || 0) + 1;
+            });
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(counts),
+                    datasets: [{
+                        data: Object.values(counts),
+                        backgroundColor: [
+                            '#0ea5e9', // cyan
+                            '#3b82f6', // blue
+                            '#10b981', // emerald
+                            '#8b5cf6', // purple
+                            '#f59e0b', // amber
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10 },
+                                boxWidth: 12,
+                                padding: 12
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        // Initial render
+        renderCards(datasets);
+        initCharts();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
