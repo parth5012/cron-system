@@ -1,6 +1,7 @@
 import html
 import os
 import shutil
+from urllib.parse import quote
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -99,13 +100,15 @@ async def static_status(slug: str):
     if not target.exists() or not target.is_dir():
         raise HTTPException(status_code=404, detail=f'Static content not found: {slug}')
     files = [f for f in target.rglob('*') if f.is_file()]
+    # Newest-first so "recent uploads" actually shows recent work, not alpha order.
+    files_sorted = sorted(files, key=lambda f: f.stat().st_mtime, reverse=True)
     return {
         'slug': slug,
-        'file_count': len(files),
-        'total_bytes': sum(f.stat().st_size for f in files),
+        'file_count': len(files_sorted),
+        'total_bytes': sum(f.stat().st_size for f in files_sorted),
         'files': [
-            {'name': str(f.relative_to(target)), 'size': f.stat().st_size}
-            for f in sorted(files)
+            {'name': str(f.relative_to(target)), 'size': f.stat().st_size, 'mtime': f.stat().st_mtime}
+            for f in files_sorted
         ],
         'mounted_at': f'/{slug}'
     }
@@ -149,12 +152,18 @@ async def upload_file(
         dest.resolve().relative_to(upload_dir.resolve())
     except ValueError:
         raise HTTPException(status_code=400, detail='Invalid filename') from None
+    # Allocate a unique destination atomically-ish: re-check after each
+    # timestamp-suffixed proposal so a same-second batch cannot overwrite.
     if dest.exists():
-        stem = dest.stem
-        dest = upload_dir / f'{stem}_{int(datetime.now(timezone.utc).timestamp())}{ext}'
+        base_stem = Path(safe_name).stem
+        counter = 0
+        while dest.exists():
+            counter += 1
+            ts = int(datetime.now(timezone.utc).timestamp())
+            dest = upload_dir / f'{base_stem}_{ts}_{counter}{ext}'
 
     dest.write_bytes(content)
-    return {'url': f'/uploads/{dest.name}', 'size': len(content), 'filename': dest.name}
+    return {'url': f'/uploads/{quote(dest.name)}', 'size': len(content), 'filename': dest.name}
 
 @app.get('/', response_class=HTMLResponse)
 async def index():
@@ -315,7 +324,7 @@ async def index():
             </header>
             <p class="stats">{total_files} files • {total_label} • {len(directories)} folders</p>
             <div class="toolbar">
-                <input type="search" id="dirSearch" placeholder="Search folders and files…" aria-label="Search folders">
+                <input type="search" id="dirSearch" placeholder="Search folders, recent uploads &amp; new uploads…" aria-label="Search folders and recent uploads">
             </div>
             <h2>Directories</h2>
             <div class="grid" id="dirGrid">
@@ -378,7 +387,7 @@ async def index():
                     document.querySelectorAll('#dirGrid .dir-card').forEach(card => {{
                         card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
                     }});
-                    document.querySelectorAll('#recentList li').forEach(li => {{
+                    document.querySelectorAll('#recentList li, #uploadList li').forEach(li => {{
                         li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
                     }});
                 }});
@@ -389,7 +398,8 @@ async def index():
                     const res = await fetch('/admin/static/uploads/status');
                     if (!res.ok) return;
                     const data = await res.json();
-                    const files = (data.files || []).slice(-12).reverse();
+                    // Backend returns newest-first (mtime desc), take top 12.
+                    const files = (data.files || []).slice(0, 12);
                     if (!files.length) return;
                     if (recentEmpty) recentEmpty.style.display = 'none';
                     recentList.innerHTML = files.map(f => {{
