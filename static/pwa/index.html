@@ -1204,6 +1204,9 @@
       var repos = Array.from(new Set(pullRequests.map(function(p) { return p.repo; }))).sort();
       select.innerHTML = '<option value="all">All repos</option>' +
         repos.map(function(r) { return '<option value="' + escapeHtml(r) + '">' + escapeHtml(r.split('/').pop()) + '</option>'; }).join('');
+      // The selected repo can vanish between refreshes; leaving the stale value
+      // would show an empty list with no indication of why.
+      if (prFilters.repo !== 'all' && repos.indexOf(prFilters.repo) < 0) prFilters.repo = 'all';
       select.value = prFilters.repo;
     }
 
@@ -1547,6 +1550,20 @@
       ptrEl.style.transform = 'translateY(-100%)';
       if (d > 52) loadTabData(currentTab, true);
     });
+
+    // ---------------------------------------------------------------------------
+    // Deep link support: /pwa/?tab=jobs (used by the bottom nav on the
+    // standalone Wayfinder and Pull Requests views)
+    // ---------------------------------------------------------------------------
+    (function applyDeepLink() {
+      var requested = new URLSearchParams(window.location.search).get('tab');
+      if (!requested) return;
+      var known = Array.prototype.some.call(
+        document.querySelectorAll('.tab-btn'),
+        function(b) { return b.getAttribute('data-tab') === requested; }
+      );
+      if (known) switchTab(requested);
+    })();
 
     // ---------------------------------------------------------------------------
     // Initial Load
