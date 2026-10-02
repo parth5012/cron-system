@@ -15,3 +15,4 @@ htmlcov/
 .DS_Store
 graphify-out/
 .freelance_digest_cache.json
+.tmp/
