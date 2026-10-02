@@ -2,18 +2,32 @@
 
 ## Flaky wall-clock latency assertions in `tests/test_e2e_wayfinder.py`
 
-`test_e2e_wayfinder_api_caching_and_refresh_lifecycle` and
-`test_e2e_wayfinder_full_user_journey` assert a cached `/api/wayfinder` response
-arrives in under **25ms** (lines ~172 and ~308). On a loaded machine both fail
-(observed 38–63ms); on an idle machine both pass. The measurement includes
-`TestClient` request overhead, not just the cache lookup, so it is a machine
-speed assertion dressed as a test.
+Three assertions measure elapsed time instead of behaviour, and all three fail
+depending on how GitHub is answering this IP at that moment:
 
-- Impact: unrelated CI/dev runs report spurious failures.
+| Test | Bound | Observed |
+|---|---|---|
+| `test_e2e_wayfinder_api_caching_and_refresh_lifecycle` (line ~172) | cached `/api/wayfinder` < **25ms** | 38–63ms on a loaded machine |
+| `test_e2e_wayfinder_full_user_journey` (line ~308) | cached `/api/wayfinder` < **25ms** | 38–63ms on a loaded machine |
+| `test_e2e_wayfinder_api_live_data_and_schema` (line ~106) | live `/api/wayfinder` < **15s** | 46s while GitHub search was slow |
+
+The 25ms ones include `TestClient` request overhead, so they assert machine
+speed, not cache behaviour. The 15s one is worse: it depends entirely on
+upstream GitHub. Measured during the PR merge on 2026-10-02, a raw
+`GET https://api.github.com/search/issues` from this machine took **28.8s**
+while `GET /repos/{owner}/{repo}/pulls` took **0.76s** in the same second —
+GitHub was throttling the *search* resource for this IP after sustained
+unauthenticated use, even though `/rate_limit` still reported 46/60 core
+remaining (secondary/concurrency limits do not surface there).
+
+- Impact: unrelated CI/dev runs report spurious failures. Full suite went
+  57/57 green, then 55/57, then 54/57 across three consecutive runs minutes
+  apart with no code change in between.
 - Not a bug in `wayfinder.py`; the cache does return immediately.
-- Fix options: raise the bound to a realistic 250ms, or assert on cache
-  behaviour (e.g. mock call counts, as `tests/test_pull_requests.py` does)
-  instead of elapsed time.
+- Fix options: raise the bounds to realistic values, skip them when
+  `GITHUB_TOKEN` is absent or when a `/rate_limit` probe shows budget pressure,
+  or assert on cache behaviour (e.g. mock call counts, as
+  `tests/test_pull_requests.py` does) instead of elapsed time.
 
 ## Service worker scope is `/pwa/` only
 

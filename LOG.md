@@ -2,8 +2,8 @@
 
 ## 2026-10-02 — Pull Requests module + mobile PWA overhaul
 
-**Status:** Done (verified: 55 passed / 0 failed, Playwright mobile smoke, live
-GitHub data)
+**Status:** Done — merged to `main` as PR #1 (rebase, 5 commits)
+https://github.com/parth5012/cron-system/pull/1
 
 ### What changed
 
@@ -62,3 +62,21 @@ values instead of keeping the first hit. Regression tests:
   are not offline-capable. Widening it needs `Service-Worker-Allowed` plus a
   re-audit of the cache-first navigation handler.
 - No commit made — changes left in the working tree for review.
+
+### Post-merge
+
+- CodeRabbit review (manually triggered, the repo is under 10 stars so it does
+  not auto-review) raised 5 findings. Four were fixed with failing tests first
+  in `6846a0d` / `d5b3d40`: a partial search failure no longer clears the
+  reported error, `rate_limit_remaining` now reports the most constrained
+  budget rather than the latest reading, a vanished repo filter resets to
+  "All", and the bottom-nav Jobs entry deep-links `/pwa/?tab=jobs` instead of
+  landing on the Content tab. The fifth (move the Wayfinder bottom-nav
+  breakpoint from 900px to 767px) is parked by design and the reason is in the
+  commit body.
+- Full suite went 57/57 green, then 55/57, then 54/57 across three runs minutes
+  apart **with no code change in between**. Cause is upstream, not the merge:
+  GitHub's search resource started answering this IP in ~29s (pulls endpoint
+  still 0.76s) after sustained unauthenticated use, which blows the hard-coded
+  15s/25ms wall-clock bounds in `tests/test_e2e_wayfinder.py`. Recorded in
+  `TECH_DEBT.md`.
