@@ -27,7 +27,7 @@ def _clean_uploads():
         if f.is_file() and f.name != ".gitkeep":
             # Only remove dummy test payloads, never real content.
             try:
-                if f.stat().st_size <= 64 and b"dummy" in f.read_bytes() or f.name in {
+                if (f.stat().st_size <= 64 and b"dummy" in f.read_bytes()) or f.name in {
                     "deck.ppt", "deck.pptx", "doc.doc", "doc.docx",
                     "sheet.xls", "sheet.xlsx", "data.csv", "notes.txt",
                     "archive.zip", "photo.avif", "photo.bmp", "audio.mp3",
@@ -98,6 +98,36 @@ class TestUploadSafety:
     def test_upload_requires_admin_secret(self):
         res = client.post("/admin/upload", files={"file": ("a.txt", b"hi")})
         assert res.status_code == 401
+
+    def test_special_char_filename_gets_encoded_url(self):
+        res = _upload("report#1.pdf")
+        assert res.status_code == 200
+        url = res.json()["url"]
+        assert "%23" in url, f"URL not encoded: {url}"
+        assert "?" not in url.split("/uploads/")[-1]
+        # Encoded URL must actually serve the file.
+        got = client.get(url)
+        assert got.status_code == 200
+
+    def test_same_second_duplicate_uploads_stay_unique(self):
+        first = _upload("dup.pptx", b"dummy-one")
+        second = _upload("dup.pptx", b"dummy-two")
+        assert first.status_code == 200
+        assert second.status_code == 200
+        assert first.json()["url"] != second.json()["url"]
+        assert client.get(first.json()["url"]).status_code == 200
+        assert client.get(second.json()["url"]).status_code == 200
+
+    def test_status_lists_newest_first_with_mtime(self):
+        _upload("old-file.txt", b"dummy-old")
+        _upload("new-file.txt", b"dummy-new")
+        res = client.get("/admin/static/uploads/status")
+        assert res.status_code == 200
+        files = res.json()["files"]
+        assert files
+        assert all("mtime" in f for f in files)
+        mtimes = [f["mtime"] for f in files]
+        assert mtimes == sorted(mtimes, reverse=True)
 
 
 class TestHomepageHub:

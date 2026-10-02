@@ -1428,15 +1428,22 @@
         e.preventDefault();
         dropzone.classList.remove('dragover');
         if (e.dataTransfer.files.length) {
-          executeUpload(e.dataTransfer.files[0]);
+          executeUploads(e.dataTransfer.files);
         }
       });
 
       uploadInput.addEventListener('change', function() {
         if (uploadInput.files.length) {
-          executeUpload(uploadInput.files[0]);
+          executeUploads(uploadInput.files);
+          uploadInput.value = '';
         }
       });
+    }
+
+    async function executeUploads(fileList) {
+      for (var i = 0; i < fileList.length; i++) {
+        await executeUpload(fileList[i]);
+      }
     }
 
     async function executeUpload(file) {
