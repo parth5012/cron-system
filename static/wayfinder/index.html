@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>🧭 Wayfinder Maps | Cron System</title>
 <link rel="icon" type="image/svg+xml" href="/icons/ghost.svg">
 <style>
@@ -105,10 +105,28 @@ tbody tr.focused{outline:2px solid var(--primary);outline-offset:-2px}
 .mcard .body{display:none;margin-top:10px;font-size:.84rem}
 .mcard.expanded .body{display:block}
 .bigbtn{display:block;background:var(--primary);color:#fff;text-align:center;border-radius:10px;padding:13px;font-weight:700;font-size:.86rem;margin-top:10px;text-decoration:none}
+/* skeleton loaders */
+.skel{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.skel i{display:block;height:11px;border-radius:6px;margin-bottom:8px;background:linear-gradient(90deg,var(--border) 25%,var(--bg) 37%,var(--border) 63%);background-size:400% 100%;animation:shimmer 1.3s ease infinite}
+.skel i.w20{width:20%}.skel i.w45{width:45%}.skel i.w90{width:90%}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.skel i,.spinner{animation:none}}
+/* bottom navigation (thumb reach + safe area) */
+.bottomnav{position:fixed;left:0;right:0;bottom:0;display:none;background:var(--card-bg);border-top:1px solid var(--border);z-index:50;padding-bottom:env(safe-area-inset-bottom,16px);box-shadow:0 -2px 12px rgba(0,0,0,.08)}
+.bottomnav a{flex:1;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-decoration:none;color:var(--text-muted);font-size:.66rem;font-weight:600;padding:6px 2px;-webkit-tap-highlight-color:transparent}
+.bottomnav a.on{color:var(--primary)}
+.bottomnav a .ic{font-size:1.15rem;line-height:1}
 @media(max-width:900px){
 .pc-only{display:none !important}
 .mobile-only{display:block}
-.container{padding:14px}
+.container{padding:14px 14px calc(80px + env(safe-area-inset-bottom,16px))}
+.bottomnav{display:flex}
+.mcard{min-height:48px}
+}
+@media(max-width:900px){
+/* 16px controls stop mobile browsers zooming on focus; 48px touch targets */
+.btn,.seg button,.chip,.bigbtn,select,input[type="text"],input[type="search"]{min-height:48px;font-size:16px}
+.chip{padding:6px 16px}
 }
 </style>
 </head>
@@ -174,11 +192,19 @@ tbody tr.focused{outline:2px solid var(--primary);outline-offset:-2px}
 <div class="seg" id="seg-state">
 <button data-state="open" class="on">Open</button><button data-state="all">All</button><button data-state="closed">Closed</button>
 </div>
-<div class="chips" id="repo-chips"><span class="chip on" data-repo="all">All</span></div>
-<div id="mobile-cards"></div>
-</div>
+    <div class="chips" id="repo-chips"><span class="chip on" data-repo="all">All</span></div>
+    <div id="mobile-cards"><div class="skel"><i class="w20"></i><i class="w90"></i><i class="w45"></i></div><div class="skel"><i class="w20"></i><i class="w90"></i><i class="w45"></i></div></div>
+    </div>
 
 </div>
+
+<nav class="bottomnav">
+<a href="/wayfinder" class="on"><span class="ic">&#128506;</span>Wayfinder</a>
+<a href="/pull-requests"><span class="ic">&#128256;</span>PRs</a>
+<a href="/pwa/"><span class="ic">&#128193;</span>Content</a>
+<a href="/pwa/"><span class="ic">&#9201;</span>Jobs</a>
+</nav>
+
 
 <div id="help-overlay"><div class="help-card">
 <h3 style="margin-bottom:10px">Keyboard shortcuts</h3>
@@ -212,7 +238,7 @@ try{var st=localStorage.getItem('wayfinder-theme');if(st)document.documentElemen
 function loadMaps(force){
 var container=$('maps-tbody');
 container.innerHTML='<tr><td colspan="6"><div class="statebox"><div class="spinner"></div><p>Fetching Wayfinder decision maps...</p></div></td></tr>';
-$('mobile-cards').innerHTML='<div class="statebox"><div class="spinner"></div><p>Gathering frontiers...</p></div>';
+$('mobile-cards').innerHTML='<div class="skel"><i class="w20"></i><i class="w90"></i><i class="w45"></i></div><div class="skel"><i class="w20"></i><i class="w90"></i><i class="w45"></i></div>';
 setFetch(force?'Refreshing from GitHub...':'Loading...');
 fetch('/api/wayfinder'+(force?'?refresh=true': '')).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(data){
 allMaps=data.maps||[];
