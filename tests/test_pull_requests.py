@@ -497,6 +497,84 @@ class TestServiceResilience:
         assert data.authenticated is False
 
 
+class TestPartialSearchFailure:
+    @pytest.mark.asyncio
+    async def test_partial_search_failure_still_reported(self, monkeypatch, fresh_service):
+        """
+        Author query succeeds, reviewer query 403s: the author PRs are still
+        returned, but the degradation must stay visible because reviewer/assignee
+        PRs outside GITHUB_REPOS were never searched.
+        """
+
+        async def mock_get(self_client, url, *args, **kwargs):
+            target = str(url)
+            if "search/issues" in target:
+                query = (kwargs.get("params") or {}).get("q", "")
+                if "author:" in query:
+                    return httpx.Response(
+                        200,
+                        json={"total_count": 1, "items": [SEARCH_ITEM]},
+                        headers=RATE_HEADERS,
+                        request=httpx.Request("GET", target),
+                    )
+                return httpx.Response(
+                    403,
+                    json={"message": "API rate limit exceeded"},
+                    headers={"x-ratelimit-limit": "10", "x-ratelimit-remaining": "0"},
+                    request=httpx.Request("GET", target),
+                )
+            if target.endswith("/pulls"):
+                return httpx.Response(
+                    200,
+                    json=[REPO_PULL_ITEM],
+                    headers=RATE_HEADERS,
+                    request=httpx.Request("GET", target),
+                )
+            return httpx.Response(
+                404, json={"message": "Not Found"}, request=httpx.Request("GET", target)
+            )
+
+        monkeypatch.setattr(httpx.AsyncClient, "get", mock_get)
+        data = await fresh_service.get_pull_requests(refresh=True, involved=True)
+        assert sorted(pr.number for pr in data.prs) == [7, 21]
+        assert data.error and "rate limited" in data.error.lower(), (
+            "a failed reviewer/assignee query must not be silently cleared by "
+            "successful repo listings"
+        )
+
+    @pytest.mark.asyncio
+    async def test_rate_limit_reports_most_constrained_budget(self, monkeypatch, fresh_service):
+        """
+        Search (10/min) and core (60/hr) share the x-ratelimit-remaining header.
+        The reported number must be the most constrained reading, not the last.
+        """
+
+        async def mock_get(self_client, url, *args, **kwargs):
+            target = str(url)
+            if "search/issues" in target:
+                return httpx.Response(
+                    200,
+                    json={"total_count": 1, "items": [SEARCH_ITEM]},
+                    headers={"x-ratelimit-limit": "10", "x-ratelimit-remaining": "2"},
+                    request=httpx.Request("GET", target),
+                )
+            if target.endswith("/pulls"):
+                return httpx.Response(
+                    200,
+                    json=[],
+                    headers={"x-ratelimit-limit": "60", "x-ratelimit-remaining": "57"},
+                    request=httpx.Request("GET", target),
+                )
+            return httpx.Response(
+                404, json={"message": "Not Found"}, request=httpx.Request("GET", target)
+            )
+
+        monkeypatch.setattr(httpx.AsyncClient, "get", mock_get)
+        data = await fresh_service.get_pull_requests(refresh=True, involved=False)
+        assert data.rate_limit_remaining == 2, "must report the most constrained budget"
+        assert data.rate_limit.remaining == 2
+
+
 class TestApiEndpoint:
     def test_api_pull_requests_cache_lifecycle(self, monkeypatch):
         calls: list = []

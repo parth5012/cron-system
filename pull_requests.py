@@ -233,14 +233,20 @@ def _merge_rate_limit(
     current: Optional[RateLimitStatus], incoming: Optional[RateLimitStatus]
 ) -> Optional[RateLimitStatus]:
     """
-    Keep the most recent reading, but never paper over an exhausted budget:
-    once any response reports 0 remaining, stay at 0 until the next real fetch.
+    Report the *most constrained* budget seen so far, not the latest reading.
+
+    `x-ratelimit-remaining` is reused across resources: search is 10/min
+    unauthenticated while core is 60/hr, so a search response reporting 2 left
+    followed by a repo listing reporting 57 must still surface 2 — otherwise
+    the UI claims there is room to refresh when there is not. The whole
+    limit/remaining/reset triple travels with the winning reading so it stays
+    internally consistent.
     """
-    if incoming is None:
+    if current is None or current.remaining is None:
+        return incoming
+    if incoming is None or incoming.remaining is None:
         return current
-    if current is not None and current.remaining == 0:
-        return current
-    if current is not None and current.remaining is not None and incoming.remaining is None:
+    if current.remaining <= incoming.remaining:
         return current
     return incoming
 
@@ -426,6 +432,9 @@ class PullRequestService:
         rate_limit: Optional[RateLimitStatus] = None
         error_msg: Optional[str] = None
         search_ok = False
+        # A query that fails leaves the list incomplete even when the repo sweep
+        # still returns data, so the error is only cleared if *every* query ran.
+        search_query_failures: List[str] = []
 
         async with httpx.AsyncClient(timeout=timeout) as client:
             for query in build_search_queries(involved):
@@ -436,11 +445,13 @@ class PullRequestService:
                     )
                 except Exception as exc:
                     error_msg = f"Failed to connect to GitHub API: {exc}"
+                    search_query_failures.append(query)
                     break
 
                 rate_limit = _merge_rate_limit(rate_limit, query_rate_limit)
                 if query_error:
                     error_msg = query_error
+                    search_query_failures.append(query)
                     break
 
                 search_ok = True
@@ -473,7 +484,10 @@ class PullRequestService:
             rate_limit = _merge_rate_limit(rate_limit, repo_rate_limit)
             if repo_items:
                 raw_items.extend(repo_items)
-                if search_ok:
+                # Repo listings only cover GITHUB_REPOS, so they recover the
+                # authored PRs that search missed but cannot stand in for a
+                # failed reviewer/assignee query across the whole account.
+                if search_ok and not search_query_failures:
                     error_msg = None
 
             prs: List[PullRequest] = []
