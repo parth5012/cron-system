@@ -865,15 +865,15 @@
       <div class="section-header">
         <div>
           <h2 class="section-title">Static Content Upload</h2>
-          <p class="section-desc">Upload reports, images, HTML bundles, or assets directly into /uploads</p>
+          <p class="section-desc">Upload slides, docs, reports, images, HTML bundles, or assets directly into /uploads — then share the URL anywhere</p>
         </div>
       </div>
       <div style="max-width: 600px; margin: 0 auto;">
         <div class="dropzone" id="uploadDropzone">
           <div class="dropzone-icon">☁️</div>
           <div class="dropzone-text">Drop file here or click to browse</div>
-          <div class="dropzone-hint">HTML, Images, Video, PDF (Max 50MB)</div>
-          <input type="file" id="uploadInput" style="display: none;">
+          <div class="dropzone-hint">HTML, PDF, PPT/PPTX, DOC/DOCX, XLS/XLSX, CSV, Images, Audio, Video, ZIP (Max 50MB)</div>
+          <input type="file" id="uploadInput" style="display: none;" multiple>
         </div>
         <div class="upload-form-group">
           <label for="adminSecretInput">Admin Secret (X-Admin-Secret)</label>
