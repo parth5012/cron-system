@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from cron_engine import get_engine
+from pull_requests import router as pull_requests_router
 from wayfinder import router as wayfinder_router
 
 # ---------------------------------------------------------------------------
@@ -298,8 +299,9 @@ async def index():
     """
     return html
 
-# Include Wayfinder router
+# Include Wayfinder & Pull Requests routers
 app.include_router(wayfinder_router)
+app.include_router(pull_requests_router)
 
 
 # ---------------------------------------------------------------------------
@@ -354,9 +356,12 @@ async def get_cron_logs(name: str, limit: int = 50):
 def mount_static_dirs(app):
     if not STATIC_DIR.exists():
         return
+    # These directories are served by their own routers (self-contained HTML),
+    # so they must not also be mounted as raw static file trees.
+    router_owned = {"wayfinder", "pull-requests"}
     for sub in sorted(STATIC_DIR.iterdir()):
         if sub.is_dir():
-            if sub.name == "wayfinder":
+            if sub.name in router_owned:
                 continue
             app.mount(
                 f"/{sub.name}",
