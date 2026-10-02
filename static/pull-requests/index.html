@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<meta name="description" content="Open GitHub pull requests across parth5012 repositories">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>&#128200; Pull Requests | Cron System</title>
+<link rel="icon" type="image/svg+xml" href="/icons/ghost.svg">
+<style>
+:root{
+--bg:#f8f9fa;--card-bg:#ffffff;--text:#18181b;--text-muted:#71717a;--border:#e4e4e7;
+--primary:#2563eb;--primary-hover:#1d4ed8;--accent:#10b981;--warning:#f59e0b;--danger:#ef4444;--purple:#8b5cf6;
+--row-sel:rgba(37,99,235,.08);--shadow:0 2px 8px rgba(0,0,0,.05);--radius:12px;--touch:48px;
+}
+[data-theme="dark"]{
+--bg:#121214;--card-bg:#1c1c20;--text:#f4f4f5;--text-muted:#a1a1aa;--border:#2e2e34;
+--primary:#3b82f6;--primary-hover:#60a5fa;--row-sel:rgba(59,130,246,.14);--shadow:0 4px 14px rgba(0,0,0,.35);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:#121214;--card-bg:#1c1c20;--text:#f4f4f5;--text-muted:#a1a1aa;--border:#2e2e34;
+--primary:#3b82f6;--primary-hover:#60a5fa;--row-sel:rgba(59,130,246,.14);--shadow:0 4px 14px rgba(0,0,0,.35);
+}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px;-webkit-text-size-adjust:100%}
+.container{max-width:1240px;margin:0 auto;padding:20px}
+/* top bar */
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.brand h1{font-size:1.4rem;font-weight:700}
+.brand p{font-size:.82rem;color:var(--text-muted)}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{font-size:.74rem;padding:4px 10px;border-radius:99px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-muted);display:inline-flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.dot.warn{background:var(--warning)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 14px;font-size:.85rem;font-weight:600;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--primary);color:var(--primary)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover);color:#fff}
+/* metrics */
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.metric-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+.metric-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700}
+.metric-value{font-size:1.7rem;font-weight:700}
+/* command bar */
+.commandbar{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:var(--shadow)}
+.searchbox{flex:1;min-width:200px;position:relative}
+.searchbox input{width:100%;padding:9px 12px 9px 32px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;outline:none}
+.searchbox input:focus{border-color:var(--primary)}
+.searchbox svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted)}
+select{min-height:44px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;outline:none}
+/* table + drawer */
+.split{display:grid;grid-template-columns:1fr 330px;gap:14px;align-items:start}
+.tablewrap{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:720px}
+th{text-align:left;padding:10px 12px;color:var(--text-muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--row-sel)}
+tbody tr.selected{background:var(--row-sel)}
+.num{font-weight:700;color:var(--primary)}
+.badge{font-size:.7rem;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:99px;letter-spacing:.04em;white-space:nowrap}
+.badge.open{background:rgba(16,185,129,.15);color:var(--accent)}
+.badge.draft{background:rgba(113,113,122,.2);color:var(--text-muted)}
+.badge.review{background:rgba(139,92,246,.18);color:var(--purple)}
+.badge.assignee{background:rgba(245,158,11,.16);color:var(--warning)}
+.diff-add{color:var(--accent);font-weight:700}
+.diff-del{color:var(--danger);font-weight:700}
+.drawer{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);position:sticky;top:12px;font-size:.86rem}
+.drawer h2{font-size:1.02rem;margin-bottom:4px}
+.drawer h2 a{color:var(--text);text-decoration:none}
+.drawer h2 a:hover{color:var(--primary)}
+.branch{background:var(--bg);border-left:3px solid var(--primary);padding:8px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:.85rem;word-break:break-all}
+.seclabel{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin:12px 0 6px}
+.labels{display:flex;flex-wrap:wrap;gap:6px}
+.label{font-size:.7rem;padding:3px 9px;border-radius:99px;border:1px solid var(--border);background:var(--bg);color:var(--text-muted)}
+/* status bar */
+.statusbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:14px;font-size:.76rem;color:var(--text-muted)}
+/* states + skeletons */
+.statebox{text-align:center;padding:50px 20px;background:var(--card-bg);border:1px dashed var(--border);border-radius:var(--radius)}
+.statebox h3{margin-bottom:6px}
+.statebox p{color:var(--text-muted);font-size:.88rem;margin-bottom:14px}
+.spinner{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sk{display:flex;flex-direction:column;gap:9px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.sk i{display:block;height:11px;border-radius:6px;background:linear-gradient(90deg,var(--border) 25%,var(--bg) 37%,var(--border) 63%);background-size:400% 100%;animation:shimmer 1.3s ease infinite}
+.sk i.w20{width:20%}.sk i.w45{width:45%}.sk i.w70{width:70%}.sk i.w90{width:90%}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.sk i,.spinner{animation:none}}
+/* mobile */
+.mobile-only{display:none}
+.hero{background:linear-gradient(135deg,var(--accent),var(--primary));border-radius:16px;padding:14px 16px;color:#fff;font-weight:700;font-size:.95rem;margin-bottom:12px}
+.seg{display:flex;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:10px}
+.seg button{flex:1;border:none;background:transparent;color:var(--text-muted);font-size:.82rem;font-weight:600;min-height:44px;padding:9px;border-radius:8px;cursor:pointer}
+.seg button.on{background:var(--bg);color:var(--text);box-shadow:var(--shadow)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:6px;-webkit-overflow-scrolling:touch}
+.chip{font-size:.74rem;min-height:44px;display:inline-flex;align-items:center;padding:6px 14px;border-radius:99px;background:var(--card-bg);border:1px solid var(--border);color:var(--text-muted);white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.mcard{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.mcard .t1{font-size:.92rem;font-weight:700;line-height:1.35}
+.mcard .sub{font-size:.76rem;color:var(--text-muted);margin-top:5px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.mcard .body{display:none;margin-top:10px;font-size:.84rem}
+.mcard.expanded .body{display:block}
+.bigbtn{display:block;background:var(--primary);color:#fff;text-align:center;border-radius:10px;min-height:48px;line-height:48px;font-weight:700;font-size:.86rem;margin-top:10px;text-decoration:none}
+/* floating refresh + pull to refresh */
+#ptr{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:.8rem;transform:translateY(-100%);transition:transform .18s ease;pointer-events:none;z-index:60}
+#ptr .ring{width:22px;height:22px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin-right:8px}
+#fab{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:var(--touch);height:var(--touch);border-radius:50%;border:1px solid var(--border);background:var(--card-bg);color:var(--text);box-shadow:var(--shadow);font-size:1.2rem;display:none;align-items:center;justify-content:center;z-index:55;cursor:pointer}
+#fab.spin{animation:spin .8s linear infinite}
+/* bottom navigation (thumb reach) */
+.bottomnav{position:fixed;left:0;right:0;bottom:0;display:none;background:var(--card-bg);border-top:1px solid var(--border);z-index:50;padding-bottom:env(safe-area-inset-bottom,16px);box-shadow:0 -2px 12px rgba(0,0,0,.08)}
+.bottomnav a{flex:1;min-height:var(--touch);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-decoration:none;color:var(--text-muted);font-size:.68rem;font-weight:600;padding:6px 2px;-webkit-tap-highlight-color:transparent}
+.bottomnav a.on{color:var(--primary)}
+.bottomnav a .ic{font-size:1.15rem;line-height:1}
+.bottomnav a .lbl{font-size:.66rem}
+@media(max-width:900px){
+.pc-only{display:none !important}
+.mobile-only{display:block}
+.container{padding:14px 14px calc(var(--touch) + 76px + env(safe-area-inset-bottom,16px))}
+.bottomnav{display:flex}
+#fab{display:flex}
+/* the FAB and pull-to-refresh cover refresh on mobile; reclaim the row */
+#btn-refresh{display:none}
+.topbar{gap:8px}
+.actions{gap:6px}
+}
+</style>
+</head>
+<body>
+<div id="ptr"><span class="ring"></span><span id="ptr-text">Pull to refresh</span></div>
+<div class="container">
+<header class="topbar">
+<div class="brand"><h1>&#128200; Pull Requests</h1><p>Open PRs across your GitHub repositories</p></div>
+<div class="actions">
+<span class="pill" id="rate-limit-pill"><span class="dot" id="rate-dot"></span><span id="rate-limit-text">Connecting...</span></span>
+<button class="btn" id="btn-theme" title="Toggle theme">&#127769; Theme</button>
+<button class="btn btn-primary" id="btn-refresh">&#8635; Refresh</button>
+<a href="/wayfinder" class="btn pc-only">&#129517; Wayfinder</a>
+</div>
+</header>
+
+<div class="metrics-grid pc-only">
+<div class="metric-card"><span class="metric-title">Open Pull Requests</span><span class="metric-value" id="val-total">-</span></div>
+<div class="metric-card"><span class="metric-title">Drafts</span><span class="metric-value" style="color:var(--text-muted)" id="val-drafts">-</span></div>
+<div class="metric-card"><span class="metric-title">Review Requested</span><span class="metric-value" style="color:var(--purple)" id="val-review">-</span></div>
+<div class="metric-card"><span class="metric-title">Tracked Repositories</span><span class="metric-value" id="val-repos">-</span></div>
+<div class="metric-card"><span class="metric-title">Discussion Waiting</span><span class="metric-value" style="color:var(--warning)" id="val-comments">-</span></div>
+</div>
+
+<div class="commandbar pc-only">
+<div class="searchbox">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+<input type="text" id="input-search" placeholder="Search title, repo, author or branch...">
+</div>
+<select id="select-kind">
+<option value="all">All PRs</option>
+<option value="ready">Ready for review</option>
+<option value="draft">Drafts</option>
+<option value="review">Review requested</option>
+</select>
+<select id="select-repo"><option value="all">All Repositories</option></select>
+<select id="select-sort" title="Sort rows">
+<option value="updated">Sort: Recently updated</option>
+<option value="repo">Sort: Repo, then updated</option>
+<option value="size">Sort: Largest diff</option>
+</select>
+<span id="pull-hint" style="font-size:.74rem;color:var(--text-muted)">Pull down / tap refresh to bypass the 2 min cache</span>
+</div>
+
+<div class="split pc-only">
+<div class="tablewrap"><div id="prs-container">
+<table id="prs-table">
+<thead><tr>
+<th data-sort="repo">Repo &#8597;</th><th>PR</th><th>State</th><th>Role</th><th data-sort="size">Diff &#8597;</th><th data-sort="comments">Comments &#8597;</th><th data-sort="updated">Updated &#8597;</th>
+</tr></thead>
+<tbody id="prs-tbody"><tr><td colspan="7"><div class="statebox"><div class="spinner"></div><p>Fetching open pull requests...</p></div></td></tr></tbody>
+</table>
+</div></div>
+<aside class="drawer" id="drawer"><p style="color:var(--text-muted)">Select a row to inspect branches, labels and diff stats.</p></aside>
+</div>
+<div class="statusbar pc-only"><span id="fetch-status">Connecting...</span><span id="result-count"></span><span>Refresh bypasses the 120s cache</span></div>
+
+<div class="mobile-only">
+<div class="hero" id="hero-line">Loading pull requests...</div>
+<div class="seg" id="seg-kind">
+<button data-kind="all" class="on">All</button><button data-kind="ready">Ready</button><button data-kind="draft">Draft</button><button data-kind="review">Review</button>
+</div>
+<div class="chips" id="repo-chips"><span class="chip on" data-repo="all">All</span></div>
+<div id="mobile-cards"><div class="sk"><i class="w20"></i><i class="w90"></i><i class="w45"></i></div><div class="sk"><i class="w20"></i><i class="w90"></i><i class="w45"></i></div></div>
+</div>
+
+</div>
+
+<button id="fab" title="Refresh pull requests" aria-label="Refresh">&#8635;</button>
+
+<nav class="bottomnav">
+<a href="/wayfinder"><span class="ic">&#128506;</span><span class="lbl">Wayfinder</span></a>
+<a href="/pull-requests" class="on"><span class="ic">&#128256;</span><span class="lbl">PRs</span></a>
+<a href="/pwa/"><span class="ic">&#128193;</span><span class="lbl">Content</span></a>
+<a href="/pwa/"><span class="ic">&#9201;</span><span class="lbl">Jobs</span></a>
+</nav>
+
+<script>
+var allPRs=[],kindFilter='all',repoFilter='all',searchQuery='',sortMode='updated',currentOpen=null,lastData=null;
+var $=function(id){return document.getElementById(id)};
+function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+function fmtDate(d){if(!d)return '-';try{return new Date(d).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}catch(e){return d}}
+function rel(d){if(!d)return '-';try{var ms=Date.now()-new Date(d).getTime();if(ms<0)return 'just now';var h=Math.floor(ms/36e5);if(h<1)return 'just now';if(h<24)return h+'h ago';var days=Math.floor(h/24);if(days<30)return days+'d ago';return fmtDate(d)}catch(e){return d}}
+function shortRepo(r){return (r||'').split('/').pop()}
+function stateBadge(p){return p.draft?'<span class="badge draft">Draft</span>':'<span class="badge open">Open</span>'}
+function roleBadge(p){if(p.review_requested||p.role==='reviewer')return '<span class="badge review">Review</span>';if(p.role==='assignee')return '<span class="badge assignee">Assigned</span>';return ''}
+function diffHtml(p){if(!p.additions&&!p.deletions)return '<span style="color:var(--text-muted)">&mdash;</span>';return '<span class="diff-add">+'+p.additions+'</span> <span class="diff-del">&#8722;'+p.deletions+'</span>'}
+function setFetch(t){$('fetch-status').textContent=t}
+
+/* theme */
+$('btn-theme').addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('prs-theme',n)}catch(e){}});
+try{var st=localStorage.getItem('prs-theme');if(st)document.documentElement.setAttribute('data-theme',st)}catch(e){}
+
+/* skeletons */
+function skeletonMarkup(){return '<div class="sk"><i class="w20"></i><i class="w90"></i><i class="w45"></i></div><div class="sk"><i class="w20"></i><i class="w90"></i><i class="w45"></i></div><div class="sk"><i class="w20"></i><i class="w90"></i><i class="w45"></i></div>'}
+
+/* fetch */
+function loadPRs(force){
+  $('prs-tbody').innerHTML='<tr><td colspan="7"><div class="statebox"><div class="spinner"></div><p>Fetching open pull requests...</p></div></td></tr>';
+  $('mobile-cards').innerHTML=skeletonMarkup();
+  setFetch(force?'Refreshing from GitHub...':'Loading...');
+  $('ptr-text').textContent=force?'Refreshing...':'Pull to refresh';
+  var fab=$('fab');if(fab)fab.classList.add('spin');
+  fetch('/api/pull-requests'+(force?'?refresh=true':'')).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(data){
+    lastData=data;
+    allPRs=data.prs||[];
+    var pill=$('rate-limit-text'),dot=$('rate-dot');
+    var rl=data.rate_limit_remaining;
+    if(typeof rl==='number'){pill.textContent='GitHub API: '+rl+' left'+(data.authenticated?' • auth':' • public');dot.className='dot'+(data.authenticated?'':' warn')}
+    else if(data.authenticated===false){pill.textContent='Public mode - private repos hidden';dot.className='dot warn'}
+    currentOpen=null;
+    populateRepo();updateMetrics();renderAll();
+    var note=data.error?(' • '+data.error):'';
+    setFetch('Loaded '+allPRs.length+' PRs • '+(data.cached?'cached':'live')+' • '+new Date().toLocaleTimeString()+note);
+  }).catch(function(err){
+    $('prs-tbody').innerHTML='<tr><td colspan="7"><div class="statebox"><h3>Failed to load pull requests</h3><p>'+esc(err.message)+'</p><button class="btn btn-primary" onclick="loadPRs(true)">Retry</button></div></td></tr>';
+    $('mobile-cards').innerHTML='<div class="statebox"><h3>Offline?</h3><p>'+esc(err.message)+'</p><button class="btn btn-primary" onclick="loadPRs(true)">Retry</button></div>';
+    setFetch('Error: '+err.message);
+  }).then(function(){var fab=$('fab');if(fab)fab.classList.remove('spin')});
+}
+
+function filtered(){
+  var q=searchQuery.toLowerCase();
+  var list=allPRs.filter(function(p){
+    if(kindFilter==='ready'&&p.draft)return false;
+    if(kindFilter==='draft'&&!p.draft)return false;
+    if(kindFilter==='review'&&!(p.review_requested||p.role==='reviewer'||p.role==='assignee'))return false;
+    if(repoFilter!=='all'&&p.repo!==repoFilter)return false;
+    if(q){var hay=((p.title||'')+' '+(p.repo||'')+' '+(p.author||'')+' '+(p.branch_head||'')+' '+(p.labels||[]).join(' ')).toLowerCase();if(hay.indexOf(q)<0)return false}
+    return true});
+  if(sortMode==='repo'){list.sort(function(a,b){return (a.repo<b.repo?-1:1)||((b.updated_at||'')<(a.updated_at||'')?-1:1)})}
+  else if(sortMode==='size'){list.sort(function(a,b){return (b.additions+b.deletions)-(a.additions+a.deletions)})}
+  else{list.sort(function(a,b){return ((b.updated_at||'')<(a.updated_at||'')?-1:1)})}
+  return list;
+}
+
+function populateRepo(){
+  var sel=$('select-repo'),cur=sel.value;
+  var repos=Array.from(new Set(allPRs.map(function(p){return p.repo}))).sort();
+  sel.innerHTML='<option value="all">All Repositories</option>'+repos.map(function(r){return '<option value="'+esc(r)+'">'+esc(r)+'</option>'}).join('');
+  if(repos.indexOf(cur)>=0){sel.value=cur}else{sel.value='all';repoFilter='all'}
+  var chips=$('repo-chips');
+  chips.innerHTML='<span class="chip'+(repoFilter==='all'?' on':'')+'" data-repo="all">All</span>'+repos.map(function(r){return '<span class="chip'+(repoFilter===r?' on':'')+'" data-repo="'+esc(r)+'">'+esc(shortRepo(r))+'</span>'}).join('');
+  Array.prototype.forEach.call(chips.querySelectorAll('.chip'),function(c){c.addEventListener('click',function(){setRepo(c.getAttribute('data-repo'))})});
+}
+
+function updateMetrics(){
+  var open=allPRs.length;
+  $('val-total').textContent=open;
+  $('val-drafts').textContent=allPRs.filter(function(p){return p.draft}).length;
+  $('val-review').textContent=allPRs.filter(function(p){return p.review_requested||p.role==='reviewer'||p.role==='assignee'}).length;
+  $('val-repos').textContent=new Set(allPRs.map(function(p){return p.repo})).size;
+  $('val-comments').textContent=allPRs.filter(function(p){return p.comments_count>0}).length;
+  var hero=$('hero-line');
+  if(!open){hero.textContent=allPRs.length?'No pull requests match.':'No open pull requests right now.';return}
+  var ready=allPRs.filter(function(p){return !p.draft});
+  var first=ready[0]||allPRs[0];
+  hero.textContent=ready.length
+    ? ready.length+' ready for review. Next: '+shortRepo(first.repo)+' #'+first.number+'.'
+    : allPRs.length+' draft'+(allPRs.length>1?'s':'')+' in flight, nothing ready for review.';
+}
+
+function labelChips(p){return (p.labels||[]).map(function(l){return '<span class="label">'+esc(l)+'</span>'}).join('')}
+
+function renderTable(list){
+  var tb=$('prs-tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="7"><div class="statebox"><h3>No pull requests match</h3><p>Adjust search or reset filters.</p><button class="btn" onclick="resetFilters()">Reset filters</button></div></td></tr>';return}
+  tb.innerHTML=list.map(function(p,i){
+    return '<tr data-idx="'+i+'" class="'+(currentOpen&&currentOpen.id===p.id?'selected':'')+'">'
+    +'<td>'+esc(shortRepo(p.repo))+'</td>'
+    +'<td><span class="num">#'+p.number+'</span> '+esc(p.title)+'</td>'
+    +'<td>'+stateBadge(p)+'</td>'
+    +'<td>'+(roleBadge(p)||'<span style="color:var(--text-muted);font-size:.75rem">'+esc(p.author||'—')+'</span>')+'</td>'
+    +'<td>'+diffHtml(p)+'</td>'
+    +'<td>'+(p.comments_count||0)+'</td>'
+    +'<td>'+rel(p.updated_at)+'</td></tr>'}).join('');
+  Array.prototype.forEach.call(tb.querySelectorAll('tr[data-idx]'),function(tr){
+    var i=+tr.getAttribute('data-idx');
+    tr.addEventListener('click',function(){openDrawer(list[i])});
+  });
+  $('result-count').textContent=list.length+' of '+allPRs.length+' PRs';
+}
+
+function openDrawer(p){
+  currentOpen=p;
+  var d=$('drawer');
+  d.innerHTML='<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h2><a href="'+esc(p.html_url)+'" target="_blank" rel="noopener">'+esc(p.title)+' <span style="color:var(--text-muted);font-weight:400">#'+p.number+'</span></a></h2>'
+  +'<button class="btn" id="drawer-close" style="padding:4px 10px">&#10005;</button></div>'
+  +'<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">'+stateBadge(p)+roleBadge(p)+'<span style="font-size:.76rem;color:var(--text-muted)">'+esc(p.repo)+' • updated '+rel(p.updated_at)+'</span></div>'
+  +'<div class="branch">'+esc(p.branch_head||'unknown branch')+' &rarr; '+esc(p.branch_base||'unknown base')+'</div>'
+  +'<div class="seclabel">Diff stats</div><div>'+diffHtml(p)+' <span style="color:var(--text-muted);font-size:.78rem">('+(p.comments_count||0)+' comments)</span></div>'
+  +((p.labels||[]).length?'<div class="seclabel">Labels</div><div class="labels">'+labelChips(p)+'</div>':'')
+  +'<div class="seclabel">Details</div><div style="font-size:.8rem;color:var(--text-muted)">Author: '+esc(p.author||'unknown')+' • opened '+fmtDate(p.created_at)+'</div>'
+  +'<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><a class="btn btn-primary" href="'+esc(p.html_url)+'" target="_blank" rel="noopener">View on GitHub</a></div>';
+  $('drawer-close').addEventListener('click',function(){d.innerHTML='<p style="color:var(--text-muted)">Select a row to inspect.</p>';currentOpen=null;renderTable(filtered())});
+}
+
+function renderMobile(list){
+  var box=$('mobile-cards');
+  if(!list.length){box.innerHTML='<div class="statebox"><h3>No pull requests match</h3><p>Try another repo or filter.</p><button class="btn" onclick="resetFilters()">Reset</button></div>';return}
+  box.innerHTML=list.slice(0,40).map(function(p){
+    return '<div class="mcard" data-id="'+p.id+'"><div class="t1">'+esc(p.title)+'</div>'
+    +'<div class="sub">'+esc(shortRepo(p.repo))+' #'+p.number+' • '+esc(p.author||'unknown')+' • '+rel(p.updated_at)+'</div>'
+    +'<div class="sub">'+stateBadge(p)+roleBadge(p)+(p.comments_count?'<span class="badge assignee">&#128172; '+p.comments_count+'</span>':'')+'</div>'
+    +'<div class="body">'
+    +'<div class="seclabel">Branches</div><div class="branch">'+esc(p.branch_head||'unknown branch')+' &rarr; '+esc(p.branch_base||'unknown base')+'</div>'
+    +'<div class="seclabel">Diff</div><div>'+diffHtml(p)+'</div>'
+    +((p.labels||[]).length?'<div class="seclabel">Labels</div><div class="labels">'+labelChips(p)+'</div>':'')
+    +'<a class="bigbtn" href="'+esc(p.html_url)+'" target="_blank" rel="noopener">View on GitHub</a></div></div>'}).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('.mcard'),function(c){
+    c.addEventListener('click',function(e){if(e.target.closest('a'))return;c.classList.toggle('expanded')});
+  });
+}
+
+function renderAll(){
+  var list=filtered();
+  renderTable(list);
+  renderMobile(list);
+  Array.prototype.forEach.call($('seg-kind').querySelectorAll('button'),function(b){b.classList.toggle('on',b.getAttribute('data-kind')===kindFilter)});
+  $('select-kind').value=kindFilter;
+}
+function setKind(k){kindFilter=k;renderAll()}
+function setRepo(r){repoFilter=r;$('select-repo').value=r;Array.prototype.forEach.call($('repo-chips').querySelectorAll('.chip'),function(c){c.classList.toggle('on',c.getAttribute('data-repo')===repoFilter)});renderAll()}
+function resetFilters(){$('input-search').value='';searchQuery='';kindFilter='all';setRepo('all')}
+
+/* events */
+$('input-search').addEventListener('input',function(e){searchQuery=e.target.value;renderAll()});
+$('select-kind').addEventListener('change',function(e){setKind(e.target.value)});
+$('select-repo').addEventListener('change',function(e){setRepo(e.target.value)});
+$('select-sort').addEventListener('change',function(e){sortMode=e.target.value;renderAll()});
+Array.prototype.forEach.call($('seg-kind').querySelectorAll('button'),function(b){b.addEventListener('click',function(){setKind(b.getAttribute('data-kind'))})});
+$('btn-refresh').addEventListener('click',function(){loadPRs(true)});
+$('fab').addEventListener('click',function(){loadPRs(true)});
+document.querySelectorAll('#prs-table th[data-sort]').forEach(function(th){th.addEventListener('click',function(){var k=th.getAttribute('data-sort');sortMode=(k==='repo'?'repo':(k==='size'?'size':(k==='comments'?'size':'updated')));$('select-sort').value=sortMode;renderAll()})});
+
+/* pull to refresh (touch) */
+var ptrEl=$('ptr'),ptrStart=0,ptrPulling=false;
+function ptrDistance(y){return Math.max(0,Math.min(80,(y-ptrStart)*0.5))}
+document.addEventListener('touchstart',function(e){
+  if(window.scrollY>2)return;
+  ptrStart=e.touches[0].clientY;ptrPulling=true;
+},{passive:true});
+document.addEventListener('touchmove',function(e){
+  if(!ptrPulling)return;
+  var d=ptrDistance(e.touches[0].clientY);
+  ptrEl.style.transform='translateY('+(d-56)+'px)';
+  $('ptr-text').textContent=d>52?'Release to refresh':'Pull to refresh';
+},{passive:true});
+document.addEventListener('touchend',function(e){
+  if(!ptrPulling)return;
+  ptrPulling=false;
+  var d=ptrDistance((e.changedTouches&&e.changedTouches[0])?e.changedTouches[0].clientY:ptrStart);
+  ptrEl.style.transform='translateY(-100%)';
+  if(d>52)loadPRs(true);
+});
+document.addEventListener('keydown',function(e){
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='r')loadPRs(true);
+  else if(e.key==='/'){e.preventDefault();$('input-search').focus()}
+});
+
+loadPRs(false);
+</script>
+</body>
+</html>
