@@ -1,7 +1,7 @@
 {
   "name": "Cron System",
   "short_name": "Cron",
-  "description": "Cron System PWA - Content Hub, Wayfinder Maps, and Jobs Monitor",
+  "description": "Cron System PWA - Content Hub, Pull Requests, Wayfinder Maps, and Jobs Monitor",
   "start_url": "/pwa/",
   "scope": "/pwa/",
   "display": "standalone",

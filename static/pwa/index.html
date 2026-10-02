@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0d6efd">
-  <meta name="description" content="Cron System PWA - Content Hub, Wayfinder Maps, and Jobs Monitor">
+  <meta name="description" content="Cron System PWA - Content Hub, Pull Requests, Wayfinder Maps, and Jobs Monitor">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Cron System">
@@ -195,6 +195,179 @@
       color: var(--accent-blue);
       border-color: rgba(59, 130, 246, 0.4);
     }
+    /* ---- mobile bottom navigation (thumb reach + safe area) ---- */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 120;
+      background: rgba(17, 24, 39, 0.97);
+      border-top: 1px solid var(--border-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+    .bottom-nav .tab-btn {
+      flex: 1;
+      flex-direction: column;
+      gap: 2px;
+      min-height: 52px;
+      padding: 6px 2px;
+      border-bottom: none;
+      border-top: 2px solid transparent;
+      font-size: 0.66rem;
+      font-weight: 600;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bottom-nav .tab-btn .nav-ic {
+      font-size: 1.15rem;
+      line-height: 1.1;
+    }
+    .bottom-nav .tab-btn.active {
+      border-top-color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.08);
+    }
+    .mobile-only-btn {
+      display: none;
+    }
+    /* ---- pull to refresh ---- */
+    #ptr {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      transform: translateY(-100%);
+      transition: transform 0.18s ease;
+      pointer-events: none;
+      z-index: 200;
+    }
+    #ptr .ring {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border-color);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    /* ---- floating refresh ---- */
+    #fabRefresh {
+      position: fixed;
+      right: 16px;
+      bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 1.2rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 110;
+      cursor: pointer;
+    }
+    #fabRefresh.spin {
+      animation: spin 0.8s linear infinite;
+    }
+    /* ---- skeleton loaders ---- */
+    .skel-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    .skel-line {
+      height: 11px;
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-hover) 37%, var(--bg-secondary) 63%);
+      background-size: 400% 100%;
+      animation: shimmer 1.3s ease infinite;
+    }
+    .skel-line.w20 { width: 20%; }
+    .skel-line.w45 { width: 45%; }
+    .skel-line.w70 { width: 70%; }
+    .skel-line.w90 { width: 90%; }
+    @keyframes shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: 0 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .skel-line, .spinner, #ptr .ring, #fabRefresh.spin { animation: none; }
+    }
+    /* ---- pull request tab ---- */
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .filter-bar .search-input {
+      flex: 1;
+      min-width: 160px;
+    }
+    .select-input, .chip-row .chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      min-height: 44px;
+      padding: 0.45rem 0.75rem;
+      outline: none;
+    }
+    .chip-row {
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.25rem;
+      width: 100%;
+    }
+    .chip-row .chip {
+      border-radius: 9999px;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+    .chip-row .chip.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+    .badge-purple {
+      background: rgba(139, 92, 246, 0.18);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.35);
+    }
+    .badge-draft {
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+    .pr-branch {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      word-break: break-all;
+    }
+    .diff-add { color: var(--accent-green); font-weight: 600; }
+    .diff-del { color: var(--accent-red); font-weight: 600; }
     main {
       flex: 1;
       max-width: 1200px;
@@ -450,6 +623,92 @@
       .header-actions { justify-content: space-between; }
       .search-input { width: 100%; }
     }
+    /* ---- touch-first mobile overrides ---- */
+    @media (max-width: 767px) {
+      /* 16px inputs stop iOS Safari / Android Chrome from zooming on focus */
+      .search-input,
+      .select-input,
+      .upload-form-group input,
+      select,
+      textarea {
+        font-size: 16px;
+      }
+      /* single-row header: the bottom nav carries navigation, don't waste a
+         whole screen band on stacked header rows */
+      .header {
+        padding: 0.6rem 0.85rem;
+      }
+      .header-content {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: nowrap;
+      }
+      .brand-title {
+        font-size: 1rem;
+        white-space: nowrap;
+      }
+      .brand-badge {
+        display: none;
+      }
+      .status-pill {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.7rem;
+      }
+      @media (max-width: 480px) {
+        /* the dot alone still conveys connectivity; the word does not earn
+           its horizontal space next to install/refresh/upload */
+        #networkText {
+          display: none;
+        }
+      }
+      .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-bar .search-input,
+      .filter-bar .select-input {
+        width: 100%;
+        min-width: 0;
+      }
+      .btn,
+      .tab-btn,
+      .card-link,
+      .select-input,
+      .search-input,
+      .upload-form-group input,
+      .chip-row .chip {
+        min-height: 48px;
+      }
+      .card {
+        padding: 1rem;
+      }
+      .card-link {
+        padding: 0.35rem 0.5rem;
+      }
+      .nav-tabs {
+        display: none;
+      }
+      .bottom-nav {
+        display: flex;
+      }
+      .mobile-only-btn {
+        display: inline-flex;
+      }
+      #fabRefresh {
+        display: flex;
+      }
+      main {
+        /* clear the fixed bottom nav + FAB */
+        padding: 1.15rem 1rem calc(96px + env(safe-area-inset-bottom, 16px));
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .card-actions {
+        gap: 0.5rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -471,19 +730,28 @@
         <button class="btn" id="refreshBtn" title="Refresh Current Tab">
           <span>🔄</span>
         </button>
+        <button class="btn mobile-only-btn" id="uploadQuickBtn" title="Upload content">
+          <span>📤</span>
+        </button>
       </div>
     </div>
   </header>
 
+  <div id="ptr"><span class="ring"></span><span id="ptrText">Pull to refresh</span></div>
+
   <nav class="nav-tabs">
     <div class="tabs-wrapper">
-      <button class="tab-btn active" data-tab="content">
-        <span>📂</span> Content Hub
-        <span class="tab-count" id="contentCount">-</span>
-      </button>
       <button class="tab-btn" data-tab="wayfinder">
         <span>🗺️</span> Wayfinder
         <span class="tab-count" id="wayfinderCount">-</span>
+      </button>
+      <button class="tab-btn" data-tab="prs">
+        <span>🔀</span> PRs
+        <span class="tab-count" id="prCount">-</span>
+      </button>
+      <button class="tab-btn active" data-tab="content">
+        <span>📂</span> Content Hub
+        <span class="tab-count" id="contentCount">-</span>
       </button>
       <button class="tab-btn" data-tab="jobs">
         <span>⏱️</span> Jobs
@@ -493,6 +761,25 @@
         <span>📤</span> Upload
       </button>
     </div>
+  </nav>
+
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="tab-btn" data-tab="wayfinder">
+      <span class="nav-ic">🗺️</span>
+      <span>Wayfinder</span>
+    </button>
+    <button class="tab-btn" data-tab="prs">
+      <span class="nav-ic">🔀</span>
+      <span>PRs</span>
+    </button>
+    <button class="tab-btn active" data-tab="content">
+      <span class="nav-ic">📂</span>
+      <span>Content</span>
+    </button>
+    <button class="tab-btn" data-tab="jobs">
+      <span class="nav-ic">⏱️</span>
+      <span>Jobs</span>
+    </button>
   </nav>
 
   <main>
@@ -527,6 +814,33 @@
           <div class="spinner"></div>
           <p style="margin-top: 0.75rem;">Loading Wayfinder maps...</p>
         </div>
+      </div>
+    </section>
+
+    <!-- Pull Requests Tab -->
+    <section class="tab-pane" id="tab-prs">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Open Pull Requests</h2>
+          <p class="section-desc" id="prMeta">Authored, reviewing and assigned PRs across your repos</p>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <input type="search" class="search-input" id="prSearch" placeholder="Search PRs, repos, branches...">
+        <select class="select-input" id="prRepoFilter" aria-label="Filter by repository">
+          <option value="all">All repos</option>
+        </select>
+        <div class="chip-row" id="prStateChips">
+          <button class="chip active" data-state="all">All</button>
+          <button class="chip" data-state="ready">Ready</button>
+          <button class="chip" data-state="draft">Draft</button>
+          <button class="chip" data-state="review">Review me</button>
+        </div>
+      </div>
+      <div id="prList" class="grid">
+        <div class="skel-card"><div class="skel-line w20"></div><div class="skel-line w90"></div><div class="skel-line w45"></div></div>
+        <div class="skel-card"><div class="skel-line w20"></div><div class="skel-line w90"></div><div class="skel-line w45"></div></div>
+        <div class="skel-card"><div class="skel-line w20"></div><div class="skel-line w90"></div><div class="skel-line w45"></div></div>
       </div>
     </section>
 
@@ -569,6 +883,8 @@
       </div>
     </section>
   </main>
+
+  <button id="fabRefresh" title="Refresh current tab" aria-label="Refresh">🔄</button>
 
   <script>
     // ---------------------------------------------------------------------------
@@ -756,6 +1072,10 @@
     async function fetchWayfinderData() {
       var container = document.getElementById('wayfinderList');
       var countBadge = document.getElementById('wayfinderCount');
+      if (container) {
+        container.innerHTML = '<div class="skel-card"><div class="skel-line w20"></div><div class="skel-line w90"></div><div class="skel-line w45"></div></div>' +
+          '<div class="skel-card"><div class="skel-line w20"></div><div class="skel-line w90"></div><div class="skel-line w45"></div></div>';
+      }
       try {
         var res = await fetch('/api/wayfinder');
         if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -830,7 +1150,159 @@
     }
 
     // ---------------------------------------------------------------------------
-    // Tab 3: Jobs Data
+    // Tab 3: Pull Requests Data
+    // ---------------------------------------------------------------------------
+    var pullRequests = [];
+    var prFilters = { query: '', repo: 'all', state: 'all' };
+
+    function prSkeleton() {
+      var card = '<div class="skel-card"><div class="skel-line w20"></div><div class="skel-line w90"></div><div class="skel-line w45"></div></div>';
+      return card + card + card;
+    }
+
+    function summarizePrError(err) {
+      if (!err) return '';
+      if (/rate limit/i.test(err)) return 'search limited, showing repo sweep';
+      if (/failed to connect/i.test(err)) return 'GitHub unreachable, showing last data';
+      return err.length > 60 ? err.slice(0, 57) + '…' : err;
+    }
+
+    async function fetchPullRequests(force) {
+      var container = document.getElementById('prList');
+      var countBadge = document.getElementById('prCount');
+      var meta = document.getElementById('prMeta');
+      if (container) container.innerHTML = prSkeleton();
+      setRefreshIndicator(true);
+      try {
+        var res = await fetch('/api/pull-requests' + (force ? '?refresh=true' : ''));
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var data = await res.json();
+        pullRequests = data.prs || [];
+        if (countBadge) countBadge.textContent = pullRequests.length;
+        if (meta) {
+          meta.textContent = pullRequests.length + ' open • ' +
+            (data.cached ? 'cached' : 'live') +
+            (data.authenticated === false ? ' • public mode' : '') +
+            (typeof data.rate_limit_remaining === 'number' && data.rate_limit_remaining === 0 ? ' • search budget spent' : '') +
+            (data.error ? ' • ' + summarizePrError(data.error) : '');
+        }
+        populatePrRepos();
+        renderPrList();
+      } catch (err) {
+        if (container) {
+          container.innerHTML = '<div class="state-banner"><div class="state-banner-icon">🔀</div><p>Unable to load pull requests: ' + escapeHtml(err.message) + '</p><button class="btn btn-primary" style="margin-top:0.75rem;" onclick="fetchPullRequests(true)">Retry</button></div>';
+        }
+        if (meta) meta.textContent = 'Error: ' + err.message;
+      } finally {
+        setRefreshIndicator(false);
+      }
+    }
+
+    function populatePrRepos() {
+      var select = document.getElementById('prRepoFilter');
+      if (!select) return;
+      var repos = Array.from(new Set(pullRequests.map(function(p) { return p.repo; }))).sort();
+      select.innerHTML = '<option value="all">All repos</option>' +
+        repos.map(function(r) { return '<option value="' + escapeHtml(r) + '">' + escapeHtml(r.split('/').pop()) + '</option>'; }).join('');
+      select.value = prFilters.repo;
+    }
+
+    function filteredPullRequests() {
+      var q = prFilters.query;
+      return pullRequests.filter(function(p) {
+        if (prFilters.repo !== 'all' && p.repo !== prFilters.repo) return false;
+        if (prFilters.state === 'ready' && p.draft) return false;
+        if (prFilters.state === 'draft' && !p.draft) return false;
+        if (prFilters.state === 'review' && !(p.review_requested || p.role === 'reviewer' || p.role === 'assignee')) return false;
+        if (q) {
+          var hay = ((p.title || '') + ' ' + (p.repo || '') + ' ' + (p.author || '') + ' ' +
+            (p.branch_head || '') + ' ' + (p.labels || []).join(' ')).toLowerCase();
+          if (hay.indexOf(q) < 0) return false;
+        }
+        return true;
+      });
+    }
+
+    function prRoleBadge(p) {
+      if (p.review_requested || p.role === 'reviewer') return '<span class="badge badge-purple">review requested</span>';
+      if (p.role === 'assignee') return '<span class="badge badge-yellow">assigned</span>';
+      return '';
+    }
+
+    function prDiffHtml(p) {
+      if (!p.additions && !p.deletions) return '<span style="color:var(--text-muted);">diff pending</span>';
+      return '<span class="diff-add">+' + p.additions + '</span> / <span class="diff-del">-' + p.deletions + '</span>';
+    }
+
+    function renderPrList() {
+      var container = document.getElementById('prList');
+      if (!container) return;
+      var list = filteredPullRequests();
+      if (!list.length) {
+        container.innerHTML = '<div class="state-banner"><div class="state-banner-icon">🔀</div><p>No pull requests match these filters.</p></div>';
+        return;
+      }
+      container.innerHTML = list.map(function(p) {
+        var stateBadge = p.draft
+          ? '<span class="badge badge-draft">Draft</span>'
+          : '<span class="badge badge-green">Open</span>';
+        var labels = (p.labels || []).slice(0, 3).map(function(l) {
+          return '<span class="badge badge-blue">' + escapeHtml(l) + '</span>';
+        }).join('');
+        return '<div class="card">' +
+          '<div class="card-top">' +
+            '<div class="card-title">' +
+              '<span>🔀</span>' +
+              '<a href="' + escapeHtml(p.html_url) + '" target="_blank" rel="noopener">#' + p.number + ' ' + escapeHtml(p.title) + '</a>' +
+            '</div>' +
+            '<div class="card-meta">' +
+              stateBadge + prRoleBadge(p) +
+              '<span class="badge badge-gray">' + escapeHtml(p.repo) + '</span>' +
+              (p.comments_count ? '<span class="badge badge-gray">💬 ' + p.comments_count + '</span>' : '') +
+              labels +
+            '</div>' +
+            '<div class="pr-branch">' + escapeHtml(p.branch_head || 'unknown branch') + ' → ' + escapeHtml(p.branch_base || 'unknown base') + '</div>' +
+            '<div class="pr-branch">' + prDiffHtml(p) + ' • by ' + escapeHtml(p.author || 'unknown') + '</div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<span style="font-size:0.75rem; color:var(--text-muted);">#' + p.number + ' · ' + (p.updated_at ? escapeHtml(String(p.updated_at).slice(0, 10)) : '—') + '</span>' +
+            '<a href="' + escapeHtml(p.html_url) + '" class="card-link" target="_blank" rel="noopener">View on GitHub ↗</a>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    var prSearch = document.getElementById('prSearch');
+    if (prSearch) {
+      prSearch.addEventListener('input', function(e) {
+        prFilters.query = e.target.value.toLowerCase().trim();
+        renderPrList();
+      });
+    }
+
+    var prRepoFilter = document.getElementById('prRepoFilter');
+    if (prRepoFilter) {
+      prRepoFilter.addEventListener('change', function(e) {
+        prFilters.repo = e.target.value;
+        renderPrList();
+      });
+    }
+
+    var prStateChips = document.getElementById('prStateChips');
+    if (prStateChips) {
+      prStateChips.addEventListener('click', function(e) {
+        var chip = e.target.closest('.chip');
+        if (!chip) return;
+        prFilters.state = chip.getAttribute('data-state');
+        prStateChips.querySelectorAll('.chip').forEach(function(c) {
+          c.classList.toggle('active', c === chip);
+        });
+        renderPrList();
+      });
+    }
+
+    // ---------------------------------------------------------------------------
+    // Tab 4: Jobs Data
     // ---------------------------------------------------------------------------
     async function fetchJobsData() {
       var container = document.getElementById('jobsList');
@@ -1012,21 +1484,76 @@
     // ---------------------------------------------------------------------------
     // Tab Data Dispatcher
     // ---------------------------------------------------------------------------
+    function setRefreshIndicator(active) {
+      var fab = document.getElementById('fabRefresh');
+      if (fab) fab.classList.toggle('spin', !!active);
+    }
+
     function loadTabData(tabName, force) {
       if (tabName === 'content') {
         if (force || staticDirectories.length === 0) fetchContentData();
       } else if (tabName === 'wayfinder') {
         if (force || wayfinderMaps.length === 0) fetchWayfinderData();
+      } else if (tabName === 'prs') {
+        if (force || pullRequests.length === 0) fetchPullRequests(force);
       } else if (tabName === 'jobs') {
         fetchJobsData();
       }
     }
 
     // ---------------------------------------------------------------------------
+    // Mobile Quick Actions: header upload jump, FAB refresh, pull to refresh
+    // ---------------------------------------------------------------------------
+    var uploadQuickBtn = document.getElementById('uploadQuickBtn');
+    if (uploadQuickBtn) {
+      uploadQuickBtn.addEventListener('click', function() {
+        switchTab('upload');
+      });
+    }
+
+    var fabRefresh = document.getElementById('fabRefresh');
+    if (fabRefresh) {
+      fabRefresh.addEventListener('click', function() {
+        loadTabData(currentTab, true);
+      });
+    }
+
+    var ptrEl = document.getElementById('ptr');
+    var ptrStart = 0;
+    var ptrPulling = false;
+
+    function ptrDistance(y) {
+      return Math.max(0, Math.min(80, (y - ptrStart) * 0.5));
+    }
+
+    document.addEventListener('touchstart', function(e) {
+      if (window.scrollY > 2) return;
+      ptrStart = e.touches[0].clientY;
+      ptrPulling = true;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', function(e) {
+      if (!ptrPulling) return;
+      var d = ptrDistance(e.touches[0].clientY);
+      ptrEl.style.transform = 'translateY(' + (d - 56) + 'px)';
+      document.getElementById('ptrText').textContent = d > 52 ? 'Release to refresh' : 'Pull to refresh';
+    }, { passive: true });
+
+    document.addEventListener('touchend', function(e) {
+      if (!ptrPulling) return;
+      ptrPulling = false;
+      var y = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : ptrStart;
+      var d = ptrDistance(y);
+      ptrEl.style.transform = 'translateY(-100%)';
+      if (d > 52) loadTabData(currentTab, true);
+    });
+
+    // ---------------------------------------------------------------------------
     // Initial Load
     // ---------------------------------------------------------------------------
     fetchContentData();
     fetchWayfinderData();
+    fetchPullRequests(false);
     fetchJobsData();
   </script>
 </body>

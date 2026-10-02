@@ -39,6 +39,28 @@ class TestPwaEndpoints:
         assert "no-cache" in cache_control
         assert "no-store" in cache_control
 
+    def test_pwa_shell_has_pr_tab_and_bottom_nav(self):
+        """The app shell exposes the PR tab and a mobile bottom navigation."""
+        res = client.get("/pwa/")
+        assert res.status_code == 200
+        body = res.text
+        assert 'data-tab="prs"' in body, "PR tab missing from the shell"
+        assert 'id="tab-prs"' in body, "PR tab pane missing from the shell"
+        assert 'id="prList"' in body, "PR list container missing from the shell"
+        assert 'class="bottom-nav"' in body, "mobile bottom nav missing"
+        # safe-area inset is what keeps the bar clear of the iOS home indicator
+        assert "env(safe-area-inset-bottom" in body
+        # 16px inputs prevent mobile browser zoom-on-focus
+        assert "font-size: 16px" in body
+
+    def test_pull_requests_page_ships(self):
+        """The standalone PR dashboard is mounted and self-contained."""
+        res = client.get("/pull-requests")
+        assert res.status_code == 200
+        assert "text/html" in res.headers.get("content-type", "")
+        assert "/api/pull-requests" in res.text
+        assert "env(safe-area-inset-bottom" in res.text
+
 
 class TestApiJobsAndLogs:
     def test_get_api_jobs(self):
