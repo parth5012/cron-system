@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from cron_engine import get_engine
+from antigravity import router as antigravity_router
 from pull_requests import router as pull_requests_router
 from wayfinder import router as wayfinder_router
 
@@ -319,6 +320,7 @@ async def index():
                     <a href="/pwa/">📱 App</a>
                     <a href="/wayfinder">🧭 Wayfinder</a>
                     <a href="/pull-requests">🔀 PRs</a>
+                    <a href="/antigravity">⚡ Limits</a>
                     <a href="/api/jobs">⚙️ Jobs</a>
                 </nav>
             </header>
@@ -491,6 +493,7 @@ async def index():
 # Include Wayfinder & Pull Requests routers
 app.include_router(wayfinder_router)
 app.include_router(pull_requests_router)
+app.include_router(antigravity_router)
 
 
 # ---------------------------------------------------------------------------
