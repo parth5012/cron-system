@@ -47,7 +47,7 @@ def test_email_triage_html_routes():
         assert "TypeSafe Jev System One" in res.text
 
 def test_api_list_emails_mocked():
-    """Verify GET /api/email-triage/emails merges Himalaya envelopes with cache."""
+    """Verify GET /api/email-triage/emails merges Himalaya envelopes with cache and allowlist."""
     with patch("email_triage.fetch_envelopes_from_himalaya", return_value=MOCK_ENVELOPES):
         res = client.get("/api/email-triage/emails?limit=2")
         assert res.status_code == 200
@@ -56,7 +56,9 @@ def test_api_list_emails_mocked():
         assert len(data["emails"]) == 2
         assert data["emails"][0]["id"] == "1001"
         assert data["emails"][0]["sender_name"] == "coderabbitai[bot]"
+        assert data["emails"][0]["allowlisted"] is True, "notifications@github.com should match github.com allowlist"
         assert data["emails"][1]["id"] == "1002"
+        assert data["emails"][1]["allowlisted"] is False
 
 def test_api_categorize_mocked():
     """Verify POST /api/email-triage/categorize evaluates decision models and returns taxonomy."""
@@ -104,3 +106,35 @@ def test_api_read_body_mocked():
         data = res.json()
         assert data["id"] == "1001"
         assert "pull request review" in data["body_text"]
+
+def test_api_allowlist_crud():
+    """Verify CRUD operations on allowlist rules."""
+    # 1. Fetch current list (should include seeded rules)
+    res = client.get("/api/email-triage/allowlist")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["total"] >= 1
+    existing_patterns = [r["pattern"] for r in data["rules"]]
+    assert "github.com" in existing_patterns
+
+    # 2. Add new test pattern
+    test_pattern = "pytest-unit-test-domain.io"
+    add_res = client.post("/api/email-triage/allowlist", json={"pattern": test_pattern, "note": "Test rule"})
+    assert add_res.status_code == 200
+    rule = add_res.json()
+    assert rule["pattern"] == test_pattern
+    rule_id = rule["id"]
+
+    # Duplicate check
+    dup_res = client.post("/api/email-triage/allowlist", json={"pattern": test_pattern, "note": "Dup"})
+    assert dup_res.status_code == 409
+
+    # 3. Delete rule
+    del_res = client.delete(f"/api/email-triage/allowlist/{rule_id}")
+    assert del_res.status_code == 200
+    assert del_res.json()["deleted_id"] == rule_id
+
+    # 4. Verify gone
+    res_after = client.get("/api/email-triage/allowlist")
+    patterns_after = [r["pattern"] for r in res_after.json()["rules"]]
+    assert test_pattern not in patterns_after

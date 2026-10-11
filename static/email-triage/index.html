@@ -226,6 +226,71 @@
       border-color: var(--accent-blue);
     }
 
+    /* Allowlist Section */
+    .allowlist-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.9rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .allowlist-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .allowlist-header:hover h3 {
+      color: var(--accent-blue);
+    }
+    .allowlist-content {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .allowlist-form {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .allowlist-chips {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .allowlist-chip {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+      padding: 0.3rem 0.65rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-mono);
+    }
+    .allowlist-chip .chip-note {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-family: var(--font-sans);
+    }
+    .allowlist-chip .chip-del {
+      cursor: pointer;
+      color: #f87171;
+      font-weight: bold;
+      font-size: 0.95rem;
+      padding: 0 3px;
+    }
+    .allowlist-chip .chip-del:hover {
+      color: #fff;
+    }
+
     /* Category Filter Tabs */
     .tabs-bar {
       display: flex;
@@ -543,6 +608,38 @@
       </div>
     </section>
 
+    <!-- Allowlist Management Section (Feature 4) -->
+    <section class="allowlist-panel" id="allowlist-panel">
+      <div class="allowlist-header" onclick="toggleAllowlistDrawer()">
+        <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+          <span style="font-size: 1.15rem;">🛡️</span>
+          <h3 style="font-size: 0.95rem; font-weight: 600; color: #fff;">
+            Bypass Allowlist (<span id="allowlist-count">0</span> rules)
+          </h3>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">
+            Senders matching these patterns permanently bypass irrelevance marking
+          </span>
+        </div>
+        <button class="btn-icon" id="allowlist-toggle-btn" style="pointer-events: none;">▼ Manage Rules</button>
+      </div>
+
+      <div class="allowlist-content" id="allowlist-content" style="display: none;">
+        <!-- Add Rule Form -->
+        <form class="allowlist-form" onsubmit="handleAllowlistSubmit(event)">
+          <input type="text" id="al-pattern" class="search-input" placeholder="Domain or sender (e.g. flyrank.ai, prof@college.edu)" required style="flex: 1; min-width: 250px;">
+          <input type="text" id="al-note" class="search-input" placeholder="Note / Tag (e.g. Work, College, Lead)" style="width: 190px;">
+          <button type="submit" class="btn-primary" style="padding: 0.5rem 1rem;">
+            <span>➕ Add Pattern</span>
+          </button>
+        </form>
+
+        <!-- Active Rules Chips -->
+        <div class="allowlist-chips" id="allowlist-chips">
+          Loading allowlist rules...
+        </div>
+      </div>
+    </section>
+
     <!-- Category Tabs -->
     <div class="tabs-bar" id="tabs-bar">
       <div class="tab-pill active" data-tab="all" onclick="setTab('all')">
@@ -550,6 +647,9 @@
       </div>
       <div class="tab-pill" data-tab="irrelevant" onclick="setTab('irrelevant')">
         Irrelevant <span class="tab-count" id="tab-count-irrel">0</span>
+      </div>
+      <div class="tab-pill" data-tab="allowlisted" onclick="setTab('allowlisted')">
+        🛡️ Allowlisted <span class="tab-count" id="tab-count-allowlisted">0</span>
       </div>
       <div class="tab-pill" data-tab="work" onclick="setTab('work')">
         Work &amp; GitHub <span class="tab-count" id="tab-count-work">0</span>
@@ -645,15 +745,119 @@
   <script>
     // State
     let currentEmails = [];
+    let allowlistRules = [];
     let selectedIds = new Set();
     let currentTab = 'all';
     let irrelevanceCutoff = 0.70;
     let activeModalEmailId = null;
+    let allowlistDrawerOpen = false;
 
-    // Load emails on opening the page
+    // Load emails and allowlist on opening page
     window.addEventListener('DOMContentLoaded', () => {
+      loadAllowlist();
       loadEmails(false);
     });
+
+    async function loadAllowlist() {
+      try {
+        const res = await fetch('/api/email-triage/allowlist');
+        if (!res.ok) return;
+        const data = await res.json();
+        allowlistRules = data.rules || [];
+        document.getElementById('allowlist-count').textContent = allowlistRules.length;
+        renderAllowlistChips();
+      } catch (err) {
+        console.error('Failed to load allowlist:', err);
+      }
+    }
+
+    function toggleAllowlistDrawer() {
+      allowlistDrawerOpen = !allowlistDrawerOpen;
+      const content = document.getElementById('allowlist-content');
+      const btn = document.getElementById('allowlist-toggle-btn');
+      content.style.display = allowlistDrawerOpen ? 'flex' : 'none';
+      btn.textContent = allowlistDrawerOpen ? '▲ Hide Rules' : '▼ Manage Rules';
+    }
+
+    function renderAllowlistChips() {
+      const container = document.getElementById('allowlist-chips');
+      if (allowlistRules.length === 0) {
+        container.innerHTML = '<span style="font-size:0.8rem; color:var(--text-muted);">No allowlist rules configured.</span>';
+        return;
+      }
+
+      container.innerHTML = allowlistRules.map(r => `
+        <div class="allowlist-chip">
+          <span>${escapeHtml(r.pattern)}</span>
+          ${r.note ? `<span class="chip-note">(${escapeHtml(r.note)})</span>` : ''}
+          <span class="chip-del" title="Remove rule" onclick="deleteAllowlistRule(${r.id})">✕</span>
+        </div>
+      `).join('');
+    }
+
+    async function handleAllowlistSubmit(e) {
+      e.preventDefault();
+      const patternInput = document.getElementById('al-pattern');
+      const noteInput = document.getElementById('al-note');
+      const pattern = patternInput.value.trim();
+      const note = noteInput.value.trim();
+      if (!pattern) return;
+
+      try {
+        const res = await fetch('/api/email-triage/allowlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pattern, note })
+        });
+        if (!res.ok) {
+          const errData = await res.json();
+          alert(errData.detail || 'Failed to add rule');
+          return;
+        }
+        patternInput.value = '';
+        noteInput.value = '';
+        await loadAllowlist();
+        await loadEmails(false);
+      } catch (err) {
+        alert('Network error adding allowlist rule');
+      }
+    }
+
+    async function deleteAllowlistRule(id) {
+      if (!confirm('Remove this pattern from allowlist?')) return;
+      try {
+        const res = await fetch(`/api/email-triage/allowlist/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error(await res.text());
+        await loadAllowlist();
+        await loadEmails(false);
+      } catch (err) {
+        alert(`Failed to delete rule: ${err.message}`);
+      }
+    }
+
+    async function quickAllowlistFromEmail(senderEmail) {
+      if (!senderEmail) return;
+      const domain = senderEmail.includes('@') ? senderEmail.split('@')[1] : senderEmail;
+      const note = prompt(`Add "${domain}" to allowlist to bypass irrelevance:`, "Protected Sender");
+      if (note === null) return;
+
+      try {
+        const res = await fetch('/api/email-triage/allowlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pattern: domain, note: note || "Protected" })
+        });
+        if (!res.ok) {
+          const errData = await res.json();
+          alert(errData.detail || 'Failed to add rule');
+          return;
+        }
+        await loadAllowlist();
+        await loadEmails(false);
+      } catch (err) {
+        alert('Error adding pattern: ' + err.message);
+      }
+    }
 
     async function loadEmails(forceRefresh = false) {
       const statusEl = document.getElementById('status-indicator');
@@ -689,7 +893,8 @@
     function updateTabCounts() {
       const counts = {
         all: currentEmails.length,
-        irrelevant: currentEmails.filter(e => !e.archived && (e.is_irrelevant_prob || 0) >= irrelevanceCutoff).length,
+        irrelevant: currentEmails.filter(e => !e.archived && !e.allowlisted && (e.is_irrelevant_prob || 0) >= irrelevanceCutoff).length,
+        allowlisted: currentEmails.filter(e => e.allowlisted).length,
         work: currentEmails.filter(e => e.category === 'work').length,
         freelance: currentEmails.filter(e => e.category === 'freelance').length,
         action: currentEmails.filter(e => (e.action_required_prob || 0) >= 0.60).length,
@@ -699,6 +904,7 @@
 
       document.getElementById('tab-count-all').textContent = counts.all;
       document.getElementById('tab-count-irrel').textContent = counts.irrelevant;
+      document.getElementById('tab-count-allowlisted').textContent = counts.allowlisted;
       document.getElementById('tab-count-work').textContent = counts.work;
       document.getElementById('tab-count-freelance').textContent = counts.freelance;
       document.getElementById('tab-count-action').textContent = counts.action;
@@ -730,7 +936,8 @@
 
       const filtered = currentEmails.filter(email => {
         // Tab filter
-        if (currentTab === 'irrelevant' && ((email.is_irrelevant_prob || 0) < irrelevanceCutoff || email.archived)) return false;
+        if (currentTab === 'irrelevant' && (email.allowlisted || (email.is_irrelevant_prob || 0) < irrelevanceCutoff || email.archived)) return false;
+        if (currentTab === 'allowlisted' && !email.allowlisted) return false;
         if (currentTab === 'work' && email.category !== 'work') return false;
         if (currentTab === 'freelance' && email.category !== 'freelance') return false;
         if (currentTab === 'action' && (email.action_required_prob || 0) < 0.60) return false;
@@ -755,11 +962,11 @@
 
       tbody.innerHTML = filtered.map(email => {
         const isSelected = selectedIds.has(email.id);
-        const isIrr = (email.is_irrelevant_prob || 0) >= irrelevanceCutoff && !email.archived;
-        const rowClass = `email-row ${email.archived ? 'archived' : ''} ${isIrr ? 'irrelevant-highlight' : ''}`;
+        const isIrr = !email.allowlisted && (email.is_irrelevant_prob || 0) >= irrelevanceCutoff && !email.archived;
+        const rowClass = `email-row ${email.archived ? 'archived' : ''} ${isIrr ? 'irrelevant-highlight' : ''} ${email.allowlisted ? 'allowlisted-row' : ''}`;
         
-        const catBadge = getCategoryBadge(email.category);
-        const irrMeter = getConfidenceMeter(email.is_irrelevant_prob);
+        const catBadge = getCategoryBadge(email.category, email.allowlisted);
+        const irrMeter = getConfidenceMeter(email.is_irrelevant_prob, email.allowlisted);
         const urgBadge = getUrgencyBadge(email.urgency_score);
 
         return `
@@ -792,6 +999,7 @@
             <td style="text-align: right;">
               <div style="display: inline-flex; gap: 0.4rem;">
                 <button class="btn-icon" title="Preview Snippet" onclick="inspectEmail('${email.id}')">👁️</button>
+                ${!email.allowlisted ? `<button class="btn-icon" title="Add domain to allowlist" onclick="quickAllowlistFromEmail('${escapeHtml(email.sender_email)}')">🛡️</button>` : ''}
                 ${!email.archived ? `<button class="btn-icon" style="color:#f87171;" title="Archive" onclick="archiveSingle('${email.id}')">🗑️</button>` : ''}
               </div>
             </td>
@@ -800,7 +1008,10 @@
       }).join('');
     }
 
-    function getCategoryBadge(cat) {
+    function getCategoryBadge(cat, allowlisted) {
+      if (allowlisted) {
+        return '<span class="badge badge-allowlist">🛡️ Protected</span>';
+      }
       if (!cat) return '<span class="badge badge-uncat">Uncategorized</span>';
       switch (cat.toLowerCase()) {
         case 'work': return '<span class="badge badge-work">💻 Work / PR</span>';
@@ -813,7 +1024,10 @@
       }
     }
 
-    function getConfidenceMeter(prob) {
+    function getConfidenceMeter(prob, allowlisted) {
+      if (allowlisted) {
+        return '<span style="color:var(--accent-emerald); font-family:var(--font-mono); font-size:0.75rem; font-weight:600;">0% (Protected)</span>';
+      }
       if (prob === null || prob === undefined) {
         return '<span style="color:var(--text-muted); font-size:0.75rem;">--</span>';
       }

@@ -84,9 +84,49 @@ def init_db():
                 timestamp TEXT
             )
         """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS email_triage_allowlist (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                pattern TEXT UNIQUE NOT NULL,
+                note TEXT,
+                created_at TEXT
+            )
+        """)
+        # Pre-seed default essential patterns if table empty
+        cur = conn.execute("SELECT COUNT(*) AS cnt FROM email_triage_allowlist")
+        if cur.fetchone()["cnt"] == 0:
+            defaults = [
+                ("flyrank.ai", "Internship Engineering"),
+                ("github.com", "GitHub & CI/CD Notifications"),
+                ("truelancer.com", "Freelance Client Leads"),
+            ]
+            conn.executemany(
+                "INSERT INTO email_triage_allowlist (pattern, note, created_at) VALUES (?, ?, ?)",
+                [(pat, note, datetime.now(timezone.utc).isoformat()) for pat, note in defaults]
+            )
         conn.commit()
 
 init_db()
+
+def get_all_allowlist_patterns() -> List[Dict[str, Any]]:
+    with get_db_connection() as conn:
+        rows = conn.execute("SELECT id, pattern, note, created_at FROM email_triage_allowlist ORDER BY id ASC").fetchall()
+        return [dict(r) for r in rows]
+
+def is_allowlisted(sender_email: str, sender_name: str, patterns: Optional[List[str]] = None) -> bool:
+    if patterns is None:
+        with get_db_connection() as conn:
+            rows = conn.execute("SELECT pattern FROM email_triage_allowlist").fetchall()
+            patterns = [r["pattern"].lower() for r in rows]
+    
+    sender_email_lower = (sender_email or "").lower()
+    sender_name_lower = (sender_name or "").lower()
+
+    for pat in patterns:
+        pat_clean = pat.strip().lower().lstrip("@")
+        if pat_clean and (pat_clean in sender_email_lower or pat_clean in sender_name_lower):
+            return True
+    return False
 
 # ---------------------------------------------------------------------------
 # Pydantic Schemas
@@ -104,6 +144,7 @@ class EmailItem(BaseModel):
     size: Optional[int] = None
     flags: List[str] = Field(default_factory=list)
     unread: bool = False
+    allowlisted: bool = False
     
     # Categorization outputs
     categorized: bool = False
@@ -122,6 +163,20 @@ class EmailListResponse(BaseModel):
     irrelevant_count: int
     action_required_count: int
     timestamp: str
+
+class AllowlistRule(BaseModel):
+    id: int
+    pattern: str
+    note: Optional[str] = None
+    created_at: Optional[str] = None
+
+class AllowlistCreateRequest(BaseModel):
+    pattern: str
+    note: Optional[str] = ""
+
+class AllowlistResponse(BaseModel):
+    rules: List[AllowlistRule]
+    total: int
 
 class CategorizeRequest(BaseModel):
     email_ids: Optional[List[str]] = None
@@ -324,6 +379,12 @@ async def classify_single_email(
         urg = float(answers.get("urgency", {}).get("score", 0.0))
         act = float(answers.get("action_required", {}).get("noul", 0.0))
         
+        # Enforce allowlist protection: bypass irrelevance marking
+        if is_allowlisted(sender_email, sender_name):
+            is_irr = 0.0
+            if cat == "irrelevant":
+                cat = "work"
+        
         return {
             "message_id": str(email.get("id")),
             "category": cat,
@@ -354,12 +415,15 @@ async def list_recent_emails(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch emails: {str(e)}")
 
-    # Query cached triage results
+    # Query cached triage results and allowlist patterns
     cached_map: Dict[str, Dict[str, Any]] = {}
+    allow_patterns: List[str] = []
     with get_db_connection() as conn:
         cursor = conn.execute("SELECT * FROM email_triage_cache")
         for row in cursor.fetchall():
             cached_map[str(row["message_id"])] = dict(row)
+        rows_al = conn.execute("SELECT pattern FROM email_triage_allowlist").fetchall()
+        allow_patterns = [r["pattern"].lower() for r in rows_al]
 
     emails: List[EmailItem] = []
     uncat = 0
@@ -374,11 +438,18 @@ async def list_recent_emails(
         flags = env.get("flags", [])
         unread = "*" not in flags and "seen" not in [f.lower() for f in flags]
 
+        matched_allowlist = is_allowlisted(s_email, s_name, allow_patterns)
+
         cached = cached_map.get(mid)
         if cached:
             is_irr_prob = cached.get("is_irrelevant_prob")
             act_prob = cached.get("action_required_prob")
             cat = cached.get("category")
+            
+            if matched_allowlist:
+                is_irr_prob = 0.0
+                if cat == "irrelevant":
+                    cat = "work"
             
             if is_irr_prob is not None and is_irr_prob >= 0.70:
                 irrel += 1
@@ -394,6 +465,7 @@ async def list_recent_emails(
                 size=env.get("size"),
                 flags=flags,
                 unread=unread,
+                allowlisted=matched_allowlist,
                 categorized=True,
                 category=cat,
                 is_irrelevant_prob=is_irr_prob,
@@ -414,6 +486,7 @@ async def list_recent_emails(
                 size=env.get("size"),
                 flags=flags,
                 unread=unread,
+                allowlisted=matched_allowlist,
                 categorized=False,
                 archived=False
             ))
@@ -552,6 +625,55 @@ async def get_email_body(message_id: str):
         return EmailBodyResponse(**body_data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to read email {message_id}: {str(e)}")
+
+# ---------------------------------------------------------------------------
+# Allowlist Endpoints
+# ---------------------------------------------------------------------------
+@router.get("/api/email-triage/allowlist", response_model=AllowlistResponse)
+async def get_allowlist():
+    """
+    Returns the list of domains and patterns configured to bypass irrelevance.
+    """
+    rules = get_all_allowlist_patterns()
+    return AllowlistResponse(
+        rules=[AllowlistRule(**r) for r in rules],
+        total=len(rules)
+    )
+
+@router.post("/api/email-triage/allowlist", response_model=AllowlistRule)
+async def add_allowlist_rule(req: AllowlistCreateRequest):
+    """
+    Adds a new domain or email pattern to the bypass allowlist.
+    """
+    pat = req.pattern.strip().lower().lstrip("@")
+    if not pat:
+        raise HTTPException(status_code=400, detail="Pattern cannot be empty")
+    
+    now_iso = datetime.now(timezone.utc).isoformat()
+    with get_db_connection() as conn:
+        try:
+            cur = conn.execute(
+                "INSERT INTO email_triage_allowlist (pattern, note, created_at) VALUES (?, ?, ?)",
+                (pat, req.note.strip() if req.note else "", now_iso)
+            )
+            rule_id = int(cur.lastrowid or 0)
+            conn.commit()
+        except sqlite3.IntegrityError:
+            raise HTTPException(status_code=409, detail=f"Pattern '{pat}' already exists in allowlist")
+            
+    return AllowlistRule(id=rule_id, pattern=pat, note=req.note, created_at=now_iso)
+
+@router.delete("/api/email-triage/allowlist/{rule_id}")
+async def delete_allowlist_rule(rule_id: int):
+    """
+    Removes a domain/pattern from the bypass allowlist.
+    """
+    with get_db_connection() as conn:
+        cur = conn.execute("DELETE FROM email_triage_allowlist WHERE id = ?", (rule_id,))
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Allowlist rule not found")
+        conn.commit()
+    return {"success": True, "deleted_id": rule_id}
 
 # ---------------------------------------------------------------------------
 # HTML Dashboard UI View
