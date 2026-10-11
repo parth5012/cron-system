@@ -4,8 +4,10 @@ Mirrors pull_requests.py conventions: env-driven config, pydantic models,
 pure parsing utilities. Service + router land in Batch 2/3.
 """
 
+import hashlib
 import json
 import os
+import sqlite3
 import threading
 import time
 from datetime import datetime, timezone
@@ -109,6 +111,104 @@ def load_accounts_from_env() -> List[Dict[str, str]]:
             entry["client_secret"] = client_secret
         accounts.append(entry)
     return accounts
+
+
+def load_accounts_from_omniroute() -> List[Dict[str, str]]:
+    """Load active Antigravity/Agy accounts directly from OmniRoute's local SQLite DB."""
+    env_path = Path(os.environ.get("OMNIROUTE_ENV_FILE", "~/.omniroute/.env")).expanduser()
+    db_path = Path(os.environ.get("OMNIROUTE_DB_FILE", "~/.omniroute/storage.sqlite")).expanduser()
+    if not db_path.exists():
+        return []
+
+    secret = os.environ.get("STORAGE_ENCRYPTION_KEY")
+    if not secret and env_path.exists():
+        try:
+            for line in env_path.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if line.startswith("STORAGE_ENCRYPTION_KEY="):
+                    secret = line.split("=", 1)[1].strip().strip("\"'")
+                    break
+        except Exception:
+            pass
+
+    key_bytes = None
+    if secret:
+        try:
+            key_bytes = hashlib.scrypt(
+                secret.encode("utf-8"),
+                salt=b"omniroute-field-encryption-v1",
+                n=16384,
+                r=8,
+                p=1,
+                dklen=32,
+            )
+        except Exception:
+            pass
+
+    def _decrypt(stored: Optional[str]) -> Optional[str]:
+        if not stored or not isinstance(stored, str):
+            return None
+        if not stored.startswith("enc:v1:"):
+            return stored
+        if not key_bytes:
+            return None
+        try:
+            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+            parts = stored[len("enc:v1:"):].split(":")
+            if len(parts) != 3:
+                return None
+            iv = bytes.fromhex(parts[0])
+            ciphertext = bytes.fromhex(parts[1])
+            tag = bytes.fromhex(parts[2])
+            aesgcm = AESGCM(key_bytes)
+            return aesgcm.decrypt(iv, ciphertext + tag, None).decode("utf-8")
+        except Exception:
+            return None
+
+    try:
+        con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        cur = con.cursor()
+        rows = cur.execute(
+            'SELECT id, provider, name, access_token, refresh_token, project_id, is_active '
+            'FROM provider_connections WHERE provider IN ("agy", "antigravity") AND is_active = 1'
+        ).fetchall()
+        con.close()
+    except Exception:
+        return []
+
+    accounts: List[Dict[str, str]] = []
+    seen = set()
+    for row in rows:
+        cid, prov, name, enc_acc, enc_ref, proj, is_act = row
+        acc_id = _clean(name) or _clean(cid)
+        if acc_id in seen:
+            continue
+        seen.add(acc_id)
+
+        acc_token = _decrypt(enc_acc)
+        ref_token = _decrypt(enc_ref)
+        if not acc_token and not ref_token:
+            continue
+
+        entry: Dict[str, str] = {
+            "id": acc_id,
+            "projectId": _clean(proj),
+        }
+        if acc_token:
+            entry["access_token"] = acc_token
+        if ref_token:
+            entry["refresh_token"] = ref_token
+        accounts.append(entry)
+
+    return accounts
+
+
+def load_accounts() -> List[Dict[str, str]]:
+    """Read account registry: env if present, otherwise auto-discover from local OmniRoute."""
+    from_env = load_accounts_from_env()
+    if from_env:
+        return from_env
+    return load_accounts_from_omniroute()
 
 
 def is_token_expired(expiry: Optional[str], skew_sec: int = 60) -> bool:
@@ -401,6 +501,16 @@ class AntigravityService:
         self, client: httpx.AsyncClient, account: Dict[str, str], tokens: Dict[str, str]
     ) -> Optional[str]:
         """Mint a fresh access token once and cache it in memory. Returns None if impossible."""
+        try:
+            omni_accs = {a["id"]: a for a in load_accounts_from_omniroute()}
+            if account["id"] in omni_accs:
+                omni_fresh = omni_accs[account["id"]].get("access_token")
+                if omni_fresh and omni_fresh != tokens.get("access_token"):
+                    with self._lock:
+                        self._live_tokens[account["id"]] = omni_fresh
+                    return omni_fresh
+        except Exception:
+            pass
         refresh_token = tokens.get("refresh_token") or account.get("refresh_token", "")
         creds = self._client_creds(account)
         renewed = await refresh_access_token(
@@ -416,7 +526,7 @@ class AntigravityService:
         return fresh
 
     async def _fetch_snapshot(self) -> AntigravitySnapshot:
-        accounts = load_accounts_from_env()
+        accounts = load_accounts()
         now_iso = datetime.now(timezone.utc).isoformat()
         if not accounts:
             return AntigravitySnapshot(

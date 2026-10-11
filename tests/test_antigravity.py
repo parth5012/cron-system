@@ -14,7 +14,9 @@ from antigravity import (  # noqa: E402
     classify_family,
     is_exhausted,
     is_token_expired,
+    load_accounts,
     load_accounts_from_env,
+    load_accounts_from_omniroute,
     load_token_file,
     parse_quota_entry,
     refresh_access_token,
@@ -467,3 +469,22 @@ async def test_service_reads_token_file(monkeypatch, tmp_path):
     snap = await service.get_snapshot(refresh=True)
     assert snap.error is None
     assert seen.get("auth") == "Bearer ya29.file-access"
+
+
+def test_load_accounts_omniroute_live():
+    # If OmniRoute exists locally, verifies it discovers real accounts
+    accs = load_accounts_from_omniroute()
+    if accs:
+        assert len(accs) >= 1
+        assert any("parthchawla5012" in a["id"] for a in accs)
+        assert any("access_token" in a for a in accs)
+
+
+def test_load_accounts_priority(monkeypatch):
+    monkeypatch.setenv(
+        "ANTIGRAVITY_ACCOUNTS_JSON",
+        json.dumps([{"id": "env-acc@gmail.com", "access_token": "ya29.env"}]),
+    )
+    accs = load_accounts()
+    assert len(accs) == 1
+    assert accs[0]["id"] == "env-acc@gmail.com"
