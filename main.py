@@ -16,6 +16,7 @@ from cron_engine import get_engine
 from antigravity import router as antigravity_router
 from pull_requests import router as pull_requests_router
 from wayfinder import router as wayfinder_router
+from email_triage import router as email_triage_router
 
 # ---------------------------------------------------------------------------
 # Constants & Config
@@ -321,6 +322,7 @@ async def index():
                     <a href="/wayfinder">🧭 Wayfinder</a>
                     <a href="/pull-requests">🔀 PRs</a>
                     <a href="/antigravity">⚡ Limits</a>
+                    <a href="/email-triage">📬 Email Triage</a>
                     <a href="/api/jobs">⚙️ Jobs</a>
                 </nav>
             </header>
@@ -494,6 +496,7 @@ async def index():
 app.include_router(wayfinder_router)
 app.include_router(pull_requests_router)
 app.include_router(antigravity_router)
+app.include_router(email_triage_router)
 
 
 # ---------------------------------------------------------------------------
@@ -550,7 +553,7 @@ def mount_static_dirs(app):
         return
     # These directories are served by their own routers (self-contained HTML),
     # so they must not also be mounted as raw static file trees.
-    router_owned = {"wayfinder", "pull-requests"}
+    router_owned = {"wayfinder", "pull-requests", "email-triage"}
     for sub in sorted(STATIC_DIR.iterdir()):
         if sub.is_dir():
             if sub.name in router_owned:

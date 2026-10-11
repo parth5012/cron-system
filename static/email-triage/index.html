@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Triage Engine | TypeSafe System One</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #070b14;
+      --bg-card: #0f172a;
+      --bg-card-hover: #1e293b;
+      --bg-surface: #111a2e;
+      --border: #1e293b;
+      --border-bright: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --accent-purple: #a855f7;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 1.5rem 2rem 4rem;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+    .brand-text h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .brand-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Stats bar */
+    .stats-grid {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 1.1rem;
+      min-width: 120px;
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .stat-val {
+      font-size: 1.35rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+    .stat-val.rose { color: var(--accent-rose); }
+    .stat-val.emerald { color: var(--accent-emerald); }
+    .stat-val.amber { color: var(--accent-amber); }
+    .stat-val.blue { color: var(--accent-blue); }
+
+    /* Action & Controls Bar */
+    .controls-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-group {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    button {
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(79, 70, 229, 0.3);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #1d4ed8, #4338ca);
+      transform: translateY(-1px);
+    }
+    .btn-danger {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.4);
+      color: #fca5a5;
+    }
+    .btn-danger:hover {
+      background: rgba(244, 63, 94, 0.25);
+      border-color: var(--accent-rose);
+      color: #fff;
+    }
+    .btn-secondary {
+      background: var(--bg-card);
+      border-color: var(--border-bright);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Threshold and Search Row */
+    .filter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .slider-box {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .slider-box input[type="range"] {
+      width: 140px;
+      accent-color: var(--accent-rose);
+    }
+    .slider-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--accent-rose);
+      min-width: 40px;
+    }
+    .search-input {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 0.5rem 0.85rem;
+      font-size: 0.85rem;
+      min-width: 260px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    /* Category Filter Tabs */
+    .tabs-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+    }
+    .tab-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.45rem 1rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .tab-pill:hover {
+      color: var(--text);
+      border-color: var(--border-bright);
+    }
+    .tab-pill.active {
+      background: #1e293b;
+      color: #fff;
+      border-color: var(--accent-blue);
+      font-weight: 600;
+    }
+    .tab-count {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+    }
+
+    /* Email Table List */
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    thead {
+      background: #0d1527;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      padding: 0.85rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+    td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 0.88rem;
+      vertical-align: middle;
+    }
+    tr.email-row:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+    tr.email-row.archived {
+      opacity: 0.4;
+      text-decoration: line-through;
+    }
+    tr.email-row.irrelevant-highlight {
+      background-color: rgba(244, 63, 94, 0.03);
+    }
+
+    .unread-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent-blue);
+      box-shadow: 0 0 8px var(--accent-blue);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 0.22rem 0.55rem;
+      border-radius: 6px;
+      text-transform: capitalize;
+    }
+    .badge-work { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-freelance { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .badge-personal { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .badge-newsletter { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-transactional { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+    .badge-irrelevant { background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.3); }
+    .badge-uncat { background: rgba(100, 116, 139, 0.15); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
+
+    .confidence-meter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+    }
+    .confidence-bar {
+      width: 44px;
+      height: 6px;
+      border-radius: 3px;
+      background: #1e293b;
+      overflow: hidden;
+      display: inline-block;
+    }
+    .confidence-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .btn-icon {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.78rem;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-bright);
+      color: var(--text-muted);
+    }
+    .btn-icon:hover {
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: #0d1527;
+      border: 1px solid var(--border-bright);
+      border-radius: 14px;
+      max-width: 760px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+    }
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Suggested Extensions Accordion */
+    .suggestions-section {
+      margin-top: 2.5rem;
+      background: linear-gradient(180deg, #0d1629 0%, #080d19 100%);
+      border: 1px solid var(--border-bright);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .suggestions-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .suggestions-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .suggestions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .suggestion-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    .suggestion-item h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .suggestion-item p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Spinner */
+    .spinner {
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-left-color: #fff;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand-title">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-text">
+          <h1>Email Triage Engine</h1>
+          <p>Autonomous inbox sorting powered by TypeSafe Jev System One &amp; Himalaya IMAP</p>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Total Loaded</span>
+          <span class="stat-val" id="stat-total">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Irrelevant</span>
+          <span class="stat-val rose" id="stat-irrel">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Action Req.</span>
+          <span class="stat-val amber" id="stat-action">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Uncategorized</span>
+          <span class="stat-val blue" id="stat-uncat">--</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Controls Panel -->
+    <section class="controls-panel">
+      <div class="action-row">
+        <div class="btn-group">
+          <button id="btn-fetch" class="btn-secondary" onclick="loadEmails(true)">
+            <span>🔄 Fetch 50 Recent</span>
+          </button>
+          <button id="btn-categorize" class="btn-primary" onclick="triggerCategorize()">
+            <span>✨ Categorize (Jev AI)</span>
+          </button>
+          <button id="btn-archive-irrel" class="btn-danger" onclick="archiveIrrelevant()">
+            <span>🗑️ Archive Irrelevant (<span id="archive-count">0</span>)</span>
+          </button>
+        </div>
+        <div id="status-indicator" style="font-size:0.85rem; color:var(--text-muted); font-family:var(--font-mono);">
+          Ready
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <!-- Irrelevance Threshold Slider -->
+        <div class="slider-box">
+          <label for="thresh-slider">Irrelevance Cutoff:</label>
+          <input type="range" id="thresh-slider" min="50" max="95" value="70" step="5" oninput="updateThreshold(this.value)">
+          <span class="slider-val" id="thresh-val">70%</span>
+        </div>
+
+        <!-- Search Input -->
+        <input type="text" id="search-input" class="search-input" placeholder="Search subject, sender, tag..." oninput="renderTable()">
+      </div>
+    </section>
+
+    <!-- Category Tabs -->
+    <div class="tabs-bar" id="tabs-bar">
+      <div class="tab-pill active" data-tab="all" onclick="setTab('all')">
+        All <span class="tab-count" id="tab-count-all">0</span>
+      </div>
+      <div class="tab-pill" data-tab="irrelevant" onclick="setTab('irrelevant')">
+        Irrelevant <span class="tab-count" id="tab-count-irrel">0</span>
+      </div>
+      <div class="tab-pill" data-tab="work" onclick="setTab('work')">
+        Work &amp; GitHub <span class="tab-count" id="tab-count-work">0</span>
+      </div>
+      <div class="tab-pill" data-tab="freelance" onclick="setTab('freelance')">
+        Freelance <span class="tab-count" id="tab-count-freelance">0</span>
+      </div>
+      <div class="tab-pill" data-tab="action" onclick="setTab('action')">
+        Action Required <span class="tab-count" id="tab-count-action">0</span>
+      </div>
+      <div class="tab-pill" data-tab="newsletter" onclick="setTab('newsletter')">
+        Newsletters <span class="tab-count" id="tab-count-newsletter">0</span>
+      </div>
+      <div class="tab-pill" data-tab="transactional" onclick="setTab('transactional')">
+        Transactional <span class="tab-count" id="tab-count-transactional">0</span>
+      </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 40px; text-align: center;">
+              <input type="checkbox" id="select-all" onclick="toggleSelectAll(this.checked)">
+            </th>
+            <th style="width: 30px;"></th>
+            <th style="width: 220px;">Sender</th>
+            <th>Subject</th>
+            <th style="width: 140px;">Category</th>
+            <th style="width: 150px;">Irrelevance</th>
+            <th style="width: 90px;">Urgency</th>
+            <th style="width: 140px; text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="email-tbody">
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+              Loading recent emails...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Suggested Extensions Section -->
+    <section class="suggestions-section">
+      <div class="suggestions-header">
+        <span>💡</span>
+        <h3>Suggested Next-Step Extensions for Your AI-OS</h3>
+      </div>
+      <div class="suggestions-grid">
+        <div class="suggestion-item">
+          <h4>🤖 One-Click Agent Delegation</h4>
+          <p>Directly route actionable client leads or work tickets to <code>@assistant</code> to draft response emails or <code>@developer</code> for GitHub review follow-ups.</p>
+        </div>
+        <div class="suggestion-item">
+          <h4>⏱️ Automated Cron Sweeps</h4>
+          <p>Schedule an automated background sweep in <code>cron_engine.py</code> every 4 hours to auto-archive noise scoring &gt;90% irrelevance.</p>
+        </div>
+        <div class="suggestion-item">
+          <h4>🔔 Slack Channel Digest</h4>
+          <p>Send an instant morning and evening triage summary to your Slack home channel showing only emails tagged "Action Required" or "Freelance".</p>
+        </div>
+        <div class="suggestion-item">
+          <h4>🛡️ Smart Domain Allowlist</h4>
+          <p>Lock trusted domains (e.g. <code>flyrank.ai</code>, college administration, specific clients) to always bypass archival regardless of score.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Preview Modal -->
+  <div class="modal-backdrop" id="preview-modal" onclick="closeModalOnBackdrop(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h3 id="modal-subject" style="font-size:1.1rem; color:#fff; margin-bottom:0.25rem;">Email Subject</h3>
+          <p id="modal-sender" style="font-size:0.85rem; color:var(--text-muted);">Sender</p>
+        </div>
+        <button class="btn-icon" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body-content">
+        Loading body snippet...
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal()">Close</button>
+        <button class="btn-danger" id="modal-archive-btn" onclick="archiveCurrentModalEmail()">Archive Email</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let currentEmails = [];
+    let selectedIds = new Set();
+    let currentTab = 'all';
+    let irrelevanceCutoff = 0.70;
+    let activeModalEmailId = null;
+
+    // Load emails on opening the page
+    window.addEventListener('DOMContentLoaded', () => {
+      loadEmails(false);
+    });
+
+    async function loadEmails(forceRefresh = false) {
+      const statusEl = document.getElementById('status-indicator');
+      const fetchBtn = document.getElementById('btn-fetch');
+      statusEl.innerHTML = '<span class="spinner"></span> Fetching recent 50 emails via Himalaya...';
+      fetchBtn.disabled = true;
+
+      try {
+        const res = await fetch(`/api/email-triage/emails?limit=50&refresh=${forceRefresh}`);
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        currentEmails = data.emails || [];
+        updateStats(data);
+        renderTable();
+        statusEl.textContent = `Loaded ${currentEmails.length} emails (${new Date().toLocaleTimeString()})`;
+      } catch (err) {
+        statusEl.textContent = `Error loading: ${err.message}`;
+      } finally {
+        fetchBtn.disabled = false;
+      }
+    }
+
+    function updateStats(data) {
+      document.getElementById('stat-total').textContent = data.total ?? currentEmails.length;
+      document.getElementById('stat-irrel').textContent = data.irrelevant_count ?? 0;
+      document.getElementById('stat-action').textContent = data.action_required_count ?? 0;
+      document.getElementById('stat-uncat').textContent = data.uncategorized_count ?? 0;
+      
+      // Update tab counts
+      updateTabCounts();
+    }
+
+    function updateTabCounts() {
+      const counts = {
+        all: currentEmails.length,
+        irrelevant: currentEmails.filter(e => !e.archived && (e.is_irrelevant_prob || 0) >= irrelevanceCutoff).length,
+        work: currentEmails.filter(e => e.category === 'work').length,
+        freelance: currentEmails.filter(e => e.category === 'freelance').length,
+        action: currentEmails.filter(e => (e.action_required_prob || 0) >= 0.60).length,
+        newsletter: currentEmails.filter(e => e.category === 'newsletter').length,
+        transactional: currentEmails.filter(e => e.category === 'transactional').length,
+      };
+
+      document.getElementById('tab-count-all').textContent = counts.all;
+      document.getElementById('tab-count-irrel').textContent = counts.irrelevant;
+      document.getElementById('tab-count-work').textContent = counts.work;
+      document.getElementById('tab-count-freelance').textContent = counts.freelance;
+      document.getElementById('tab-count-action').textContent = counts.action;
+      document.getElementById('tab-count-newsletter').textContent = counts.newsletter;
+      document.getElementById('tab-count-transactional').textContent = counts.transactional;
+
+      // Update Archive Button count
+      document.getElementById('archive-count').textContent = counts.irrelevant;
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-pill').forEach(el => {
+        el.classList.toggle('active', el.getAttribute('data-tab') === tab);
+      });
+      renderTable();
+    }
+
+    function updateThreshold(val) {
+      irrelevanceCutoff = parseFloat(val) / 100.0;
+      document.getElementById('thresh-val').textContent = `${val}%`;
+      updateTabCounts();
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('email-tbody');
+      const search = (document.getElementById('search-input').value || '').toLowerCase().trim();
+
+      const filtered = currentEmails.filter(email => {
+        // Tab filter
+        if (currentTab === 'irrelevant' && ((email.is_irrelevant_prob || 0) < irrelevanceCutoff || email.archived)) return false;
+        if (currentTab === 'work' && email.category !== 'work') return false;
+        if (currentTab === 'freelance' && email.category !== 'freelance') return false;
+        if (currentTab === 'action' && (email.action_required_prob || 0) < 0.60) return false;
+        if (currentTab === 'newsletter' && email.category !== 'newsletter') return false;
+        if (currentTab === 'transactional' && email.category !== 'transactional') return false;
+
+        // Search filter
+        if (search) {
+          const matchSub = (email.subject || '').toLowerCase().includes(search);
+          const matchSender = (email.sender_name || '').toLowerCase().includes(search) || (email.sender_email || '').toLowerCase().includes(search);
+          const matchCat = (email.category || '').toLowerCase().includes(search);
+          if (!matchSub && !matchSender && !matchCat) return false;
+        }
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">No emails matching current criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(email => {
+        const isSelected = selectedIds.has(email.id);
+        const isIrr = (email.is_irrelevant_prob || 0) >= irrelevanceCutoff && !email.archived;
+        const rowClass = `email-row ${email.archived ? 'archived' : ''} ${isIrr ? 'irrelevant-highlight' : ''}`;
+        
+        const catBadge = getCategoryBadge(email.category);
+        const irrMeter = getConfidenceMeter(email.is_irrelevant_prob);
+        const urgBadge = getUrgencyBadge(email.urgency_score);
+
+        return `
+          <tr class="${rowClass}">
+            <td style="text-align: center;">
+              <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelect('${email.id}', this.checked)">
+            </td>
+            <td>
+              ${email.unread ? '<span class="unread-dot" title="Unread"></span>' : ''}
+            </td>
+            <td>
+              <div style="font-weight: 600; color: #fff; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                ${escapeHtml(email.sender_name)}
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                ${escapeHtml(email.sender_email)}
+              </div>
+            </td>
+            <td>
+              <div style="font-weight: 500; color: #e2e8f0;">
+                ${escapeHtml(email.subject)}
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                ${formatDate(email.date)}
+              </div>
+            </td>
+            <td>${catBadge}</td>
+            <td>${irrMeter}</td>
+            <td>${urgBadge}</td>
+            <td style="text-align: right;">
+              <div style="display: inline-flex; gap: 0.4rem;">
+                <button class="btn-icon" title="Preview Snippet" onclick="inspectEmail('${email.id}')">👁️</button>
+                ${!email.archived ? `<button class="btn-icon" style="color:#f87171;" title="Archive" onclick="archiveSingle('${email.id}')">🗑️</button>` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function getCategoryBadge(cat) {
+      if (!cat) return '<span class="badge badge-uncat">Uncategorized</span>';
+      switch (cat.toLowerCase()) {
+        case 'work': return '<span class="badge badge-work">💻 Work / PR</span>';
+        case 'freelance': return '<span class="badge badge-freelance">💼 Freelance</span>';
+        case 'personal': return '<span class="badge badge-personal">👤 Personal</span>';
+        case 'newsletter': return '<span class="badge badge-newsletter">📰 Newsletter</span>';
+        case 'transactional': return '<span class="badge badge-transactional">🧾 Receipt</span>';
+        case 'irrelevant': return '<span class="badge badge-irrelevant">🚫 Irrelevant</span>';
+        default: return `<span class="badge badge-uncat">${escapeHtml(cat)}</span>`;
+      }
+    }
+
+    function getConfidenceMeter(prob) {
+      if (prob === null || prob === undefined) {
+        return '<span style="color:var(--text-muted); font-size:0.75rem;">--</span>';
+      }
+      const pct = Math.round(prob * 100);
+      const color = pct >= 70 ? 'var(--accent-rose)' : (pct >= 40 ? 'var(--accent-amber)' : 'var(--accent-emerald)');
+      return `
+        <div class="confidence-meter" style="color: ${color};">
+          <div class="confidence-bar">
+            <div class="confidence-fill" style="width: ${pct}%; background-color: ${color};"></div>
+          </div>
+          <span>${pct}%</span>
+        </div>
+      `;
+    }
+
+    function getUrgencyBadge(score) {
+      if (score === null || score === undefined) return '<span style="color:var(--text-muted); font-size:0.75rem;">--</span>';
+      if (score > 2.0) return '<span style="color:var(--accent-rose); font-weight:600; font-size:0.78rem;">High</span>';
+      if (score > 1.0) return '<span style="color:var(--accent-amber); font-weight:600; font-size:0.78rem;">Med</span>';
+      return '<span style="color:var(--text-muted); font-size:0.78rem;">Low</span>';
+    }
+
+    function formatDate(raw) {
+      if (!raw) return '';
+      try {
+        const d = new Date(raw);
+        return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      } catch {
+        return raw;
+      }
+    }
+
+    function toggleSelect(id, checked) {
+      if (checked) selectedIds.add(id);
+      else selectedIds.delete(id);
+    }
+
+    function toggleSelectAll(checked) {
+      if (checked) {
+        currentEmails.forEach(e => selectedIds.add(e.id));
+      } else {
+        selectedIds.clear();
+      }
+      renderTable();
+    }
+
+    async function triggerCategorize() {
+      const btn = document.getElementById('btn-categorize');
+      const statusEl = document.getElementById('status-indicator');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Categorizing (Jev AI)...';
+      statusEl.textContent = 'Calling TypeSafe Jev System One decision models in parallel...';
+
+      try {
+        const res = await fetch('/api/email-triage/categorize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ force_refresh: true })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        statusEl.textContent = `Categorized ${data.categorized_count} emails in ${data.duration_sec}s!`;
+        // Reload fresh merged records
+        await loadEmails(false);
+      } catch (err) {
+        statusEl.textContent = `Categorization error: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>✨ Categorize (Jev AI)</span>';
+      }
+    }
+
+    async function archiveIrrelevant() {
+      const irrelevantEmails = currentEmails.filter(e => !e.archived && (e.is_irrelevant_prob || 0) >= irrelevanceCutoff);
+      if (irrelevantEmails.length === 0) {
+        alert('No irrelevant emails detected above the threshold.');
+        return;
+      }
+
+      if (!confirm(`Archive ${irrelevantEmails.length} irrelevant emails to [Gmail]/All Mail?`)) {
+        return;
+      }
+
+      const ids = irrelevantEmails.map(e => e.id);
+      await executeArchive(ids);
+    }
+
+    async function archiveSingle(id) {
+      await executeArchive([id]);
+    }
+
+    async function executeArchive(ids) {
+      const statusEl = document.getElementById('status-indicator');
+      statusEl.innerHTML = `<span class="spinner"></span> Moving ${ids.length} emails to [Gmail]/All Mail...`;
+
+      try {
+        const res = await fetch('/api/email-triage/archive', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message_ids: ids })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        statusEl.textContent = `Successfully archived ${data.archived_count} email(s).`;
+        
+        // Update local state
+        ids.forEach(id => {
+          const item = currentEmails.find(e => e.id === id);
+          if (item) item.archived = true;
+          selectedIds.delete(id);
+        });
+        updateTabCounts();
+        renderTable();
+      } catch (err) {
+        statusEl.textContent = `Archive error: ${err.message}`;
+      }
+    }
+
+    async function inspectEmail(id) {
+      activeModalEmailId = id;
+      const modal = document.getElementById('preview-modal');
+      const subjEl = document.getElementById('modal-subject');
+      const senderEl = document.getElementById('modal-sender');
+      const contentEl = document.getElementById('modal-body-content');
+
+      const email = currentEmails.find(e => e.id === id);
+      subjEl.textContent = email ? email.subject : `Email #${id}`;
+      senderEl.textContent = email ? `${email.sender_name} (${email.sender_email})` : '';
+      contentEl.textContent = 'Fetching email text via Himalaya...';
+      modal.classList.add('open');
+
+      try {
+        const res = await fetch(`/api/email-triage/email/${id}/body`);
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        contentEl.textContent = data.body_text;
+      } catch (err) {
+        contentEl.textContent = `Failed to fetch snippet: ${err.message}`;
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('preview-modal').classList.remove('open');
+      activeModalEmailId = null;
+    }
+
+    function closeModalOnBackdrop(e) {
+      if (e.target.id === 'preview-modal') closeModal();
+    }
+
+    async function archiveCurrentModalEmail() {
+      if (!activeModalEmailId) return;
+      await executeArchive([activeModalEmailId]);
+      closeModal();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
