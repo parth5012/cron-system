@@ -15,8 +15,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import httpx
-from fastapi import APIRouter, Query
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Query, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel, Field
 
 # ---------------------------------------------------------------------------
@@ -27,6 +27,10 @@ DEFAULT_CACHE_TTL = 180.0  # 3 minutes — quotas shift on 5h/weekly windows
 FETCH_MODELS_URL = os.environ.get(
     "ANTIGRAVITY_FETCH_MODELS_URL",
     "https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
+)
+QUOTA_SUMMARY_URL = os.environ.get(
+    "ANTIGRAVITY_QUOTA_SUMMARY_URL",
+    "https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
 )
 OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token"
 DEFAULT_TOKEN_FILE = os.environ.get(
@@ -54,10 +58,27 @@ class FamilySummary(BaseModel):
     models: List[str] = Field(default_factory=list)
 
 
+class QuotaBucket(BaseModel):
+    bucketId: str = ""
+    displayName: str = ""
+    window: str = ""
+    remainingFraction: float = 0.0
+    resetTime: Optional[str] = None
+    description: Optional[str] = None
+    disabled: bool = False
+
+
+class QuotaGroup(BaseModel):
+    displayName: str = ""
+    description: Optional[str] = None
+    buckets: List[QuotaBucket] = Field(default_factory=list)
+
+
 class AccountSnapshot(BaseModel):
     account_id: str
     families: List[FamilySummary] = Field(default_factory=list)
     models: List[QuotaEntry] = Field(default_factory=list)
+    groups: List[QuotaGroup] = Field(default_factory=list)
     error: Optional[str] = None
 
 
@@ -320,7 +341,11 @@ def parse_quota_entry(model_id: str, quota_info: Dict[str, Any]) -> Optional[Dic
     """Normalize one fetchAvailableModels quotaInfo into a plain dict."""
     if not model_id or not isinstance(quota_info, dict):
         return None
-    remaining = _to_fraction(quota_info.get("remainingFraction"))
+    raw_rem = quota_info.get("remainingFraction")
+    if raw_rem is None and quota_info.get("resetTime"):
+        remaining = 0.0
+    else:
+        remaining = _to_fraction(raw_rem)
     if remaining is None:
         return None
     family = classify_family(model_id)
@@ -388,7 +413,7 @@ class AntigravityService:
         return {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
-            "User-Agent": "cron-system-antigravity/1.0",
+            "User-Agent": "antigravity/ide/2.5.5 linux/x64",
         }
 
     def _effective_tokens(self, account: Dict[str, str]) -> Dict[str, str]:
@@ -428,6 +453,15 @@ class AntigravityService:
             json={"project": account.get("projectId") or ""},
         )
 
+    async def _post_summary(
+        self, client: httpx.AsyncClient, account: Dict[str, str], access_token: str
+    ) -> httpx.Response:
+        return await client.post(
+            QUOTA_SUMMARY_URL,
+            headers=self._headers_for(access_token),
+            json={"project": account.get("projectId") or ""},
+        )
+
     async def _fetch_one(
         self, client: httpx.AsyncClient, account: Dict[str, str]
     ) -> AccountSnapshot:
@@ -437,10 +471,13 @@ class AntigravityService:
             if bootstrapped is None:
                 return AccountSnapshot(account_id=account["id"], error="no access token available")
             tokens = {"access_token": bootstrapped, "refresh_token": account.get("refresh_token", "")}
+
+        # Query models endpoint (also serves as primary authentication test)
         try:
             response = await self._post_models(client, account, tokens["access_token"])
         except Exception as exc:
             return AccountSnapshot(account_id=account["id"], error=f"connect failed: {exc}")
+
         if response.status_code in (401, 403):
             renewed = await self._try_renew(client, account, tokens)
             if renewed is None:
@@ -448,20 +485,24 @@ class AntigravityService:
                     account_id=account["id"],
                     error="upstream 401: token expired and no refresh credentials",
                 )
+            tokens["access_token"] = renewed
             try:
                 response = await self._post_models(client, account, renewed)
             except Exception as exc:
                 return AccountSnapshot(account_id=account["id"], error=f"connect failed: {exc}")
+
         if response.status_code != 200:
             detail = (response.text or "")[:200]
             return AccountSnapshot(
                 account_id=account["id"],
                 error=f"upstream {response.status_code}: {detail}",
             )
+
         try:
             payload = response.json() or {}
         except ValueError:
             return AccountSnapshot(account_id=account["id"], error="invalid upstream JSON")
+
         models = payload.get("models") or {}
         entries: List[QuotaEntry] = []
         raw_entries: List[Dict[str, Any]] = []
@@ -472,12 +513,95 @@ class AntigravityService:
                 continue
             raw_entries.append(parsed)
             entries.append(QuotaEntry(**parsed))
-        families = [
-            FamilySummary(**summarize_family(family, raw_entries))
-            for family in ("gemini", "claude", "openai")
-            if any(e.get("family") == family for e in raw_entries)
-        ]
-        return AccountSnapshot(account_id=account["id"], families=families, models=entries)
+
+        # Query rich quota summary endpoint (categories & buckets)
+        groups: List[QuotaGroup] = []
+        try:
+            summary_resp = await self._post_summary(client, account, tokens["access_token"])
+            if summary_resp.status_code == 200:
+                s_data = summary_resp.json() or {}
+                for g in s_data.get("groups", []):
+                    b_list = []
+                    for b in g.get("buckets", []):
+                        rf = b.get("remainingFraction")
+                        rem_val = 0.0 if rf is None else float(rf)
+                        b_list.append(
+                            QuotaBucket(
+                                bucketId=_clean(b.get("bucketId")),
+                                displayName=_clean(b.get("displayName")),
+                                window=_clean(b.get("window")),
+                                remainingFraction=max(0.0, min(1.0, rem_val)),
+                                resetTime=b.get("resetTime"),
+                                description=b.get("description"),
+                                disabled=bool(b.get("disabled", False)),
+                            )
+                        )
+                    groups.append(
+                        QuotaGroup(
+                            displayName=_clean(g.get("displayName")),
+                            description=g.get("description"),
+                            buckets=b_list,
+                        )
+                    )
+        except Exception:
+            groups = []
+
+        # Build family summaries
+        families: List[FamilySummary] = []
+        if groups:
+            gem_group = next((g for g in groups if "gemini" in g.displayName.lower()), None)
+            if gem_group:
+                gem_models = [e.model for e in entries if e.family == "gemini"]
+                for b in gem_group.buckets:
+                    families.append(
+                        FamilySummary(
+                            family="gemini",
+                            window=b.window or "weekly",
+                            remaining=b.remainingFraction,
+                            resetTime=b.resetTime,
+                            exhausted=is_exhausted(b.remainingFraction),
+                            models=gem_models,
+                        )
+                    )
+            tp_group = next((g for g in groups if any(k in g.displayName.lower() for k in ("claude", "gpt", "3p"))), None)
+            if tp_group:
+                claude_models = [e.model for e in entries if e.family == "claude"]
+                openai_models = [e.model for e in entries if e.family == "openai"]
+                for b in tp_group.buckets:
+                    families.append(
+                        FamilySummary(
+                            family="claude",
+                            window=b.window or "weekly",
+                            remaining=b.remainingFraction,
+                            resetTime=b.resetTime,
+                            exhausted=is_exhausted(b.remainingFraction) or b.disabled,
+                            models=claude_models,
+                        )
+                    )
+                    families.append(
+                        FamilySummary(
+                            family="openai",
+                            window=b.window or "weekly",
+                            remaining=b.remainingFraction,
+                            resetTime=b.resetTime,
+                            exhausted=is_exhausted(b.remainingFraction) or b.disabled,
+                            models=openai_models,
+                        )
+                    )
+
+        if not families and raw_entries:
+            families = [
+                FamilySummary(**summarize_family(family, raw_entries))
+                for family in ("gemini", "claude", "openai")
+                if any(e.get("family") == family for e in raw_entries)
+            ]
+
+        return AccountSnapshot(
+            account_id=account["id"],
+            families=families,
+            models=entries,
+            groups=groups,
+        )
 
     async def _try_renew_from_account(
         self, client: httpx.AsyncClient, account: Dict[str, str]
@@ -728,9 +852,14 @@ router = APIRouter(tags=["antigravity"])
 
 @router.get("/api/antigravity/limits", response_model=AntigravitySnapshot)
 async def get_antigravity_limits(
+    request: Request,
     refresh: bool = Query(False, description="Bypass TTL cache and poll upstream now"),
+    format: Optional[str] = Query(None),
 ):
     """Per-account 5h + weekly remaining split by family (gemini/claude/openai)."""
+    accept = request.headers.get("accept", "")
+    if format != "json" and "text/html" in accept and "application/json" not in accept:
+        return RedirectResponse(url="/antigravity", status_code=303)
     service = get_antigravity_service()
     return await service.get_snapshot(refresh=refresh)
 
@@ -753,6 +882,8 @@ async def post_antigravity_sync():
 
 
 @router.get("/antigravity", response_class=HTMLResponse)
+@router.get("/limits", response_class=HTMLResponse)
+@router.get("/quota", response_class=HTMLResponse)
 async def get_antigravity_ui():
     """Mobile-first limits dashboard inside cron-system (no separate site)."""
     if ANTIGRAVITY_HTML_PATH.exists() and ANTIGRAVITY_HTML_PATH.is_file():
