@@ -692,7 +692,13 @@
         // Render Cards
         const container = document.getElementById('accountsList');
         if (accs.length === 0) {
-          container.innerHTML = `<div class="empty-state"><p>No accounts found in OmniRoute.</p></div>`;
+          const errMsg = data.error || 'No accounts found in OmniRoute.';
+          container.innerHTML = `<div class="empty-state">
+            <p><strong>${esc(errMsg)}</strong></p>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-top:8px;">
+              On Vercel, set <code>ANTIGRAVITY_ACCOUNTS_JSON</code> in project environment variables. Local installations automatically discover active accounts from OmniRoute.
+            </p>
+          </div>`;
         } else {
           container.innerHTML = accs.map(renderAccount).join('');
         }

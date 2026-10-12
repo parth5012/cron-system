@@ -17,7 +17,11 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import httpx
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = None
+
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
@@ -25,25 +29,52 @@ from pydantic import BaseModel, Field
 # ---------------------------------------------------------------------------
 # Load Environment & Setup Paths
 # ---------------------------------------------------------------------------
-BASE_DIR = Path(__file__).parent
-DATA_DIR = Path(os.environ.get("CRON_SYSTEM_DATA_DIR", "/home/parth/.local/share/cron-system"))
-DATA_DIR.mkdir(parents=True, exist_ok=True)
+BASE_DIR = Path(__file__).resolve().parent
+
+def _resolve_data_dir() -> Path:
+    candidates = []
+    if os.environ.get("CRON_SYSTEM_DATA_DIR"):
+        candidates.append(Path(os.environ["CRON_SYSTEM_DATA_DIR"]))
+    try:
+        candidates.append(Path.home() / ".local" / "share" / "cron-system")
+    except Exception:
+        pass
+    candidates.append(Path("/tmp/cron-system"))
+    candidates.append(Path("/tmp"))
+
+    for c in candidates:
+        try:
+            c.mkdir(parents=True, exist_ok=True)
+            return c
+        except Exception:
+            continue
+    return Path("/tmp")
+
+DATA_DIR = _resolve_data_dir()
 DB_PATH = DATA_DIR / "email_triage.db"
 STATIC_DIR = BASE_DIR / "static" / "email-triage"
 HTML_INDEX_PATH = STATIC_DIR / "index.html"
 
 # Load environment from .env files
-load_dotenv(BASE_DIR / ".env")
-if not os.getenv("OPENROUTER_API_KEY"):
-    load_dotenv(Path("/home/parth/projects/orca-marine-intelligence/.env"))
-if not os.getenv("OPENROUTER_API_KEY"):
-    load_dotenv(Path("/home/parth/.hermes/.env"))
+if load_dotenv:
+    try:
+        load_dotenv(BASE_DIR / ".env")
+        if not os.getenv("OPENROUTER_API_KEY"):
+            p1 = Path.home() / "projects" / "orca-marine-intelligence" / ".env"
+            if p1.exists():
+                load_dotenv(p1)
+        if not os.getenv("OPENROUTER_API_KEY"):
+            p2 = Path.home() / ".hermes" / ".env"
+            if p2.exists():
+                load_dotenv(p2)
+    except Exception:
+        pass
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api").rstrip("/")
 CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN", "")
 CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
-HIMALAYA_BIN = os.getenv("HIMALAYA_BIN", "/home/parth/.local/bin/himalaya")
+HIMALAYA_BIN = os.getenv("HIMALAYA_BIN", "himalaya")
 
 logger = logging.getLogger("email_triage")
 logger.setLevel(logging.INFO)
@@ -52,59 +83,65 @@ logger.setLevel(logging.INFO)
 # Database Management
 # ---------------------------------------------------------------------------
 def get_db_connection() -> sqlite3.Connection:
-    conn = sqlite3.connect(str(DB_PATH))
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+    except Exception:
+        conn = sqlite3.connect(":memory:")
     conn.row_factory = sqlite3.Row
     return conn
 
 def init_db():
-    with get_db_connection() as conn:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS email_triage_cache (
-                message_id TEXT PRIMARY KEY,
-                subject TEXT,
-                sender_name TEXT,
-                sender_email TEXT,
-                date TEXT,
-                size INTEGER,
-                category TEXT,
-                is_irrelevant_prob REAL,
-                urgency_score REAL,
-                action_required_prob REAL,
-                summary TEXT,
-                archived INTEGER DEFAULT 0,
-                categorized_at TEXT
-            )
-        """)
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS email_triage_audit_log (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                action TEXT,
-                message_ids TEXT,
-                details TEXT,
-                timestamp TEXT
-            )
-        """)
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS email_triage_allowlist (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                pattern TEXT UNIQUE NOT NULL,
-                note TEXT,
-                created_at TEXT
-            )
-        """)
-        # Pre-seed default essential patterns if table empty
-        cur = conn.execute("SELECT COUNT(*) AS cnt FROM email_triage_allowlist")
-        if cur.fetchone()["cnt"] == 0:
-            defaults = [
-                ("flyrank.ai", "Internship Engineering"),
-                ("github.com", "GitHub & CI/CD Notifications"),
-                ("truelancer.com", "Freelance Client Leads"),
-            ]
-            conn.executemany(
-                "INSERT INTO email_triage_allowlist (pattern, note, created_at) VALUES (?, ?, ?)",
-                [(pat, note, datetime.now(timezone.utc).isoformat()) for pat, note in defaults]
-            )
-        conn.commit()
+    try:
+        with get_db_connection() as conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS email_triage_cache (
+                    message_id TEXT PRIMARY KEY,
+                    subject TEXT,
+                    sender_name TEXT,
+                    sender_email TEXT,
+                    date TEXT,
+                    size INTEGER,
+                    category TEXT,
+                    is_irrelevant_prob REAL,
+                    urgency_score REAL,
+                    action_required_prob REAL,
+                    summary TEXT,
+                    archived INTEGER DEFAULT 0,
+                    categorized_at TEXT
+                )
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS email_triage_audit_log (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    action TEXT,
+                    message_ids TEXT,
+                    details TEXT,
+                    timestamp TEXT
+                )
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS email_triage_allowlist (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    pattern TEXT UNIQUE NOT NULL,
+                    note TEXT,
+                    created_at TEXT
+                )
+            """)
+            # Pre-seed default essential patterns if table empty
+            cur = conn.execute("SELECT COUNT(*) AS cnt FROM email_triage_allowlist")
+            if cur.fetchone()["cnt"] == 0:
+                defaults = [
+                    ("flyrank.ai", "Internship Engineering"),
+                    ("github.com", "GitHub & CI/CD Notifications"),
+                    ("truelancer.com", "Freelance Client Leads"),
+                ]
+                conn.executemany(
+                    "INSERT INTO email_triage_allowlist (pattern, note, created_at) VALUES (?, ?, ?)",
+                    [(pat, note, datetime.now(timezone.utc).isoformat()) for pat, note in defaults]
+                )
+            conn.commit()
+    except Exception as exc:
+        logger.warning("Could not initialize email_triage database: %s", exc)
 
 init_db()
 

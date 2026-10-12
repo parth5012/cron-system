@@ -136,100 +136,123 @@ def load_accounts_from_env() -> List[Dict[str, str]]:
 
 def load_accounts_from_omniroute() -> List[Dict[str, str]]:
     """Load active Antigravity/Agy accounts directly from OmniRoute's local SQLite DB."""
-    env_path = Path(os.environ.get("OMNIROUTE_ENV_FILE", "~/.omniroute/.env")).expanduser()
-    db_path = Path(os.environ.get("OMNIROUTE_DB_FILE", "~/.omniroute/storage.sqlite")).expanduser()
-    if not db_path.exists():
-        return []
-
-    secret = os.environ.get("STORAGE_ENCRYPTION_KEY")
-    if not secret and env_path.exists():
-        try:
-            for line in env_path.read_text(encoding="utf-8").splitlines():
-                line = line.strip()
-                if line.startswith("STORAGE_ENCRYPTION_KEY="):
-                    secret = line.split("=", 1)[1].strip().strip("\"'")
-                    break
-        except Exception:
-            pass
-
-    key_bytes = None
-    if secret:
-        try:
-            key_bytes = hashlib.scrypt(
-                secret.encode("utf-8"),
-                salt=b"omniroute-field-encryption-v1",
-                n=16384,
-                r=8,
-                p=1,
-                dklen=32,
-            )
-        except Exception:
-            pass
-
-    def _decrypt(stored: Optional[str]) -> Optional[str]:
-        if not stored or not isinstance(stored, str):
-            return None
-        if not stored.startswith("enc:v1:"):
-            return stored
-        if not key_bytes:
-            return None
-        try:
-            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-            parts = stored[len("enc:v1:"):].split(":")
-            if len(parts) != 3:
-                return None
-            iv = bytes.fromhex(parts[0])
-            ciphertext = bytes.fromhex(parts[1])
-            tag = bytes.fromhex(parts[2])
-            aesgcm = AESGCM(key_bytes)
-            return aesgcm.decrypt(iv, ciphertext + tag, None).decode("utf-8")
-        except Exception:
-            return None
-
     try:
-        con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-        cur = con.cursor()
-        rows = cur.execute(
-            'SELECT id, provider, name, access_token, refresh_token, project_id, is_active '
-            'FROM provider_connections WHERE provider IN ("agy", "antigravity") AND is_active = 1'
-        ).fetchall()
-        con.close()
+        # On Vercel / serverless cloud environments, local SQLite storage is not present
+        if os.environ.get("VERCEL"):
+            return []
+
+        raw_env = os.environ.get("OMNIROUTE_ENV_FILE", "~/.omniroute/.env")
+        raw_db = os.environ.get("OMNIROUTE_DB_FILE", "~/.omniroute/storage.sqlite")
+        try:
+            env_path = Path(raw_env).expanduser()
+            db_path = Path(raw_db).expanduser()
+        except Exception:
+            return []
+
+        try:
+            if not db_path.exists():
+                return []
+        except Exception:
+            return []
+
+        secret = os.environ.get("STORAGE_ENCRYPTION_KEY")
+        if not secret:
+            try:
+                if env_path.exists():
+                    for line in env_path.read_text(encoding="utf-8").splitlines():
+                        line = line.strip()
+                        if line.startswith("STORAGE_ENCRYPTION_KEY="):
+                            secret = line.split("=", 1)[1].strip().strip("\"'")
+                            break
+            except Exception:
+                pass
+
+        key_bytes = None
+        if secret:
+            try:
+                key_bytes = hashlib.scrypt(
+                    secret.encode("utf-8"),
+                    salt=b"omniroute-field-encryption-v1",
+                    n=16384,
+                    r=8,
+                    p=1,
+                    dklen=32,
+                )
+            except Exception:
+                pass
+
+        def _decrypt(stored: Optional[str]) -> Optional[str]:
+            if not stored or not isinstance(stored, str):
+                return None
+            if not stored.startswith("enc:v1:"):
+                return stored
+            if not key_bytes:
+                return None
+            try:
+                from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+                parts = stored[len("enc:v1:"):].split(":")
+                if len(parts) != 3:
+                    return None
+                iv = bytes.fromhex(parts[0])
+                ciphertext = bytes.fromhex(parts[1])
+                tag = bytes.fromhex(parts[2])
+                aesgcm = AESGCM(key_bytes)
+                return aesgcm.decrypt(iv, ciphertext + tag, None).decode("utf-8")
+            except Exception:
+                return None
+
+        try:
+            con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+            cur = con.cursor()
+            rows = cur.execute(
+                'SELECT id, provider, name, access_token, refresh_token, project_id, is_active '
+                'FROM provider_connections WHERE provider IN ("agy", "antigravity") AND is_active = 1'
+            ).fetchall()
+            con.close()
+        except Exception:
+            return []
+
+        accounts: List[Dict[str, str]] = []
+        seen = set()
+        for row in rows:
+            cid, prov, name, enc_acc, enc_ref, proj, is_act = row
+            acc_id = _clean(name) or _clean(cid)
+            if acc_id in seen:
+                continue
+            seen.add(acc_id)
+
+            acc_token = _decrypt(enc_acc)
+            ref_token = _decrypt(enc_ref)
+            if not acc_token and not ref_token:
+                continue
+
+            entry: Dict[str, str] = {
+                "id": acc_id,
+                "projectId": _clean(proj),
+            }
+            if acc_token:
+                entry["access_token"] = acc_token
+            if ref_token:
+                entry["refresh_token"] = ref_token
+            accounts.append(entry)
+
+        return accounts
     except Exception:
         return []
-
-    accounts: List[Dict[str, str]] = []
-    seen = set()
-    for row in rows:
-        cid, prov, name, enc_acc, enc_ref, proj, is_act = row
-        acc_id = _clean(name) or _clean(cid)
-        if acc_id in seen:
-            continue
-        seen.add(acc_id)
-
-        acc_token = _decrypt(enc_acc)
-        ref_token = _decrypt(enc_ref)
-        if not acc_token and not ref_token:
-            continue
-
-        entry: Dict[str, str] = {
-            "id": acc_id,
-            "projectId": _clean(proj),
-        }
-        if acc_token:
-            entry["access_token"] = acc_token
-        if ref_token:
-            entry["refresh_token"] = ref_token
-        accounts.append(entry)
-
-    return accounts
 
 
 def load_accounts() -> List[Dict[str, str]]:
     """Read account registry: env if present, otherwise auto-discover from local OmniRoute."""
-    from_env = load_accounts_from_env()
-    if from_env:
-        return from_env
-    return load_accounts_from_omniroute()
+    try:
+        from_env = load_accounts_from_env()
+        if from_env:
+            return from_env
+    except Exception:
+        pass
+    try:
+        return load_accounts_from_omniroute()
+    except Exception:
+        return []
 
 
 def is_token_expired(expiry: Optional[str], skew_sec: int = 60) -> bool:
@@ -248,9 +271,14 @@ def is_token_expired(expiry: Optional[str], skew_sec: int = 60) -> bool:
 
 def load_token_file(path: str) -> Optional[Dict[str, str]]:
     """Read an agy CLI oauth token file. Returns tokens only, never logs them."""
+    if not path:
+        return None
     try:
-        data = json.loads(Path(str(path)).expanduser().read_text(encoding="utf-8"))
-    except (OSError, ValueError, TypeError):
+        p = Path(str(path)).expanduser()
+        if not p.exists() or not p.is_file():
+            return None
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
         return None
     token = data.get("token") if isinstance(data, dict) else None
     if not isinstance(token, dict):
@@ -650,22 +678,38 @@ class AntigravityService:
         return fresh
 
     async def _fetch_snapshot(self) -> AntigravitySnapshot:
-        accounts = load_accounts()
         now_iso = datetime.now(timezone.utc).isoformat()
-        if not accounts:
+        try:
+            accounts = load_accounts()
+        except Exception as exc:
             return AntigravitySnapshot(
-                accounts=[], cached=False, timestamp=now_iso, error="no accounts configured"
+                accounts=[], cached=False, timestamp=now_iso, error=f"account load error: {exc}"
+            )
+        if not accounts:
+            is_cloud = bool(os.environ.get("VERCEL"))
+            error_msg = (
+                "No accounts configured on Vercel (set ANTIGRAVITY_ACCOUNTS_JSON env var with OAuth tokens)"
+                if is_cloud
+                else "no accounts configured (set ANTIGRAVITY_ACCOUNTS_JSON or configure OmniRoute locally)"
+            )
+            return AntigravitySnapshot(
+                accounts=[], cached=False, timestamp=now_iso, error=error_msg
             )
         timeout = httpx.Timeout(15.0)
-        async with httpx.AsyncClient(timeout=timeout) as client:
-            snapshots = [await self._fetch_one(client, acc) for acc in accounts]
-        errors = [s.error for s in snapshots if s.error]
-        return AntigravitySnapshot(
-            accounts=snapshots,
-            cached=False,
-            timestamp=now_iso,
-            error="; ".join(errors) if errors else None,
-        )
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                snapshots = [await self._fetch_one(client, acc) for acc in accounts]
+            errors = [s.error for s in snapshots if s.error]
+            return AntigravitySnapshot(
+                accounts=snapshots,
+                cached=False,
+                timestamp=now_iso,
+                error="; ".join(errors) if errors else None,
+            )
+        except Exception as exc:
+            return AntigravitySnapshot(
+                accounts=[], cached=False, timestamp=now_iso, error=f"upstream error: {exc}"
+            )
 
     async def get_snapshot(self, refresh: bool = False) -> AntigravitySnapshot:
         now = time.time()
@@ -697,7 +741,7 @@ def get_antigravity_service() -> AntigravityService:
 # ---------------------------------------------------------------------------
 OMNIROUTE_BASE_URL = os.environ.get("OMNIROUTE_BASE_URL", "http://localhost:20128").rstrip("/")
 OMNIROUTE_SYNC_ENABLED = os.environ.get("OMNIROUTE_SYNC_ENABLED", "false").lower() == "true"
-ANTIGRAVITY_HTML_PATH = Path(__file__).parent / "static" / "antigravity" / "index.html"
+ANTIGRAVITY_HTML_PATH = Path(__file__).resolve().parent / "static" / "antigravity" / "index.html"
 
 
 def build_omniroute_limits(snapshot: AntigravitySnapshot) -> List[Dict[str, Any]]:
@@ -860,8 +904,17 @@ async def get_antigravity_limits(
     accept = request.headers.get("accept", "")
     if format != "json" and "text/html" in accept and "application/json" not in accept:
         return RedirectResponse(url="/antigravity", status_code=303)
-    service = get_antigravity_service()
-    return await service.get_snapshot(refresh=refresh)
+    try:
+        service = get_antigravity_service()
+        return await service.get_snapshot(refresh=refresh)
+    except Exception as exc:
+        now_iso = datetime.now(timezone.utc).isoformat()
+        return AntigravitySnapshot(
+            accounts=[],
+            cached=False,
+            timestamp=now_iso,
+            error=f"quota service error: {exc}",
+        )
 
 
 @router.get("/api/antigravity/omniroute-preview")
@@ -886,6 +939,9 @@ async def post_antigravity_sync():
 @router.get("/quota", response_class=HTMLResponse)
 async def get_antigravity_ui():
     """Mobile-first limits dashboard inside cron-system (no separate site)."""
-    if ANTIGRAVITY_HTML_PATH.exists() and ANTIGRAVITY_HTML_PATH.is_file():
-        return HTMLResponse(content=ANTIGRAVITY_HTML_PATH.read_text(encoding="utf-8"))
+    try:
+        if ANTIGRAVITY_HTML_PATH.exists() and ANTIGRAVITY_HTML_PATH.is_file():
+            return HTMLResponse(content=ANTIGRAVITY_HTML_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        pass
     return HTMLResponse(content=FALLBACK_HTML, status_code=200)
