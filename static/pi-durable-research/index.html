@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pi Durable — Deep Research Report</title>
+<style>
+:root{--bg:#0f1115;--card:#1a1d24;--border:#2a2f3a;--text:#e6e9ef;--muted:#9aa3b2;--accent:#6ea8fe;--good:#4ade80;--warn:#fbbf24;--bad:#f87171}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+h1{font-size:28px;margin:0 0 6px}h2{font-size:20px;margin:32px 0 12px;border-bottom:1px solid var(--border);padding-bottom:6px}h3{font-size:16px;margin:18px 0 8px;color:var(--accent)}
+p{margin:8px 0;color:var(--muted)}ul{margin:8px 0;padding-left:20px;color:var(--muted)}li{margin:4px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi .v{font-size:22px;font-weight:700;color:var(--accent)} .kpi .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+th,td{padding:8px 10px;border:1px solid var(--border);text-align:left;vertical-align:top}
+th{background:#232730;color:var(--text)}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.b-good{background:#133a24;color:var(--good)} .b-warn{background:#3a2f13;color:var(--warn)} .b-bad{background:#3a1a1a;color:var(--bad)} .b-info{background:#1a2a3a;color:var(--accent)}
+.tag{font-size:11px;color:var(--muted)}
+.hero{background:linear-gradient(135deg,#1a1d24,#0f1115);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+.hero p{color:var(--text)}
+code{background:#0b0d11;padding:2px 6px;border-radius:4px;font-size:13px;color:#c9d1d9}
+pre{background:#0b0d11;padding:12px;border-radius:8px;overflow:auto;font-size:12px;color:#c9d1d9;border:1px solid var(--border)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>Pi Durable — Deep Research Report</h1>
+  <p>How durable agents work (earendil-works/pi) and how to apply them to the <strong>fleet</strong> and <strong>AI-OS</strong> projects.</p>
+  <p class="tag">Sources: GitHub packages/durable README + spec.md · Syntax video "You need to check out Pi Durable" (youtu.be/BLRReTwV8Fc) · flaviocopes tutorial · MindStudio explainer · Date: 2026-10-17</p>
+</div>
+
+<h2>1. What Pi Durable is</h2>
+<p>An experimental TypeScript library for building <strong>durable agents</strong>: conversations, model turns, tool calls, and app state are committed to storage <em>before</em> anything is shown, so a crashed/restarted process reopens storage and resumes unfinished work where it stopped.</p>
+<div class="grid">
+  <div class="kpi"><div class="v">TS / Node</div><div class="l">Runtime (pi-ai + chord)</div></div>
+  <div class="kpi"><div class="v">SQLite / JSONL / Mem</div><div class="l">Storage backends</div></div>
+  <div class="kpi"><div class="v">Experimental</div><div class="l">API stability</div></div>
+  <div class="kpi"><div class="v">MIT</div><div class="l">License (model calls bill you)</div></div>
+</div>
+<p class="tag">Mental model: a database file + a conversation. Submit work with an ID; tools are plain functions. The harness saves everything as it goes.</p>
+
+<h2>2. The problem it solves</h2>
+<p>Agents now run for an hour, start on their own (webhook/cron), and do things that <strong>can't happen twice</strong> (email, PR, charge). If one crashes mid-run, you must manually check what broke overnight. Durable agents must: keep working, be resumable, know the exact step, and not repeat side-effecting steps.</p>
+<p>Syntax author deleted ~8,000 lines of brittle custom agent plumbing after adopting Pi Durable and got a better system for free.</p>
+
+<h2>3. Core concepts</h2>
+<table>
+<tr><th>Concept</th><th>Meaning</th></tr>
+<tr><td>Harness</td><td>One open storage + machinery. All changes via atomic commits; nothing shown before commit stored.</td></tr>
+<tr><td>Conversation</td><td>Transcript. root() creates on first use; can fork. Compare by id.</td></tr>
+<tr><td>Entry</td><td>Immutable record: pi.user, pi.assistant, pi.tool-result, pi.system, pi.reset, pi.compaction, or your kind.</td></tr>
+<tr><td>Commit</td><td>Atomic write; can append entries + edit docs + create tasks together.</td></tr>
+<tr><td>Document</td><td>Typed JSON state beside transcript (pi.agent, pi.provider, pi.live, pi.inbox, pi.usage).</td></tr>
+<tr><td>Task</td><td>Durable state machine; checkpoint at every step; resumes from last after restart.</td></tr>
+<tr><td>Submission</td><td>Work handed to a conversation (input or write), waitable.</td></tr>
+<tr><td>Extension / Registry</td><td>Named bundle of tools/sections/hooks/tasks; registry can change while running.</td></tr>
+<tr><td>Agent</td><td>model + thinking + extensions + tools + instructions + cwd, stored per conversation as names.</td></tr>
+</table>
+
+<h2>4. Durability mechanics</h2>
+<ul>
+  <li><strong>Persist &amp; resume:</strong> SQLite/JSONL. <code>harness.resume()</code> continues unfinished runs. Submitting/waiting also starts scheduler.</li>
+  <li><strong>Provider identity:</strong> persisted UUIDv7 in pi.provider → pi-ai sessionId for prompt-cache/session affinity. Survives reopen/retry/reset/compaction/model change; child/fork gets fresh identity.</li>
+  <li><strong>Idempotent submission:</strong> same requestId returns existing submission instead of submitting twice. <code>harness.submission(id)</code> reacquires after restart.</li>
+  <li><strong>Task checkpoints:</strong> each task saves checkpoint each step. <code>abandonOnRestart: true</code> auto-aborts tasks whose creator never resumes.</li>
+</ul>
+
+<h2>5. Tools &amp; replay safety (the key design)</h2>
+<p>Each tool call is its own durable task; intent committed before execute(). If process dies mid-call, tool reruns on reopen <strong>only when declared <code>replay: "safe"</code></strong>; otherwise model gets an <code>interrupted</code> error result with committed output. Default policy is <strong>unsafe</strong>.</p>
+<table>
+<tr><th>Operation</th><th>Replay?</th></tr>
+<tr><td>Read service status</td><td><span class="badge b-good">safe</span> answer may change</td></tr>
+<tr><td>Search issues</td><td><span class="badge b-good">safe</span> no mutation; may cost money</td></tr>
+<tr><td>Send email</td><td><span class="badge b-bad">unsafe</span> unless sender dedups operation ID</td></tr>
+<tr><td>Create PR</td><td><span class="badge b-bad">unsafe</span> unless app finds/reuses existing PR</td></tr>
+<tr><td>Deploy release</td><td><span class="badge b-bad">unsafe</span> unless deploy system reconciles</td></tr>
+</table>
+<p><strong>Caveat:</strong> requestId dedup stops duplicate <em>admission</em> of a submission; it does <strong>not</strong> guarantee external actions happen exactly once. Tool authors must declare replay-safe only when repeated execution is safe; for side-effecting tools use operation IDs + external idempotency or reconcile before retry.</p>
+<p>Nested tool calls via <code>api.executeTool()</code>; <code>callers</code> controls who may call a tool (model/tools/both); <code>modelTools</code> narrows what model is offered; <code>deferred</code> + tool_search for large sets.</p>
+
+<h2>6. Code Mode</h2>
+<p><code>@earendil-works/pi-durable/codemode</code> adds a <code>codemode</code> tool: model writes JS calling conversation tools as <code>await tools.&lt;name&gt;(args)</code> in a QuickJS sandbox. <strong>Script survives restart</strong> (resumes where it was) via a journal of results. Deterministic sandbox (virtual clock, seeded randomness, UTC). <code>store/load</code> keep JSON per conversation. Cloudflare: <code>RemoteCodemodeSandbox</code>.</p>
+
+<h2>7. Compaction &amp; context limits</h2>
+<p>Persistence ≠ unlimited memory. Long conversations still bound by model context window. Supports manual <code>compact()</code> and auto-compaction via settings (<code>reserveTokens</code>, <code>keepRecentTokens</code>, <code>backgroundTokens</code>, <code>modelOverrides</code>). On provider overflow, generation compacts and retries once. Advice: store facts that must be preserved in structured documents/DB, not rely on summary.</p>
+
+<h2>8. Multi-conversation, forks, subagents, child tasks</h2>
+<ul>
+  <li>Multiple conversations per harness, each with own model/tools/instructions/cwd.</li>
+  <li>Fork at a point → continues independently; keeps parent's agent at fork entry; fresh provider identity.</li>
+  <li>Subagents: a tool creates a child conversation owned by its task. Foreground (parent idle only once child done, abort propagates) and background (owned by anchor task, survives parent abort). Examples 22/23.</li>
+  <li>Child tasks: own child tasks + <code>waiting</code> state (allSettled/failFast), <code>completing</code>, bottom-up abort. Example 24.</li>
+  <li>Task graph: <code>harness.taskGraph()</code> / <code>watchTaskGraph()</code> for monitoring.</li>
+</ul>
+
+<h2>9. Watching / UI / multiplayer</h2>
+<ul>
+  <li><code>viewState()</code> subscribable view (entries, docs, inbox, usage, agent, provider); <code>watch()</code> delivers exact Chord ops per commit.</li>
+  <li><code>watchEvents()</code> (experimental) gives coding-agent style events.</li>
+  <li>Multiple clients connect to same harness → observe, steer, add follow-up. "Multiplayer comes for free."</li>
+  <li>Steering: <code>whenBusy: "steer"</code> places input after current tool round; follow-up (default) when run answers; writes can happen mid-run.</li>
+  <li>Environment per call: <code>NodeExecutionEnv</code> (cwd) or custom (container per conversation).</li>
+</ul>
+
+<h2>10. Storage trade-offs &amp; caveats</h2>
+<ul>
+  <li>Backends: memory (no persistence, tests), SQLite (node), JSONL.</li>
+  <li><strong>One process owns a storage backend at a time</strong> — no cross-process locking.</li>
+  <li><strong>Default SQLite uses WAL with synchronous=NORMAL</strong> → process crash recoverable, but power/host failure can lose newest commits. Reconfigure for strict durability.</li>
+  <li>APIs experimental → budget time to revisit.</li>
+  <li>Tool authors must explicitly mark replay-safe for auto-recovery.</li>
+  <li>Context limits still apply (compaction is the mitigation).</li>
+</ul>
+
+<h2>11. Where it runs (video)</h2>
+<p>Anywhere JavaScript runs: browser (IndexedDB — Mario's phone agent, 100% on Android except model calls), Node (Mac Mini + SQLite), Cloudflare Durable Objects, Deno's cld. Not locked to one provider. OpenCode 2 runs as library on server or inside durable object. Cloudflare agent SDK already runs Pi Durable inside a durable object.</p>
+
+<h2>12. The video's flagship demo (Syntax)</h2>
+<p>Self-healing software pipeline: bug → Sentry → webhook → Cloudflare tunnel → box → triage → root cause (Sentry Seer) → agent fix → tests → PR → (auto-)merge → mark resolved in system + Sentry. Full trail; can message the same agent/conversation later with full context. Protections: guards against duplicate PRs for same issue; incident-to-investigation mapping; only tracked software.</p>
+<p>Also shows: stop/resume mid-run; multiplayer (phone/browser/Slack); steering; forks/subagents; compaction; reload/restart.</p>
+
+<h2>13. Applying to the FLEET project</h2>
+<p><span class="badge b-good">High fit</span> Fleet = always-on Linux boxes running agents; brains = laptop orchestrator; send work, close lid, work keeps running — exactly Pi Durable's deployment shape.</p>
+<ul>
+  <li><strong>Self-healing agent on box-1</strong> (video's pattern): webhook → durable conversation → triage → fix → PR → resolve. Stable requestId from alert event id. Read tools safe; write tools (git/PR) unsafe with idempotency guards.</li>
+  <li><strong>Durable long-running jobs</strong> (omniroute/secondbrain sync, backups): wrap orchestration as durable agent so a crash mid-sync resumes instead of leaving partial state. Keep Python for actual DB ops; agent drives via tools.</li>
+  <li><strong>Multi-client steering</strong> from phone/laptop maps directly to Pi Durable multiplayer model.</li>
+  <li><strong>Subagents for parallel worktrees</strong> (fleet already uses worktrees) with durable ownership + bottom-up abort.</li>
+  <li><strong>Monitoring dashboard</strong> via taskGraph() + watch()/watchEvents() → fleet-status view.</li>
+  <li><strong>Per-box ownership:</strong> one process per box owns its SQLite; don't share a DB across processes. Back up DBs alongside existing backup scripts.</li>
+  <li><strong>Tool replay discipline:</strong> classify every fleet tool; document in AGENTS.md.</li>
+</ul>
+<h3>Adoption path (fleet)</h3>
+<ol>
+  <li>Phase 0: Run flaviocopes demo on box-1 to validate crash recovery on real hardware.</li>
+  <li>Phase 1: One self-healing flow (fleet-status failure → investigate logs → report), read-only tools first, cron-system webhook trigger.</li>
+  <li>Phase 2: Add write tools (git commit/push/PR) with idempotency guards + human approval hook.</li>
+  <li>Phase 3: Migrate one long-running script family to be driven by durable agent.</li>
+  <li>Phase 4: Multi-client UI (phone) + task graph dashboard.</li>
+</ol>
+
+<h2>14. Applying to the AI-OS project</h2>
+<p><span class="badge b-warn">Medium-High fit (runtime layer)</span> AI-OS is Python-centric and documentation/context-heavy. Pi Durable is TS/Node. Don't rewrite working Python automations. Instead:</p>
+<ul>
+  <li><strong>Add a durable "always-on personal agent" on box-1</strong> (via fleet) triggered by cron-system/T3 scheduler; conversations per domain (freelance digest, internship learning, second-brain ingestion, daily planning); stable requestIds from event ids.</li>
+  <li><strong>Second-brain ingestion as durable agent:</strong> long-running read→atomic-notes runs survive laptop sleep; compaction handles long context; structured documents track ingested sources.</li>
+  <li><strong>Freelance bid flow durability:</strong> multi-step flow holds state across sessions; per-job state as a Pi Durable document.</li>
+  <li><strong>Learning/portfolio value:</strong> building a durable-agent demo is a strong portfolio piece and exercises agent-harness engineering (a stated skill); could become a freelance offering.</li>
+  <li><strong>Context-engineering alignment:</strong> AI-OS context docs + Pi Durable structured documents fit together; store priorities/decisions as docs agents read.</li>
+  <li><strong>Do not migrate:</strong> keep cron-system as trigger/scheduler; use Pi Durable agents as the worker. Bridge to Obsidian by a tool writing to the vault path.</li>
+</ul>
+<h3>Adoption path (AI-OS)</h3>
+<ol>
+  <li>Phase 0: Read pi-durable examples folder with an agent; run flaviocopes crash demo.</li>
+  <li>Phase 1: One durable agent for one repetitive task (freelance digest triage or ingest-media), read-only first.</li>
+  <li>Phase 2: Add write tools with approval hooks; multi-client steering.</li>
+  <li>Phase 3: Integrate with Obsidian second brain (agent writes notes).</li>
+  <li>Phase 4: Consider offering durable-agent dev as freelance service.</li>
+</ol>
+
+<h2>15. Decision summary</h2>
+<div class="card">
+  <ul>
+    <li>Pi Durable is the right abstraction for "agents that must survive crashes and run unattended" — fleet's mission and AI-OS's automation ambition.</li>
+    <li>It does <strong>not</strong> solve context limits, external-action exactly-once, or multi-process storage ownership. Design around those.</li>
+    <li>Best adoption: <strong>pilot narrowly</strong> (one self-healing/read-only flow on box-1), validate crash recovery on real hardware, then expand. Don't big-bang migrate Python automations.</li>
+    <li>Biggest immediate value for Parth: (1) hands-on learning/portfolio, (2) unattended self-healing agent on fleet box-1, (3) durable long-running ingestion for second brain.</li>
+  </ul>
+</div>
+
+<h2>16. References</h2>
+<ul>
+  <li>Repo: <a href="https://github.com/earendil-works/pi/tree/main/packages/durable">packages/durable</a></li>
+  <li>README: <a href="https://github.com/earendil-works/pi/blob/main/packages/durable/README.md">README.md</a></li>
+  <li>Spec: <a href="https://github.com/earendil-works/pi/blob/main/packages/durable/docs/spec.md">docs/spec.md</a></li>
+  <li>Examples: <a href="https://github.com/earendil-works/pi/tree/main/packages/durable/test/examples">test/examples (00–31)</a></li>
+  <li>Cloudflare example: <a href="https://github.com/earendil-works/pi-durable-cloudflare">pi-durable-cloudflare</a></li>
+  <li>Video: <a href="https://youtu.be/BLRReTwV8Fc">"You need to check out Pi Durable" (Syntax, ~20 min)</a></li>
+  <li>Tutorial: <a href="https://flaviocopes.com/pi-durable/">flaviocopes.com/pi-durable</a></li>
+  <li>Explainer: <a href="https://www.mindstudio.ai/blog/pi-durable-long-running-agents">mindstudio.ai blog</a></li>
+  <li>Earendil intro: <a href="https://earendil.com/posts/pi-durable/">earendil.com/posts/pi-durable</a></li>
+  <li>HN: <a href="https://news.ycombinator.com/item?id=49925969">news.ycombinator.com/item?id=49925969</a></li>
+  <li>Local transcript: <code>AI-OS/.tmp/yt_pi_durable.txt</code></li>
+  <li>Full markdown report: <code>AI-OS/docs/pi-durable-research.md</code></li>
+</ul>
+
+</div>
+</body>
+</html>
