@@ -551,7 +551,7 @@
         <div class="brand-icon">⚡</div>
         <div class="brand-text">
           <h1>Email Triage Engine</h1>
-          <p>Autonomous inbox sorting powered by TypeSafe Jev System One &amp; Himalaya IMAP</p>
+          <p>Autonomous inbox sorting powered by Cloudflare Clef &amp; TypeSafe Jev System One decision models &amp; Himalaya IMAP</p>
         </div>
       </div>
 
@@ -579,12 +579,18 @@
     <!-- Controls Panel -->
     <section class="controls-panel">
       <div class="action-row">
-        <div class="btn-group">
+        <div class="btn-group" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
           <button id="btn-fetch" class="btn-secondary" onclick="loadEmails(true)">
             <span>🔄 Fetch 50 Recent</span>
           </button>
+          <select id="model-select" class="btn-secondary" style="padding: 0.5rem 0.75rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; outline: none; background: var(--bg-card); color: var(--text); border: 1px solid var(--border-bright);" onchange="updateModelLabel()">
+            <option value="clef-flash" selected>⚡ Clef-Flash (Cloudflare 9B, ~38ms)</option>
+            <option value="clef">🎯 Clef (Cloudflare 27B)</option>
+            <option value="jev">💎 Jev 1.13 (TypeSafe AI)</option>
+            <option value="auto">🔀 Auto (Clef-first cascade)</option>
+          </select>
           <button id="btn-categorize" class="btn-primary" onclick="triggerCategorize()">
-            <span>✨ Categorize (Jev AI)</span>
+            <span id="btn-categorize-text">✨ Categorize (Clef AI)</span>
           </button>
           <button id="btn-archive-irrel" class="btn-danger" onclick="archiveIrrelevant()">
             <span>🗑️ Archive Irrelevant (<span id="archive-count">0</span>)</span>
@@ -1074,29 +1080,62 @@
       renderTable();
     }
 
+    function updateModelLabel() {
+      const select = document.getElementById('model-select');
+      const textSpan = document.getElementById('btn-categorize-text');
+      if (!select || !textSpan) return;
+      if (select.value === 'jev') {
+        textSpan.textContent = '✨ Categorize (Jev AI)';
+      } else if (select.value === 'auto') {
+        textSpan.textContent = '✨ Categorize (Auto AI)';
+      } else {
+        textSpan.textContent = '✨ Categorize (Clef AI)';
+      }
+    }
+
     async function triggerCategorize() {
       const btn = document.getElementById('btn-categorize');
       const statusEl = document.getElementById('status-indicator');
+      const modelVal = document.getElementById('model-select') ? document.getElementById('model-select').value : 'clef-flash';
+
+      let provider = 'cloudflare';
+      let model = '@cf/cloudflare/clef-flash';
+      let label = 'Clef AI';
+
+      if (modelVal === 'clef') {
+        provider = 'cloudflare';
+        model = '@cf/cloudflare/clef';
+        label = 'Clef 27B';
+      } else if (modelVal === 'jev') {
+        provider = 'openrouter';
+        model = 'typesafe/jev-1.13';
+        label = 'Jev AI';
+      } else if (modelVal === 'auto') {
+        provider = 'auto';
+        model = '';
+        label = 'Auto Cascade';
+      }
+
       btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Categorizing (Jev AI)...';
-      statusEl.textContent = 'Calling TypeSafe Jev System One decision models in parallel...';
+      btn.innerHTML = `<span class="spinner"></span> Categorizing (${label})...`;
+      statusEl.textContent = `Calling ${label} System One decision models in parallel...`;
 
       try {
         const res = await fetch('/api/email-triage/categorize', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ force_refresh: true })
+          body: JSON.stringify({ force_refresh: true, provider: provider, model: model })
         });
         if (!res.ok) throw new Error(await res.text());
         const data = await res.json();
-        statusEl.textContent = `Categorized ${data.categorized_count} emails in ${data.duration_sec}s!`;
+        statusEl.textContent = `Categorized ${data.categorized_count} emails in ${data.duration_sec}s (${label})!`;
         // Reload fresh merged records
         await loadEmails(false);
       } catch (err) {
         statusEl.textContent = `Categorization error: ${err.message}`;
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<span>✨ Categorize (Jev AI)</span>';
+        btn.innerHTML = `<span id="btn-categorize-text">${label === 'Jev AI' ? '✨ Categorize (Jev AI)' : (label === 'Auto Cascade' ? '✨ Categorize (Auto AI)' : '✨ Categorize (Clef AI)')}</span>`;
       }
     }
 

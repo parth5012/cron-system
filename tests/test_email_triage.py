@@ -138,3 +138,80 @@ def test_api_allowlist_crud():
     res_after = client.get("/api/email-triage/allowlist")
     patterns_after = [r["pattern"] for r in res_after.json()["rules"]]
     assert test_pattern not in patterns_after
+
+@pytest.mark.asyncio
+async def test_classify_clef_worker_ai_format():
+    """Verify classify_single_email processes Cloudflare Workers AI Clef response correctly."""
+    mock_cf_response = {
+        "result": {
+            "model": "clef-flash",
+            "answers": {
+                "is_irrelevant": {"type": "noul", "noul": 0.08},
+                "category": {
+                    "type": "choice",
+                    "choice": "work",
+                    "probabilities": {"work": 0.95, "irrelevant": 0.05}
+                },
+                "urgency": {"type": "score", "score": 0.45},
+                "action_required": {"type": "noul", "noul": 0.25}
+            }
+        },
+        "success": True,
+        "errors": []
+    }
+
+    mock_client = MagicMock()
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.json.return_value = mock_cf_response
+    mock_client.post = pytest.importorskip("unittest.mock").AsyncMock(return_value=mock_resp)
+
+    res = await email_triage.classify_single_email(
+        http_client=mock_client,
+        email=MOCK_ENVELOPES[0],
+        provider="cloudflare",
+        model="@cf/cloudflare/clef-flash",
+        cloudflare_token="fake-token",
+        cloudflare_account_id="fake-account"
+    )
+
+    assert res["category"] == "work"
+    assert res["is_irrelevant_prob"] == 0.0  # github.com is allowlisted
+    assert res["urgency_score"] == 0.45
+    assert res["provider"] == "cloudflare"
+    assert res["model"] == "@cf/cloudflare/clef-flash"
+
+def test_api_categorize_clef_provider_selection():
+    """Verify POST /api/email-triage/categorize passes provider and model options."""
+    mock_classified = {
+        "message_id": "1002",
+        "category": "personal",
+        "is_irrelevant_prob": 0.1,
+        "urgency_score": 0.5,
+        "action_required_prob": 0.3,
+        "categorized_at": "2026-10-11T00:00:00Z",
+        "provider": "cloudflare",
+        "model": "@cf/cloudflare/clef-flash"
+    }
+
+    with patch("email_triage.fetch_envelopes_from_himalaya", return_value=[MOCK_ENVELOPES[1]]):
+        with patch("email_triage.classify_single_email", return_value=mock_classified) as mock_classify:
+            res = client.post(
+                "/api/email-triage/categorize",
+                json={
+                    "email_ids": ["1002"],
+                    "force_refresh": True,
+                    "provider": "cloudflare",
+                    "model": "@cf/cloudflare/clef-flash"
+                }
+            )
+            assert res.status_code == 200
+            data = res.json()
+            assert data["categorized_count"] == 1
+            assert "1002" in data["results"]
+            assert data["results"]["1002"]["category"] == "personal"
+            # Verify classify_single_email was called with cloudflare provider
+            mock_classify.assert_called_once()
+            _, kwargs = mock_classify.call_args
+            assert kwargs["provider"] == "cloudflare"
+            assert kwargs["model"] == "@cf/cloudflare/clef-flash"

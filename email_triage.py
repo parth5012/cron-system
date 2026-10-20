@@ -59,6 +59,10 @@ HTML_INDEX_PATH = STATIC_DIR / "index.html"
 if load_dotenv:
     try:
         load_dotenv(BASE_DIR / ".env")
+        if not os.getenv("CLOUDFLARE_API_TOKEN"):
+            p_warden = Path.home() / "projects" / "warden" / "src" / "warden" / ".env"
+            if p_warden.exists():
+                load_dotenv(p_warden)
         if not os.getenv("OPENROUTER_API_KEY"):
             p1 = Path.home() / "projects" / "orca-marine-intelligence" / ".env"
             if p1.exists():
@@ -72,8 +76,16 @@ if load_dotenv:
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api").rstrip("/")
-CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN", "")
-CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
+CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN", "") or os.getenv("CLEF_API_TOKEN", "")
+CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID", "") or os.getenv("CLEF_ACCOUNT_ID", "")
+DEFAULT_PROVIDER = os.getenv(
+    "DECISION_PROVIDER",
+    "cloudflare" if (CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID) else "openrouter"
+).lower()
+DEFAULT_MODEL = os.getenv(
+    "DECISION_MODEL",
+    "@cf/cloudflare/clef-flash" if DEFAULT_PROVIDER == "cloudflare" else "typesafe/jev-1.13"
+)
 HIMALAYA_BIN = os.getenv("HIMALAYA_BIN", "himalaya")
 
 logger = logging.getLogger("email_triage")
@@ -218,8 +230,8 @@ class AllowlistResponse(BaseModel):
 class CategorizeRequest(BaseModel):
     email_ids: Optional[List[str]] = None
     force_refresh: bool = False
-    provider: str = "openrouter"
-    model: str = "typesafe/jev-1.13"
+    provider: Optional[str] = None
+    model: Optional[str] = None
 
 class CategorizeResponse(BaseModel):
     categorized_count: int
@@ -372,11 +384,58 @@ QUESTIONS_TAXONOMY = {
     }
 }
 
+def _parse_noul(val: Any) -> float:
+    if val is None:
+        return 0.0
+    if isinstance(val, (int, float)):
+        return min(1.0, max(0.0, float(val)))
+    if isinstance(val, dict):
+        for k in ("noul", "probability", "prob", "score"):
+            if k in val and isinstance(val[k], (int, float)):
+                return min(1.0, max(0.0, float(val[k])))
+        probs = val.get("probabilities") or val.get("probs")
+        if isinstance(probs, dict):
+            for k in ("yes", "true", "positive", "1"):
+                if k in probs and isinstance(probs[k], (int, float)):
+                    return min(1.0, max(0.0, float(probs[k])))
+    return 0.0
+
+def _parse_choice(val: Any, default: str = "irrelevant") -> str:
+    if val is None:
+        return default
+    if isinstance(val, str):
+        return val
+    if isinstance(val, dict):
+        for k in ("choice", "selected", "answer", "value"):
+            if k in val and isinstance(val[k], str):
+                return val[k]
+        probs = val.get("probabilities") or val.get("probs")
+        if isinstance(probs, dict) and probs:
+            try:
+                return str(max(probs.items(), key=lambda kv: kv[1])[0])
+            except Exception:
+                pass
+    return default
+
+def _parse_score(val: Any) -> float:
+    if val is None:
+        return 0.0
+    if isinstance(val, (int, float)):
+        return float(val)
+    if isinstance(val, dict):
+        for k in ("score", "rating", "value"):
+            if k in val and isinstance(val[k], (int, float)):
+                return float(val[k])
+    return 0.0
+
 async def classify_single_email(
     http_client: httpx.AsyncClient,
     email: Dict[str, Any],
-    api_key: str,
-    model: str = "typesafe/jev-1.13"
+    api_key: Optional[str] = None,
+    model: Optional[str] = None,
+    provider: Optional[str] = None,
+    cloudflare_token: Optional[str] = None,
+    cloudflare_account_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     subject = email.get("subject", "")
     from_info = email.get("from", [{}])
@@ -389,50 +448,132 @@ async def classify_single_email(
         "sender_email": sender_email,
         "date": email.get("date", "")
     }
-    
-    payload = {
-        "model": model,
-        "state": state,
-        "questions": QUESTIONS_TAXONOMY
-    }
-    
-    endpoint = f"{OPENROUTER_BASE_URL}/v1/systemone"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-    
-    try:
-        resp = await http_client.post(endpoint, json=payload, headers=headers, timeout=20.0)
+
+    # Resolve provider and model
+    selected_provider = (provider or "").lower()
+    selected_model = model or ""
+
+    if not selected_provider:
+        if selected_model.startswith("@cf/") or "clef" in selected_model.lower():
+            selected_provider = "cloudflare"
+        elif "jev" in selected_model.lower():
+            selected_provider = "openrouter"
+        else:
+            selected_provider = DEFAULT_PROVIDER
+
+    if selected_provider == "cloudflare":
+        if not selected_model or "jev" in selected_model.lower():
+            selected_model = "@cf/cloudflare/clef-flash"
+    elif selected_provider == "openrouter":
+        if not selected_model or "clef" in selected_model.lower():
+            selected_model = "typesafe/jev-1.13"
+
+    async def _call_cloudflare_clef(m_tag: str) -> Dict[str, Any]:
+        cf_tok = cloudflare_token or CLOUDFLARE_API_TOKEN
+        cf_acct = cloudflare_account_id or CLOUDFLARE_ACCOUNT_ID
+        if not cf_tok or not cf_acct:
+            raise ValueError("CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID required for Clef")
+        
+        if m_tag in ("clef-flash", "clef-9b", "@cf/cloudflare/clef-flash"):
+            tag = "@cf/cloudflare/clef-flash"
+            selector = "clef-flash"
+        elif m_tag in ("clef", "clef-27b", "@cf/cloudflare/clef"):
+            tag = "@cf/cloudflare/clef"
+            selector = "clef"
+        else:
+            tag = m_tag if m_tag.startswith("@cf/") else f"@cf/cloudflare/{m_tag}"
+            selector = "clef-flash" if "flash" in tag else "clef"
+
+        url = f"https://api.cloudflare.com/client/v4/accounts/{cf_acct}/ai/run/{tag}"
+        headers = {
+            "Authorization": f"Bearer {cf_tok}",
+            "Content-Type": "application/json"
+        }
+        body = {
+            "model": selector,
+            "state": state,
+            "questions": QUESTIONS_TAXONOMY
+        }
+        resp = await http_client.post(url, json=body, headers=headers, timeout=20.0)
         if resp.status_code != 200:
-            logger.error("Decision API error for %s (%d): %s", email.get("id"), resp.status_code, resp.text)
-            return {"error": resp.text}
-        
+            raise RuntimeError(f"Cloudflare Workers AI error ({resp.status_code}): {resp.text}")
+        raw = resp.json()
+        if not raw.get("success", True):
+            raise RuntimeError(f"Workers AI error payload: {raw.get('errors', raw)}")
+        res_dict = raw.get("result", raw)
+        return res_dict.get("answers", res_dict)
+
+    async def _call_openrouter_jev(m_name: str) -> Dict[str, Any]:
+        key = api_key or OPENROUTER_API_KEY
+        if not key:
+            raise ValueError("OPENROUTER_API_KEY is required for Jev")
+        url = f"{OPENROUTER_BASE_URL}/v1/systemone"
+        headers = {
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json"
+        }
+        body = {
+            "model": m_name,
+            "state": state,
+            "questions": QUESTIONS_TAXONOMY
+        }
+        resp = await http_client.post(url, json=body, headers=headers, timeout=20.0)
+        if resp.status_code != 200:
+            raise RuntimeError(f"OpenRouter Decision API error ({resp.status_code}): {resp.text}")
         data = resp.json()
-        answers = data.get("answers", {})
-        
-        is_irr = float(answers.get("is_irrelevant", {}).get("noul", 0.0))
-        cat = answers.get("category", {}).get("choice", "irrelevant")
-        urg = float(answers.get("urgency", {}).get("score", 0.0))
-        act = float(answers.get("action_required", {}).get("noul", 0.0))
-        
+        return data.get("answers", data)
+
+    answers: Dict[str, Any] = {}
+    used_provider = selected_provider
+    used_model = selected_model
+
+    try:
+        if selected_provider == "cloudflare":
+            answers = await _call_cloudflare_clef(selected_model)
+        elif selected_provider == "openrouter":
+            answers = await _call_openrouter_jev(selected_model)
+        elif selected_provider == "auto":
+            if CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID:
+                try:
+                    used_provider = "cloudflare"
+                    used_model = "@cf/cloudflare/clef-flash"
+                    answers = await _call_cloudflare_clef(used_model)
+                except Exception as cf_err:
+                    logger.warning("Clef failed in auto cascade: %s. Falling back to OpenRouter Jev.", cf_err)
+                    used_provider = "openrouter"
+                    used_model = "typesafe/jev-1.13"
+                    answers = await _call_openrouter_jev(used_model)
+            else:
+                used_provider = "openrouter"
+                used_model = "typesafe/jev-1.13"
+                answers = await _call_openrouter_jev(used_model)
+        else:
+            raise ValueError(f"Unknown decision provider: {selected_provider}")
+
+        is_irr = _parse_noul(answers.get("is_irrelevant"))
+        cat = _parse_choice(answers.get("category"), default="irrelevant")
+        urg = _parse_score(answers.get("urgency"))
+        act = _parse_noul(answers.get("action_required"))
+
         # Enforce allowlist protection: bypass irrelevance marking
         if is_allowlisted(sender_email, sender_name):
             is_irr = 0.0
             if cat == "irrelevant":
                 cat = "work"
-        
+
         return {
             "message_id": str(email.get("id")),
             "category": cat,
             "is_irrelevant_prob": is_irr,
             "urgency_score": urg,
             "action_required_prob": act,
-            "categorized_at": datetime.now(timezone.utc).isoformat()
+            "categorized_at": datetime.now(timezone.utc).isoformat(),
+            "provider": used_provider,
+            "model": used_model
         }
     except Exception as e:
         logger.exception("Classification exception for %s", email.get("id"))
-        return {"error": str(e)}
+        return {"error": str(e), "message_id": str(email.get("id"))}
 
 # ---------------------------------------------------------------------------
 # Router & Endpoints
@@ -540,12 +681,29 @@ async def list_recent_emails(
 @router.post("/api/email-triage/categorize", response_model=CategorizeResponse)
 async def categorize_emails(req: CategorizeRequest):
     """
-    Triggers TypeSafe Jev System One categorization across emails.
+    Triggers System One categorization across emails via Cloudflare Clef or TypeSafe Jev.
     """
-    if not OPENROUTER_API_KEY:
+    target_provider = (req.provider or DEFAULT_PROVIDER).lower()
+    target_model = req.model or (
+        DEFAULT_MODEL if req.provider is None else (
+            "@cf/cloudflare/clef-flash" if target_provider == "cloudflare" else "typesafe/jev-1.13"
+        )
+    )
+
+    if target_provider == "cloudflare" and not (CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID):
+        raise HTTPException(
+            status_code=500,
+            detail="CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID must be configured in environment or cron-system/.env"
+        )
+    if target_provider == "openrouter" and not OPENROUTER_API_KEY:
         raise HTTPException(
             status_code=500,
             detail="OPENROUTER_API_KEY is not configured in environment or cron-system/.env"
+        )
+    if target_provider == "auto" and not ((CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID) or OPENROUTER_API_KEY):
+        raise HTTPException(
+            status_code=500,
+            detail="Neither Cloudflare (Clef) nor OpenRouter (Jev) credentials are configured"
         )
 
     # 1. Fetch current envelopes to get metadata
@@ -574,7 +732,15 @@ async def categorize_emails(req: CategorizeRequest):
 
     async def sem_task(client, env):
         async with semaphore:
-            return await classify_single_email(client, env, OPENROUTER_API_KEY, model=req.model)
+            return await classify_single_email(
+                http_client=client,
+                email=env,
+                api_key=OPENROUTER_API_KEY,
+                model=target_model,
+                provider=target_provider,
+                cloudflare_token=CLOUDFLARE_API_TOKEN,
+                cloudflare_account_id=CLOUDFLARE_ACCOUNT_ID
+            )
 
     async with httpx.AsyncClient(timeout=25.0) as client:
         classified = await asyncio.gather(*(sem_task(client, e) for e in target_envelopes))
