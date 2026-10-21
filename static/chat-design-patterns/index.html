@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat App Design Patterns — Deck</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --bg2: #12151d;
+    --card: #181c26;
+    --border: #262b38;
+    --text: #e6e9f0;
+    --muted: #9aa3b5;
+    --accent: #7c9cff;
+    --accent2: #5eead4;
+    --code: #1e2330;
+    --warn: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; height:100%; background:var(--bg); color:var(--text); font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  .deck { height:100vh; display:flex; flex-direction:column; }
+  .topbar { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; border-bottom:1px solid var(--border); background:var(--bg2); }
+  .topbar h1 { font-size:16px; margin:0; font-weight:600; }
+  .topbar .meta { color:var(--muted); font-size:12px; }
+  .progress { height:3px; background:var(--border); }
+  .progress > div { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .3s; }
+  .stage { flex:1; display:flex; align-items:center; justify-content:center; padding:40px; overflow:auto; }
+  .slide { max-width:1100px; width:100%; animation: fade .35s ease; }
+  @keyframes fade { from { opacity:0; transform:translateY(8px);} to { opacity:1; transform:none;} }
+  .slide h2 { font-size:34px; margin:0 0 8px; letter-spacing:-.02em; }
+  .slide .sub { color:var(--muted); font-size:15px; margin-bottom:24px; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:14px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; }
+  .card h3 { margin:0 0 6px; font-size:15px; color:var(--accent); }
+  .card p { margin:0; font-size:13px; color:var(--muted); line-height:1.5; }
+  .card code { background:var(--code); padding:1px 6px; border-radius:4px; font-size:12px; color:var(--accent2); }
+  ul.patterns { list-style:none; padding:0; margin:0; }
+  ul.patterns li { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:10px; font-size:13px; line-height:1.5; }
+  ul.patterns li b { color:var(--accent); }
+  ul.patterns li code { background:var(--code); padding:1px 6px; border-radius:4px; font-size:12px; color:var(--accent2); }
+  .tag { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; background:var(--code); color:var(--muted); margin-right:6px; }
+  .footer { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; border-top:1px solid var(--border); background:var(--bg2); }
+  .btn { background:var(--card); border:1px solid var(--border); color:var(--text); padding:6px 12px; border-radius:8px; cursor:pointer; font-size:13px; }
+  .btn:hover { border-color:var(--accent); }
+  .counter { color:var(--muted); font-size:13px; }
+  .hero { text-align:center; padding:60px 20px; }
+  .hero h2 { font-size:48px; }
+  .hero .sub { font-size:18px; }
+  .pill { display:inline-block; padding:4px 10px; border-radius:999px; background:var(--accent); color:#0b0d12; font-weight:600; font-size:12px; margin:4px; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media (max-width:760px){ .two-col{grid-template-columns:1fr;} .slide h2{font-size:26px;} }
+  kbd { background:var(--code); border:1px solid var(--border); border-radius:4px; padding:1px 6px; font-size:11px; }
+  .note { color:var(--warn); font-size:12px; margin-top:12px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="topbar">
+    <h1>Chat App Design Patterns</h1>
+    <div class="meta">High-efficiency chat UI · subtle animations · low RAM/CPU</div>
+  </div>
+  <div class="progress"><div id="bar" style="width:0%"></div></div>
+  <div class="stage"><div class="slide" id="slide"></div></div>
+  <div class="footer">
+    <button class="btn" onclick="prev()">← Prev</button>
+    <span class="counter" id="counter">1 / 1</span>
+    <button class="btn" onclick="next()">Next →</button>
+  </div>
+</div>
+<script>
+const slides = [
+  { title: "Chat App Design Patterns", sub: "How T3 Code & Cloudroom GUI stay fast, clean, and subtle", html: `
+    <div class="hero">
+      <h2>Chat App Design Patterns</h2>
+      <div class="sub">Extracted from high-efficiency chat/agent apps</div>
+      <div style="margin-top:20px">
+        <span class="pill">Virtualization</span>
+        <span class="pill">Subtle Animations</span>
+        <span class="pill">Low RAM/CPU</span>
+        <span class="pill">Clean UI</span>
+      </div>
+      <p class="note">Repos analyzed: T3 Code, Cloudroom GUI, Ghostex, T3 Chat (via vercel/ai-chatbot). All cloned.</p>
+    </div>` },
+  { title: "A. Rendering & Virtualization", sub: "Keep RAM/CPU low by mounting only what's visible", html: `
+    <ul class="patterns">
+      <li><b>Virtualized timelines</b> — <code>@legendapp/list</code> (T3) or <code>@tanstack/react-virtual</code> (Cloudroom). Only visible + overscan rows mounted. <span class="tag">RAM</span></li>
+      <li><b>Direct DOM updates</b> — <code>directDomUpdates: true, mode: "position"</code> bypasses React render on scroll. <span class="tag">CPU</span></li>
+      <li><b>useFlushSync: false</b> — avoids forced sync layout during virtualization. <span class="tag">CPU</span></li>
+      <li><b>Cached measurements</b> — <code>measurements.get(key)</code> + <code>recordTimelineMeasurement</code>; no re-measure. <span class="tag">CPU</span></li>
+      <li><b>Interaction pins</b> — keep last 24 interacted items mounted so clicks don't unmount mid-action (Cloudroom). <span class="tag">UX</span></li>
+      <li><b>Scroll-speed detection</b> — mark fast-scroll to skip heavy work (Cloudroom). <span class="tag">CPU</span></li>
+      <li><b>memo/useMemo/useCallback discipline</b> — 80+ in T3 MessagesTimeline. <span class="tag">CPU</span></li>
+      <li><b>Content-visibility / CSS contain</b> — skip layout/paint for off-screen rows (T3 index.css). <span class="tag">GPU</span></li>
+    </ul>` },
+  { title: "B. Animation — subtle & performant", sub: "Animate only when visible, pause otherwise", html: `
+    <ul class="patterns">
+      <li><b>Visible-animation pausing</b> — IntersectionObserver + visibilitychange + prefers-reduced-motion toggle <code>--visible-animation-state</code>/<code>--visible-animation-will-change</code>; default <code>paused</code>; <code>will-change: auto</code> when paused releases GPU layers (T3). <span class="tag">GPU</span></li>
+      <li><b>Panel presence</b> — keep closing content mounted until transition ends, then unmount (T3 <code>usePanelPresence</code>). <span class="tag">UX</span></li>
+      <li><b>Navigation suppression</b> — suppress motion on first paint so restored state shows instantly (T3). <span class="tag">UX</span></li>
+      <li><b>Height transition</b> — animated 0↔intrinsic with shared ResizeObserver, snap on width/visibility/layout-animation (Cloudroom). <span class="tag">CPU</span></li>
+      <li><b>Layout animation coordination</b> — Jotai atom counts in-flight layout animations to coordinate snaps (Cloudroom). <span class="tag">CPU</span></li>
+      <li><b>Web Animations API</b> for one-shot fades clamped to 100ms (T3 <code>observeResponsiveBreakpointFade</code>). <span class="tag">GPU</span></li>
+      <li><b>Reduced motion + coarse pointer</b> awareness gates animations (both). <span class="tag">a11y</span></li>
+      <li><b>Document visibility</b> subscription pauses work when tab hidden (Cloudroom). <span class="tag">CPU</span></li>
+      <li><b>@formkit/auto-animate</b> for subtle list enter/leave (T3). <span class="tag">UX</span></li>
+      <li><b>tw-animate-css</b> (Cloudroom) instead of heavy motion libs. <span class="tag">bundle</span></li>
+    </ul>` },
+  { title: "C. State & Data — CPU discipline", sub: "Avoid redundant work on every token", html: `
+    <ul class="patterns">
+      <li><b>Incremental markdown parsing</b> — cache parsed prefix of closed code fences; O(tail) per token (T3 <code>createIncrementalMarkdownParser</code>). <span class="tag">CPU</span></li>
+      <li><b>Zustand per-domain stores</b> + <code>@effect/atom-react</code> atoms (T3). <span class="tag">state</span></li>
+      <li><b>@tanstack/react-pacer</b> throttling/debouncing (T3). <span class="tag">CPU</span></li>
+      <li><b>Bottom-anchored scroll</b> with throttled anchor capture/restore + settle frames (Cloudroom). <span class="tag">UX</span></li>
+      <li><b>Shared ResizeObserver</b> centralizes observers (Cloudroom). <span class="tag">CPU</span></li>
+      <li><b>supportsScrollAnchoring</b> feature detection (Cloudroom). <span class="tag">compat</span></li>
+      <li><b>Performance benchmarks</b> for hot paths (T3 <code>performance.bench.ts</code>). <span class="tag">perf</span></li>
+      <li><b>React 19 useEffectEvent</b> for stable handlers without re-subscribing (T3). <span class="tag">CPU</span></li>
+    </ul>` },
+  { title: "D. Architecture", sub: "Shared, typed, contracts-first", html: `
+    <div class="two-col">
+      <div class="card"><h3>Monorepo shared packages</h3><p><code>shared-ui</code>, <code>core-ui</code>, <code>thread-view</code> reused across apps (Cloudroom).</p></div>
+      <div class="card"><h3>Contracts-first types</h3><p>Shared via workspace packages; typed errors/streams via Effect (T3).</p></div>
+      <div class="card"><h3>Radix primitives</h3><p>Accessible dialog/popover/etc. without heavy deps (Cloudroom).</p></div>
+      <div class="card"><h3>Content containment</h3><p>CSS <code>contain</code>/<code>content-visibility</code> for off-screen rows (T3).</p></div>
+    </div>` },
+  { title: "E. Ghostex (Rust/GPUI native)", sub: "Native agent workspace, Rust core + web settings UI", html: `
+    <ul class="patterns">
+      <li><b>CSS scroll-driven animations</b> — <code>animation-timeline: scroll()</code> for scroll-fade masks; compositor, zero JS. <span class="tag">GPU</span></li>
+      <li><b>Registered @property variables</b> — typed syntax enables cheap interpolation. <span class="tag">GPU</span></li>
+      <li><b>Custom scrollbars</b> via RAF + ResizeObserver + MutationObserver (throttled). <span class="tag">CPU</span></li>
+      <li><b>Lexical composer</b> with rAF-batched visual updates + ResizeObserver. <span class="tag">CPU</span></li>
+      <li><b>tw-animate-css + shadcn</b> data-state animations instead of heavy motion libs. <span class="tag">bundle</span></li>
+      <li><b>Rust core</b> for hot paths (transcript/state); UI is thin shell. <span class="tag">CPU</span></li>
+      <li><b>Edge-fade scroll masks</b> via @keyframes animating fade variables. <span class="tag">GPU</span></li>
+    </ul>` },
+  { title: "F. T3 Chat / ai-chatbot (Next.js)", sub: "vercel/ai-chatbot substitute for T3Chat", html: `
+    <ul class="patterns">
+      <li><b>use-stick-to-bottom</b> — auto-scroll-to-bottom on new content, no manual scroll math. <span class="tag">UX</span></li>
+      <li><b>memo()</b> on MessageResponse, Reasoning, Shimmer, CodeBlockBody, etc. <span class="tag">CPU</span></li>
+      <li><b>streamdown</b> — incremental markdown render (code/math/mermaid/cjk). <span class="tag">CPU</span></li>
+      <li><b>Resumable streams</b> (resumable-stream + Redis) — no re-gen on reconnect. <span class="tag">UX</span></li>
+      <li><b>react-data-grid</b> — virtualized rows for tabular data. <span class="tag">RAM</span></li>
+      <li><b>framer-motion / motion</b> for entrance/exit animations. <span class="tag">bundle</span></li>
+    </ul>` },
+  { title: "Key files", sub: "Where to read next", html: `
+    <div class="two-col">
+      <div>
+        <h3 style="color:var(--accent)">T3 Code</h3>
+        <ul class="patterns">
+          <li><code>apps/web/src/components/chat/MessagesTimeline.tsx</code></li>
+          <li><code>apps/web/src/markdown-incremental.ts</code></li>
+          <li><code>apps/web/src/lib/visibleAnimation.ts</code></li>
+          <li><code>apps/web/src/panelAnimations.ts</code></li>
+          <li><code>apps/web/src/index.css</code></li>
+          <li><code>apps/web/src/performance.bench.ts</code></li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--accent2)">Cloudroom GUI</h3>
+        <ul class="patterns">
+          <li><code>gui/apps/app/src/components/thread/timeline/TimelineWindowedItems.tsx</code></li>
+          <li><code>gui/apps/app/src/components/ui/height-transition.tsx</code></li>
+          <li><code>gui/apps/app/src/components/ui/bottom-anchored-scroll-body.tsx</code></li>
+          <li><code>gui/apps/app/src/components/ui/layoutAnimationAtoms.ts</code></li>
+          <li><code>gui/apps/app/src/lib/shared-resize-observer.ts</code></li>
+          <li><code>gui/apps/app/src/lib/document-visibility.ts</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top:14px">
+      <div>
+        <h3 style="color:#f59e0b">Ghostex</h3>
+        <ul class="patterns">
+          <li><code>packages/core-ui/styles/shadcn.generated.css</code></li>
+          <li><code>packages/components/ui/app-scrollbars.ts</code></li>
+          <li><code>packages/core-ui/chat/session-chat-lexical-input.tsx</code></li>
+          <li><code>packages/gx-chat-core/src/</code> (Rust)</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:#a78bfa">T3 Chat / ai-chatbot</h3>
+        <ul class="patterns">
+          <li><code>components/ai-elements/conversation.tsx</code></li>
+          <li><code>components/ai-elements/message.tsx</code></li>
+          <li><code>components/ai-elements/code-block.tsx</code></li>
+          <li><code>components/chat/sidebar-history-item.tsx</code></li>
+        </ul>
+      </div>
+    </div>` },
+  { title: "Takeaways", sub: "Apply these to your own chat app", html: `
+    <ul class="patterns">
+      <li><b>Virtualize everything long</b> (messages, threads). Use cached measurements + direct DOM updates.</li>
+      <li><b>Pause animations off-screen</b> via a single shared observer; release GPU layers.</li>
+      <li><b>Parse incrementally</b> when streaming; cache completed boundaries.</li>
+      <li><b>Suppress motion on first paint</b>; keep closing content mounted through its transition.</li>
+      <li><b>Respect reduced-motion &amp; coarse pointers</b>; gate animations on visibility.</li>
+      <li><b>Benchmark hot paths</b> (sort, parse) with realistic N.</li>
+      <li><b>Use contracts-first shared packages</b> to keep bundles small and typed.</li>
+    </ul>` }
+];
+let i = 0;
+const slideEl = document.getElementById('slide');
+const counter = document.getElementById('counter');
+const bar = document.getElementById('bar');
+function render() {
+  const s = slides[i];
+  slideEl.innerHTML = `<h2>${s.title}</h2><div class="sub">${s.sub}</div>${s.html}`;
+  counter.textContent = (i+1) + ' / ' + slides.length;
+  bar.style.width = ((i+1)/slides.length*100) + '%';
+}
+function next(){ if(i < slides.length-1){ i++; render(); } }
+function prev(){ if(i > 0){ i--; render(); } }
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight' || e.key===' '){ next(); }
+  if(e.key==='ArrowLeft'){ prev(); }
+});
+render();
+</script>
+</body>
+</html>
