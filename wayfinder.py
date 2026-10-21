@@ -33,6 +33,45 @@ DEFAULT_REPOS = [
 WAYFINDER_HTML_PATH = Path(__file__).parent / "static" / "wayfinder" / "index.html"
 DEFAULT_CACHE_TTL = 300.0  # 5 minutes
 
+# Dashboard visibility rules. A Wayfinder map is tagged `wayfinder:map`, or
+# carries the legacy `wayfinder` label. Child tickets also carry the legacy
+# `wayfinder` label, so they are excluded by their own ticket label.
+WAYFINDER_MAP_LABEL = "wayfinder:map"
+WAYFINDER_LEGACY_MAP_LABEL = "wayfinder"
+WAYFINDER_TICKET_LABELS = {
+    "afk",
+    "hitl",
+    "task",
+    "ticket",
+    "research",
+    "prototype",
+    "grilling",
+}
+
+
+def is_wayfinder_map(labels: List[str]) -> bool:
+    """Return True when labels identify a Wayfinder map (not a child ticket).
+
+    Maps are tagged `wayfinder:map`, or the legacy `wayfinder` label. Tickets
+    such as AFK/HITL/research also carry `wayfinder` plus a ticket label
+    (`afk`, `hitl`, `wayfinder:task`, ...), so those are filtered out.
+    Unlabelled items are kept for mocked/legacy payloads.
+    """
+    names = {str(label).strip().lower() for label in labels if label}
+
+    if WAYFINDER_MAP_LABEL in names:
+        return True
+    if not names:
+        return True
+    if WAYFINDER_LEGACY_MAP_LABEL not in names:
+        return False
+
+    namespaced_ticket_labels = {
+        name for name in names if name.startswith("wayfinder:")
+    } - {WAYFINDER_MAP_LABEL}
+    ticket_labels = WAYFINDER_TICKET_LABELS | namespaced_ticket_labels
+    return not (names & ticket_labels)
+
 
 # ---------------------------------------------------------------------------
 # Pydantic Models
@@ -383,7 +422,6 @@ class WayfinderService:
 
         # Build Map Summaries
         summaries: List[WayfinderMapSummary] = []
-        wayfinder_labels = {"wayfinder", "wayfinder:map"}
         for item in unique_issues.values():
             body = item.get("body") or ""
             parsed = parse_wayfinder_body(body)
@@ -393,8 +431,9 @@ class WayfinderService:
                 for label in item.get("labels", [])
             ]
 
-            # Keep issues tagged with a wayfinder tag (or unlabelled mocks).
-            if labels and not (set(labels) & wayfinder_labels):
+            # Only map issues belong on the dashboard; child tickets carry the
+            # legacy `wayfinder` label too and must not appear as maps.
+            if not is_wayfinder_map(labels):
                 continue
 
             summary = WayfinderMapSummary(

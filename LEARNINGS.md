@@ -45,3 +45,14 @@ search queries cost 3 of 10/min. Consequences baked into `pull_requests.py`:
   and `/wayfinder` are not covered (widening the scope needs a
   `Service-Worker-Allowed` header and re-audits the cache-first navigation
   handler — deliberately not done)
+
+## A GitHub label can mean two different things
+
+`wayfinder` is used as the legacy **map** label (e.g. Vela #425) but every
+child ticket (AFK/HITL/research/task) carries it too, so a plain
+`label:wayfinder` test puts tickets on the dashboard as maps. Map-only
+visibility needs the ticket labels as a veto: `wayfinder:map` wins outright,
+and a legacy `wayfinder` issue is a map only when it has no `afk`, `hitl`,
+`task`, `ticket`, `research`, `prototype`, `grilling`, or non-map `wayfinder:*`
+label. `parent:<n>` labels are NOT safe discriminators — map issues such as
+Vela #403 also carry them.

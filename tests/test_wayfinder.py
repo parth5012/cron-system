@@ -14,6 +14,7 @@ from wayfinder import (
     WayfinderResponse,
     RateLimitStatus,
     WayfinderService,
+    is_wayfinder_map,
     parse_wayfinder_body,
 )
 from main import app
@@ -277,3 +278,100 @@ class TestWayfinderServiceAndEndpoints:
         res = client.get("/wayfinder")
         assert res.status_code == 200
         assert "Custom Wayfinder UI" in res.text
+
+
+def _make_issue(
+    issue_id: int,
+    number: int,
+    labels: list,
+    title: str = "Issue",
+    body: str = "## Destination\nShip it",
+):
+    return {
+        "id": issue_id,
+        "number": number,
+        "title": title,
+        "state": "open",
+        "html_url": f"https://github.com/parth5012/Vela/issues/{number}",
+        "repository_url": "https://api.github.com/repos/parth5012/Vela",
+        "body": body,
+        "labels": [{"name": name} for name in labels],
+        "created_at": "2026-10-01T10:00:00Z",
+        "updated_at": "2026-10-02T12:00:00Z",
+    }
+
+
+class TestWayfinderMapLabelFiltering:
+    """Only map issues (`wayfinder:map` or legacy `wayfinder`) may render."""
+
+    def test_accepts_namespaced_map_label(self):
+        assert is_wayfinder_map(["wayfinder:map"]) is True
+
+    def test_accepts_legacy_wayfinder_label_on_map(self):
+        assert is_wayfinder_map(["wayfinder", "on-device"]) is True
+
+    @pytest.mark.parametrize(
+        "ticket_label",
+        [
+            "afk",
+            "hitl",
+            "wayfinder:task",
+            "wayfinder:research",
+            "wayfinder:prototype",
+            "wayfinder:grilling",
+            "wayfinder:ticket",
+            "wayfinder:afk",
+            "wayfinder:hitl",
+        ],
+    )
+    def test_rejects_child_ticket_labels(self, ticket_label):
+        assert is_wayfinder_map(["wayfinder", ticket_label]) is False
+
+    def test_map_label_wins_over_ticket_label(self):
+        assert is_wayfinder_map(["wayfinder:map", "wayfinder:task"]) is True
+
+    def test_keeps_unlabelled_issues_for_mocks(self):
+        assert is_wayfinder_map([]) is True
+
+    def test_rejects_unrelated_labels(self):
+        assert is_wayfinder_map(["bug", "on-device"]) is False
+
+
+class TestDashboardTicketExclusion:
+    @pytest.mark.asyncio
+    async def test_service_excludes_child_tickets_from_maps(self, monkeypatch):
+        service = WayfinderService(cache_ttl=300)
+        import httpx
+
+        headers = {
+            "x-ratelimit-limit": "60",
+            "x-ratelimit-remaining": "55",
+            "x-ratelimit-reset": "1700000000",
+        }
+        payload = {
+            "total_count": 5,
+            "incomplete_results": False,
+            "items": [
+                _make_issue(1, 425, ["wayfinder", "on-device"], "Map 1: On-device AI"),
+                _make_issue(2, 424, ["wayfinder", "hitl", "on-device"], "WF-01 HITL: grilling"),
+                _make_issue(3, 422, ["wayfinder", "afk", "on-device"], "WF-04 AFK Research"),
+                _make_issue(4, 400, ["wayfinder:map"], "Map: Evals"),
+                _make_issue(5, 330, ["wayfinder:research"], "Research ticket"),
+            ],
+        }
+
+        async def mock_get(self_client, url, *args, **kwargs):
+            return httpx.Response(
+                200,
+                json=payload,
+                headers=headers,
+                request=httpx.Request("GET", str(url)),
+            )
+
+        monkeypatch.setattr(httpx.AsyncClient, "get", mock_get)
+
+        data = await service.get_maps(refresh=True)
+        numbers = sorted(m.number for m in data.maps)
+
+        assert numbers == [400, 425]
+        assert data.total_maps == 2

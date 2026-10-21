@@ -82,3 +82,12 @@ values instead of keeping the first hit. Regression tests:
   `TECH_DEBT.md`.
 
 - wayfinder: pull latest remote; update WayfinderService to fetch issues tagged `wayfinder` in addition to `wayfinder:map` (search + per-repo fallback), dedup by id, filter to wayfinder-tagged issues. Unit tests green (13 passed). E2E wall-clock latency failures are pre-existing flaky (TECH_DEBT.md).
+
+- wayfinder: dashboard showed AFK/HITL/research/task child tickets because they
+  also carry the legacy `wayfinder` label. Fixed `WayfinderService` visibility
+  with `is_wayfinder_map(labels)`: `wayfinder:map` always renders; legacy
+  `wayfinder` renders only when no ticket label (`afk`, `hitl`, `task`,
+  `ticket`, `research`, `prototype`, `grilling`, or any non-map `wayfinder:*`)
+  is present. Unit tests 28/28 green; live sweep against GitHub now returns only
+  maps (legacy Vela #425 kept). E2E suite 6/6 green on rerun; the two wall-clock
+  failures in the full run are the known flaky TECH_DEBT.md assertions.
