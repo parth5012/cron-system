@@ -80,3 +80,5 @@ values instead of keeping the first hit. Regression tests:
   still 0.76s) after sustained unauthenticated use, which blows the hard-coded
   15s/25ms wall-clock bounds in `tests/test_e2e_wayfinder.py`. Recorded in
   `TECH_DEBT.md`.
+
+- wayfinder: pull latest remote; update WayfinderService to fetch issues tagged `wayfinder` in addition to `wayfinder:map` (search + per-repo fallback), dedup by id, filter to wayfinder-tagged issues. Unit tests green (13 passed). E2E wall-clock latency failures are pre-existing flaky (TECH_DEBT.md).

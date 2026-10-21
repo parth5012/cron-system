@@ -299,7 +299,12 @@ class WayfinderService:
         error_msg: Optional[str] = None
 
         search_base = "https://api.github.com/search/issues"
-        search_query = f"label:wayfinder:map user:{owner}"
+        # Consider both the namespaced `wayfinder:map` tag and the broader
+        # `wayfinder` tag so issues labeled either way surface in the dashboard.
+        search_queries = [
+            f"label:wayfinder:map user:{owner}",
+            f"label:wayfinder user:{owner}",
+        ]
 
         async with httpx.AsyncClient(timeout=timeout) as client:
             search_response = None
@@ -307,34 +312,42 @@ class WayfinderService:
                 # Paginate search (per_page=100, up to 5 pages) — first page
                 # alone misses repos when total >30 due to ranking.
                 search_ok = False
-                for page in range(1, 6):
-                    search_response = await client.get(
-                        search_base,
-                        headers=headers,
-                        params={
-                            "q": search_query,
-                            "per_page": 100,
-                            "page": page,
-                        },
-                    )
-                    rate_limit_status = self._extract_rate_limit(
-                        search_response.headers
-                    )
+                for search_query in search_queries:
+                    for page in range(1, 6):
+                        search_response = await client.get(
+                            search_base,
+                            headers=headers,
+                            params={
+                                "q": search_query,
+                                "per_page": 100,
+                                "page": page,
+                            },
+                        )
+                        rate_limit_status = self._extract_rate_limit(
+                            search_response.headers
+                        )
 
-                    if search_response.status_code == 200:
-                        data = search_response.json()
-                        page_items = data.get("items", [])
-                        issues.extend(page_items)
-                        search_ok = True
-                        # Last page when fewer than full page returned
-                        if len(page_items) < 100:
+                        if search_response.status_code == 200:
+                            data = search_response.json()
+                            page_items = data.get("items", [])
+                            issues.extend(page_items)
+                            search_ok = True
+                            # Last page when fewer than full page returned
+                            if len(page_items) < 100:
+                                break
+                        elif search_response.status_code in (403, 429):
+                            error_msg = "GitHub Search API rate limited. Attempting repository fallback."
                             break
-                    elif search_response.status_code in (403, 429):
-                        error_msg = "GitHub Search API rate limited. Attempting repository fallback."
+                        else:
+                            error_msg = f"GitHub Search API returned status {search_response.status_code}: {search_response.text}"
+                            break
+                        if search_response is not None and search_response.status_code in (403, 429):
+                            # Stop trying further label queries once rate limited.
+                            break
+                    if search_response is not None and search_response.status_code in (403, 429):
+                        # Stop trying further label queries once rate limited.
                         break
-                    else:
-                        error_msg = f"GitHub Search API returned status {search_response.status_code}: {search_response.text}"
-                        break
+
 
                 # Union with direct repo queries to guarantee DEFAULT_REPOS
                 # coverage (search ranking can omit repos on page 1).
@@ -370,6 +383,7 @@ class WayfinderService:
 
         # Build Map Summaries
         summaries: List[WayfinderMapSummary] = []
+        wayfinder_labels = {"wayfinder", "wayfinder:map"}
         for item in unique_issues.values():
             body = item.get("body") or ""
             parsed = parse_wayfinder_body(body)
@@ -378,6 +392,10 @@ class WayfinderService:
                 label["name"] if isinstance(label, dict) else str(label)
                 for label in item.get("labels", [])
             ]
+
+            # Keep issues tagged with a wayfinder tag (or unlabelled mocks).
+            if labels and not (set(labels) & wayfinder_labels):
+                continue
 
             summary = WayfinderMapSummary(
                 id=item["id"],
@@ -426,21 +444,25 @@ class WayfinderService:
             if r.strip()
         ]
         repos_to_query = live_repos if live_repos else DEFAULT_REPOS
+        # Query both the namespaced `wayfinder:map` tag and the broader
+        # `wayfinder` tag so issues labeled either way are captured.
+        wayfinder_labels = ("wayfinder:map", "wayfinder")
         for repo_name in repos_to_query:
             repo_slug = (
                 repo_name
                 if "/" in repo_name
                 else f"{GITHUB_OWNER}/{repo_name}"
             )
-            repo_url = f"https://api.github.com/repos/{repo_slug}/issues?labels=wayfinder:map&state=all"
-            try:
-                resp = await client.get(repo_url, headers=headers)
-                if resp.status_code == 200:
-                    data = resp.json()
-                    if isinstance(data, list):
-                        all_items.extend(data)
-            except Exception:
-                continue
+            for label in wayfinder_labels:
+                repo_url = f"https://api.github.com/repos/{repo_slug}/issues?labels={label}&state=all"
+                try:
+                    resp = await client.get(repo_url, headers=headers)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        if isinstance(data, list):
+                            all_items.extend(data)
+                except Exception:
+                    continue
         return all_items
 
     async def get_maps(self, refresh: bool = False) -> WayfinderResponse:
@@ -798,7 +820,7 @@ FALLBACK_HTML = """<!DOCTYPE html>
       grid.innerHTML = '';
 
       if (!maps || maps.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><h3>No Wayfinder Maps Found</h3><p style="margin-top:8px;">Issues labeled <code>wayfinder:map</code> will appear here automatically.</p></div>';
+        grid.innerHTML = '<div class="empty-state"><h3>No Wayfinder Maps Found</h3><p style="margin-top:8px;">Issues labeled <code>wayfinder:map</code> or <code>wayfinder</code> will appear here automatically.</p></div>';
         return;
       }
 
@@ -909,7 +931,7 @@ async def get_wayfinder_data(
     )
 ):
     """
-    Returns aggregated Wayfinder maps from GitHub issues labeled `wayfinder:map`.
+    Returns aggregated Wayfinder maps from GitHub issues labeled `wayfinder:map` or `wayfinder`.
     Includes parsed destinations, decisions so far, notes, child tickets, and rate limits.
     """
     service = get_wayfinder_service()
