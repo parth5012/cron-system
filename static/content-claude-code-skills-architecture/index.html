@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Claude Code Skills Architecture — Social Content Bundle</title>
+  <title>Claude Code Skills — X Post Options</title>
   <style>
     :root {
       --bg: #0d1117;
@@ -29,7 +29,7 @@
       padding: 2.5rem 1.25rem;
     }
     .container {
-      max-width: 920px;
+      max-width: 880px;
       margin: 0 auto;
     }
     header {
@@ -76,76 +76,47 @@
       align-items: center;
       gap: 0.5rem;
     }
-    h3 {
-      color: var(--text-bright);
-      font-size: 1.1rem;
-      margin-top: 1.2rem;
-      margin-bottom: 0.5rem;
-    }
-    .tweet-card {
+    .option-card {
       background: #090d13;
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 1.2rem;
-      margin-bottom: 1rem;
+      padding: 1.4rem;
+      margin-bottom: 1.5rem;
     }
-    .tweet-header {
-      font-weight: 600;
+    .option-title {
+      font-size: 1.1rem;
+      font-weight: 700;
       color: var(--accent-purple);
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.8rem;
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
+      align-items: center;
     }
-    .tweet-body {
+    .tweet-block {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+    .tweet-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-orange);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .tweet-content {
       white-space: pre-wrap;
       font-size: 0.98rem;
       color: var(--text-bright);
+      line-height: 1.55;
     }
-    .carousel-slide {
-      background: #090d13;
-      border-left: 4px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-      padding: 1rem 1.25rem;
-      margin-bottom: 1rem;
-    }
-    .slide-title {
-      font-weight: 700;
-      color: var(--text-bright);
-      margin-bottom: 0.4rem;
-    }
-    .cue-box {
-      background: #090d13;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.9rem;
-      margin-bottom: 0.8rem;
-    }
-    .cue-time {
-      color: var(--accent-orange);
-      font-weight: 700;
-      font-size: 0.85rem;
-      margin-bottom: 0.3rem;
-    }
-    .cue-visual {
-      font-style: italic;
+    .char-count {
+      font-size: 0.78rem;
       color: #8b949e;
-      font-size: 0.9rem;
-      margin-bottom: 0.4rem;
-    }
-    .cue-spoken {
-      color: var(--text-bright);
-      font-weight: 500;
-    }
-    .code-block {
-      background: #090d13;
-      padding: 1rem;
-      border-radius: 6px;
-      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-      font-size: 0.88rem;
-      color: var(--accent-green);
-      white-space: pre-wrap;
-      border: 1px solid var(--border);
+      float: right;
     }
     a {
       color: var(--accent);
@@ -159,174 +130,112 @@
 <body>
   <div class="container">
     <header>
-      <h1>Claude Code Skills: 5 Deterministic Workflows</h1>
+      <h1>Claude Code Skills: 5 X Post Options</h1>
       <p style="color: #8b949e; margin: 0.25rem 0 0.75rem 0;">
         Source: <a href="https://www.youtube.com/watch?v=AG2BxDXt2po" target="_blank">Maddy Zhang — 5 Claude Code skills I use every single day</a>
       </p>
       <div>
         <span class="badge green">Account 2: Parth (@ffgurug)</span>
-        <span class="badge purple">AI Engineering</span>
-        <span class="badge">Claude Code</span>
-        <span class="badge orange">Agent Skills</span>
+        <span class="badge purple">X / Twitter Exclusive</span>
+        <span class="badge orange">Standalone or 1 Reply</span>
       </div>
     </header>
 
     <div class="section">
-      <h2>1. Positioning & Metadata</h2>
-      <p><strong>Niche:</strong> AI Coding Agents, Terminal Workflows & Software Engineering Automation</p>
-      <p><strong>Target Audience:</strong> Backend Developers, Full-Stack Engineers, AI OS Builders, Tech Leads</p>
-      <p><strong>Monetization Angle:</strong> Packaging deterministic agent harnesses and custom organizational skills (<code>SKILL.md</code>) for engineering teams transitioning to terminal agents ($2,500–$5,000 implementation consulting / retainer).</p>
-      
-      <h3>Viral Angles</h3>
-      <ol>
-        <li><strong>The Tab-Autocomplete Trap:</strong> Why using terminal agents with bare prompts gets you less than 10% of their actual capability and causes messy, unverified tech debt.</li>
-        <li><strong>The Verification Paradox in AI TDD:</strong> Why letting an LLM write code and then write tests creates confirmation bias (tests designed to pass against existing bugs). True leverage requires a strict Red-Green-Refactor harness.</li>
-        <li><strong>The Harness as the True Moat:</strong> Model weights are a commodity. The real competitive advantage for software teams is codifying team knowledge, ADRs, and review checklists into reusable skills.</li>
-      </ol>
-    </div>
+      <h2>Select Your Preferred Post Angle</h2>
 
-    <div class="section">
-      <h2>2. X (Twitter) Thread</h2>
-      
-      <div class="tweet-card">
-        <div class="tweet-header"><span>Tweet 1/7 (Hook)</span><span>250 chars</span></div>
-        <div class="tweet-body">1/7 Most engineers use Claude Code as a fast autocomplete tool.
+      <!-- Option 1 -->
+      <div class="option-card">
+        <div class="option-title">
+          <span>Option 1: The Autocomplete Trap</span>
+          <span class="badge">Standalone Post</span>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-label">Main Tweet <span class="char-count">264 / 280 chars</span></div>
+          <div class="tweet-content">Most devs use terminal coding agents like glorified autocomplete. You give it a prompt, get 200 lines of unverified code, and spend an hour fixing edge cases.
 
-If you don't use skills, you are getting maybe 10% of what the agent can actually do.
-
-Here are 5 skills that turn Claude Code from a raw code generator into a senior-level teammate: 🧵👇</div>
+Without deterministic skills in your harness, you are using maybe 10% of what the agent can actually do.</div>
+        </div>
       </div>
 
-      <div class="tweet-card">
-        <div class="tweet-header"><span>Tweet 2/7 (Front-End Design)</span><span>273 chars</span></div>
-        <div class="tweet-body">2/7 1. Front-End Design
+      <!-- Option 2 -->
+      <div class="option-card">
+        <div class="option-title">
+          <span>Option 2: The TDD Confirmation Bias Trap</span>
+          <span class="badge orange">Post + 1 Reply</span>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-label">Main Tweet <span class="char-count">224 / 280 chars</span></div>
+          <div class="tweet-content">The biggest flaw with AI coding agents: if you let them write code and tests together, they write tests designed to pass against their own bugs.
 
-Raw LLMs love generic padding, gratuitous hover states, and that purple gradient that has become the tell of AI interfaces.
+It creates an illusion of correctness while breaking edge cases in production.</div>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-label">Reply 1 <span class="char-count">248 / 280 chars</span></div>
+          <div class="tweet-content">The fix is enforcing a strict TDD skill:
 
-This skill injects design tokens, visual hierarchy rules, and uses headless browser DOM checks so the UI looks human-built.</div>
+1. Agent writes the failing test first (RED)
+2. Implements minimal code to pass (GREEN)
+3. Refactors with an 80%+ coverage check
+
+Don't let the model grade its own homework without deterministic guardrails.</div>
+        </div>
       </div>
 
-      <div class="tweet-card">
-        <div class="tweet-header"><span>Tweet 3/7 (Grill With Docs)</span><span>268 chars</span></div>
-        <div class="tweet-body">3/7 2. Grill With Docs
+      <!-- Option 3 -->
+      <div class="option-card">
+        <div class="option-title">
+          <span>Option 3: Architecture Before Code</span>
+          <span class="badge orange">Post + 1 Reply</span>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-label">Main Tweet <span class="char-count">240 / 280 chars</span></div>
+          <div class="tweet-content">Junior devs rush to write code. Senior devs read architecture docs first.
 
-Before touching a single file, this skill reads your existing ADRs, plugins, and domain docs.
+Coding agents do the same: without constraints, they start editing files without knowing your project invariants, creating tech debt you only notice two weeks later.</div>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-label">Reply 1 <span class="char-count">225 / 280 chars</span></div>
+          <div class="tweet-content">We fixed this by adding a pre-execution interrogation skill.
 
-Then it interrogates your architectural assumptions. It catches naming collisions and broken invariants before they become tech debt two weeks later.</div>
+Before touching a file, the agent reads existing ADRs and domain models, then questions your architectural choices. It stops bad implementations before they start.</div>
+        </div>
       </div>
 
-      <div class="tweet-card">
-        <div class="tweet-header"><span>Tweet 4/7 (TDD Workflow)</span><span>277 chars</span></div>
-        <div class="tweet-body">4/7 3. TDD Workflow
+      <!-- Option 4 -->
+      <div class="option-card">
+        <div class="option-title">
+          <span>Option 4: Model vs Harness</span>
+          <span class="badge">Standalone Post</span>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-label">Main Tweet <span class="char-count">243 / 280 chars</span></div>
+          <div class="tweet-content">Everyone obsesses over which frontier model ranks #1 on SWE-bench this week.
 
-Without strict constraints, agents write the feature first, then write tests designed to pass against their own implementation.
-
-That defeats testing. This skill enforces RED -> GREEN -> REFACTOR: failing tests first, real code second, 80%+ coverage check.</div>
+In practice, the model is a commodity. The real difference between shipping clean software and drowning in AI slop is your local skill harness and verification loop.</div>
+        </div>
       </div>
 
-      <div class="tweet-card">
-        <div class="tweet-header"><span>Tweet 5/7 (Senior Code Reviewer)</span><span>266 chars</span></div>
-        <div class="tweet-body">5/7 4. Senior Code Reviewer
+      <!-- Option 5 -->
+      <div class="option-card">
+        <div class="option-title">
+          <span>Option 5: The Security PR Auditor</span>
+          <span class="badge orange">Post + 1 Reply</span>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-label">Main Tweet <span class="char-count">240 / 280 chars</span></div>
+          <div class="tweet-content">Ran an automated security reviewer skill on an internal auth PR.
 
-Run this on any PR touching auth or infra.
+It caught something the team missed: a CSRF bypass relying on gateway proxy assumptions that worked in production, but silently broke in staging because the proxy was absent.</div>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-label">Reply 1 <span class="char-count">246 / 280 chars</span></div>
+          <div class="tweet-content">Standard linters catch syntax errors. A disciplined review skill inspects trust boundaries, unconstrained string types, and audit logging.
 
-In a recent Kibana test, it flagged a CSRF validation bypass on bearer tokens, caught unconstrained string types, and warned about missing audit logs that would have silently broken in staging.</div>
+Codifying your senior staff engineer's review checklist into a reusable skill pays for itself immediately.</div>
+        </div>
       </div>
 
-      <div class="tweet-card">
-        <div class="tweet-header"><span>Tweet 6/7 (Skill Creator)</span><span>265 chars</span></div>
-        <div class="tweet-body">6/7 5. Skill Creator (The Meta Lever)
-
-Don't write markdown files by hand.
-
-Skill Creator interviews you on your specific engineering workflow, extracts edge cases, and compiles it into a portable SKILL.md. Once written, every future session inherits that standard.</div>
-      </div>
-
-      <div class="tweet-card">
-        <div class="tweet-header"><span>Tweet 7/7 (Conclusion & CTA)</span><span>197 chars</span></div>
-        <div class="tweet-body">7/7 The model isn't the moat. Your deterministic engineering harnesses, constraints, and custom skills are.
-
-What skills have you baked into your local coding agent setup? Drop your workflow below!</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>3. Instagram Carousel (5 Slides)</h2>
-      
-      <div class="carousel-slide">
-        <div class="slide-title">Slide 1 — Cover Hook</div>
-        <p><strong>Headline:</strong> You're Using Claude Code Wrong.</p>
-        <p><strong>Subhead:</strong> Why raw generation only gives you 10% of the value, and how skills turn it into a true engineering partner.</p>
-      </div>
-
-      <div class="carousel-slide">
-        <div class="slide-title">Slide 2 — The TDD Trap</div>
-        <p><strong>Headline:</strong> Why AI Agents Fail at Testing</p>
-        <p>When agents generate code and tests together, they introduce confirmation bias: writing tests structurally incapable of failing. Enforce Red-Green-Refactor with the TDD skill: failing tests first, real implementation second, 80%+ coverage verification.</p>
-      </div>
-
-      <div class="carousel-slide">
-        <div class="slide-title">Slide 3 — Pre-Execution Interrogation</div>
-        <p><strong>Headline:</strong> Grill With Docs</p>
-        <p>Junior engineers rush to write code. Senior engineers read ADRs and domain models first. The <code>grill-with-docs</code> skill maps existing plugins and interrogates your architectural choices before touching any files.</p>
-      </div>
-
-      <div class="carousel-slide">
-        <div class="slide-title">Slide 4 — Security-Grade PR Review</div>
-        <p><strong>Headline:</strong> Automated Senior Code Review</p>
-        <p>Beyond linter checks: analyzing security-critical changes in auth middleware. Flagging CSRF bypasses, unconstrained string invariants, and missing staging audit logs before you merge.</p>
-      </div>
-
-      <div class="carousel-slide">
-        <div class="slide-title">Slide 5 — The Compounding Asset</div>
-        <p><strong>Headline:</strong> Build Skills That Build Skills</p>
-        <p>Models get swapped every few months. Reusable engineering skills remain permanent. Package your team's best habits into <code>SKILL.md</code> workflows. Your harness is your competitive edge.</p>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>4. Instagram Caption</h2>
-      <div class="code-block">Most developers treat terminal coding agents like glorified autocomplete. You give it a prompt, it dumps 200 lines of unverified code, and you spend the next hour cleaning up subtle edge cases.
-
-The bottleneck was never the raw intelligence of the model. It is the lack of domain constraints.
-
-Without explicit skills, agents commit classic anti-patterns: writing tests that pass against their own buggy code, generating generic interfaces with awkward spacing, and ignoring team architecture documents.
-
-By wrapping Claude Code in deterministic skills—like automated TDD, pre-execution domain grilling, and security-focused PR reviews—you turn a fast code generator into a disciplined engineering peer.
-
-The developers who pull ahead this year aren't the ones writing better prompts. They're the ones building structured skill harnesses that force the agent to follow real software engineering discipline.
-
-What constraints or workflows have you added to your agent setup?
-
-#SoftwareEngineering #ClaudeCode #AIEngineering #CodingAgents #FullStackDev #WebDevelopment #DevOps #TechLead #ProgrammingTips #CleanCode #TestDrivenDevelopment #PythonDeveloper #BackendEngineering #DeveloperTools #Anthropic</div>
-    </div>
-
-    <div class="section">
-      <h2>5. 30-Second Reel Script</h2>
-      
-      <div class="cue-box">
-        <div class="cue-time">[0:00 - 0:05] Hook</div>
-        <div class="cue-visual">Talking head with terminal split screen</div>
-        <div class="cue-spoken">"If you use Claude Code without custom skills, you are getting maybe 10% of what it can actually do."</div>
-      </div>
-
-      <div class="cue-box">
-        <div class="cue-time">[0:05 - 0:13] The Trap</div>
-        <div class="cue-visual">Fast screen capture of unverified code being generated</div>
-        <div class="cue-spoken">"Most devs treat it like fast autocomplete. But without constraints, it writes sloppy code and builds fake tests that pass against its own bugs."</div>
-      </div>
-
-      <div class="cue-box">
-        <div class="cue-time">[0:13 - 0:22] The Fix</div>
-        <div class="cue-visual">Zoom in on SKILL.md definition and a green terminal test pass</div>
-        <div class="cue-spoken">"Top engineers use skills for real discipline: enforcing test-driven development, grilling architecture docs first, and catching security leaks in PRs."</div>
-      </div>
-
-      <div class="cue-box">
-        <div class="cue-time">[0:22 - 0:30] CTA</div>
-        <div class="cue-visual">Direct to camera with overlay text</div>
-        <div class="cue-spoken">"Stop relying on raw prompts. Build structured skills for your stack. Save this and level up your agent workflow."</div>
-      </div>
     </div>
   </div>
 </body>
