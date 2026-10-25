@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Machine Learning Triad — Swiss Industrial Blueprint</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --paper:#F8FAFC; --card-bg:#FFFFFF; --card-border:#CBD5E1; --ink:#0F172A; --muted:#475569; --accent:#1D4ED8; --accent-light:rgba(29,78,216,0.08); --accent-border:rgba(29,78,216,0.28); --secondary-accent:#EA580C; --secondary-light:rgba(234,88,12,0.08); --tertiary-accent:#0D9488; --tertiary-light:rgba(13,148,136,0.08); --tag-bg:#F1F5F9; --tag-ink:#1E293B; --font-display:'Plus Jakarta Sans',-apple-system,sans-serif; --font-body:'Inter',-apple-system,sans-serif; --font-mono:'Fira Code','JetBrains Mono',monospace; --grid-line:#CBD5E1; --pill-border:1px solid #94A3B8; }
+    *{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;background:var(--paper);font-family:var(--font-body)}
+    .deck-viewport{position:fixed;inset:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#f1f5f9}
+    .deck-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;background:var(--paper);overflow:hidden}
+    .slide{position:absolute;inset:0;width:1920px;height:1080px;padding:80px 100px;display:flex;flex-direction:column;justify-content:space-between;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease;background:var(--paper);color:var(--ink)}
+    .slide.active{opacity:1;visibility:visible;pointer-events:auto;z-index:2}
+    .eyebrow{font-size:16px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-weight:700;display:flex;align-items:center;gap:8px}
+    .eyebrow::before{content:"";display:inline-block;width:6px;height:6;border-radius:50%;background:var(--accent)}
+    h1.display{font-family:var(--font-display);font-size:72px;line-height:1.05;letter-spacing:-1.5px;font-weight:400;margin-top:16px;color:var(--ink)}
+    p.subtitle{font-size:18px;line-height:1.4;color:var(--muted);margin-top:8px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px;flex:1;align-content:center}
+    @media(max-width:768px){.grid-3{grid-template-columns:repeat(2,1fr);gap:16px}}
+    @media(max-width:480px){.grid-3{grid-template-columns:1fr}}
+    .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 8px rgba(15,23,42,0.04),0 1px 2px rgba(15,23,42,0.06)}
+    .card h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--accent)}
+    .card p{font-size:13px;line-height:1.5;color:var(--muted)}
+    .slide-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--grid-line);padding-top:16px;font-size:12px;color:var(--muted)}
+    .controls{position:fixed;bottom:20px;right:20px;z-index:100;display:flex;gap:8px}
+    .ctrl-btn{background:rgba(15,23,42,0.8);color:#fff;border:none;border-radius:6px;width:36px;height:36px;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(6px)}
+    @page{size:1920px 1080px;margin:0}
+    @media print{
+      html,body{width:1920px!important;height:auto!important;margin:0!important;overflow:visible!important;background:transparent!important}
+      .deck-viewport,.deck-stage{position:static!important;transform:none!important;width:1920px!important;height:auto!important;overflow:visible!important}
+      .slide{position:relative!important;inset:auto!important;width:1920px!important;height:1080px!important;display:flex!important;opacity:1!important;visibility:visible!important;break-after:page!important}
+      .slide:last-child{break-after:auto!important}
+      .controls{display:none!important}
+    }
+  </style>
+</head>
+<body>
+  <div class="deck-viewport">
+    <div class="deck-stage" id="deckStage">
+<!-- Slide 1: Title -->
+      <section class="slide active">
+        <div class="eyebrow">The Machine Learning Triad</div>
+        <div>
+          <h1 class="display">The Machine Learning Triad</h1>
+          <p class="subtitle">Beyond the obvious: industry use cases that matter</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">01 / 12</span>
+        </div>
+      </section>
+<!-- Slide 2: Framework Overview -->
+      <section class="slide">
+        <div class="eyebrow">Foundational Taxonomy</div>
+        <div>
+          <h1 class="display">Three Distinct Learning Mechanics</h1>
+          <p class="subtitle">How we learn from data (labeled, unlabeled, and interactive)</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">02 / 12</span>
+        </div>
+      </section>
+<!-- Slide 2.5: Paradigm Deep Dive Supervised -->
+      <section class="slide">
+        <div class="eyebrow">Paradigm Deep Dive 01</div>
+        <div>
+          <h1 class="display">Supervised Learning: Precision Under Supervision</h1>
+          <p class="subtitle">min_θ E_{(x,y)} [L(f_θ(x), y)] — Ground Truth Mapping</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">03 / 12</span>
+        </div>
+      </section>
+<!-- Slide 4: Supervised Use Cases Grid -->
+      <section class="slide">
+        <div class="eyebrow">Supervised Learning: Real-World Applications</div>
+        <div>
+          <h1 class="display">Beyond the Ubiquitous Spam Filter</h1>
+        </div>
+        <div class="grid-3">
+          <div class="card"><h3>Semiconductor Floorplanning</h3><p>Placement cost minimization across billion-transistor designs using regression models</p></div>
+          <div class="card"><h3>Diagnostic Prediction</h3><p>Labeled MRI/CT volumes → disease risk scores for early intervention</p></div>
+          <div class="card"><h3>Demand Forecasting</h3><p>Retail price elasticity + weather + calendar features → optimized inventory</p></div>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">04 / 12</span>
+        </div>
+      </section>
+<!-- Slide 5: Unsupervised Deep Dive -->
+      <section class="slide">
+        <div class="eyebrow">Paradigm Deep Dive 02</div>
+        <div>
+          <h1 class="display">Unsupervised Learning: Manifolds & Latent Spaces</h1>
+          <p class="subtitle">max_θ Σ log p_θ(x) | min_C Σ ||x - μ_k||² — Latent Structure Discovery</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">05 / 12</span>
+        </div>
+      </section>
+<!-- Slide 6: Unsupervised Use Cases Grid -->
+      <section class="slide">
+        <div class="eyebrow">Unsupervised Learning: Real-World Applications</div>
+        <div>
+          <h1 class="display">Discovering Structure Where No Labels Exist</h1>
+        </div>
+        <div class="grid-3">
+          <div class="card"><h3>Molecular Retrosynthesis</h3><p>Cluster pathways from failed synthesis experiments → predict viable routes</p></div>
+          <div class="card"><h3>Seismic Fault Detection</h3><p>Unlabeled geophone arrays → identify fault line anomalies via density estimation</p></div>
+          <div class="card"><h3>Customer Segment Discovery</h3><p>Behavioral clustering from transaction logs → micro-segments for hyper-targeted ops</p></div>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">06 / 12</span>
+        </div>
+      </section>
+<!-- Slide 7: RL Deep Dive -->
+      <section class="slide">
+        <div class="eyebrow">Paradigm Deep Dive 03</div>
+        <div>
+          <h1 class="display">Reinforcement Learning: Policy Synthesis in Dynamic MDPs</h1>
+          <p class="subtitle">max_π E_τ~π [Σ γ^t R(s_t, a_t)] — Closed-Loop Policy Control</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">07 / 12</span>
+        </div>
+      </section>
+<!-- Slide 8: RL Use Cases Grid -->
+      <section class="slide">
+        <div class="eyebrow">Reinforcement Learning: Real-World Applications</div>
+        <div>
+          <h1 class="display">Beyond Autobots: Practical RL</h1>
+        </div>
+        <div class="grid-3">
+          <div class="card"><h3>Portfolio Rebalancing</h3><p>MDP policy → trade execution minimizing transaction costs + market impact</p></div>
+          <div class="card"><h3>Warehouse Robot Fleet</h3><p>Multi-agent RL → collision-free picking & sorting in dynamic environments</p></div>
+          <div class="card"><h3>Industrial Process Optimization</h3><p>Continuous control → reduce energy consumption in HVAC/manufacturing</p></div>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">08 / 12</span>
+        </div>
+      </section>
+<!-- Slide 9: Comparison Matrix -->
+      <section class="slide">
+        <div class="eyebrow">Engineering Architecture Matrix</div>
+        <div>
+          <h1 class="display">Comparative Trade-off Analysis</h1>
+          <p class="subtitle">Choosing the wrong paradigm produces catastrophic failures in production</p>
+        </div>
+        <div style="width:100%;overflow-x:auto;margin-top:32px">
+        <table style="width:100%;border-collapse:collapse;margin-top:32px">
+        <tr><td style="color:#475569;font-size:13px;padding:4px 8px;">Input Data Structure</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Supervised: paired features & ground-truth labels (x, y)</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Unsupervised: unlabeled observations x ∈ R^D</td><td style="color:#475569;font-size:13px;padding:4px 8px;">RL: environment states s, action spaces A, transition dynamics P</td></tr>
+        <tr><td style="color:#475569;font-size:13px;padding:4px 8px;">Feedback Mechanism</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Instantaneous loss vector per forward pass</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Intrinsic manifold / density reconstruction error</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Delayed, sparse scalar reward r_t after sequential actions</td></tr>
+        <tr><td style="color:#475569;font-size:13px;padding:4px 8px;">Sample Efficiency</td><td style="color:#475569;font-size:13px;padding:4px 8px;">High to Moderate (10³ – 10⁶ curated pairs)</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Very High on uncurated data (exploits raw scale)</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Extremely Low (10⁶ – 10⁸ environment simulation steps)</td></tr>
+        <tr><td style="color:#475569;font-size:13px;padding:4px 8px;">Core Failure Mode</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Overfitting & OOD collapse</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Trivial feature shortcutting & mode collapse</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Reward hacking, policy destabilization, exploration plateau</td></tr>
+        <tr><td style="color:#475569;font-size:13px;padding:4px 8px;">Production Cost Driver</td><td style="color:#475569;font-size:13px;padding:4px 8px;">High human annotation & verification cost</td><td style="color:#475569;font-size:13px;padding:4px 8px;">High memory & GPU cluster pretraining compute</td><td style="color:#475569;font-size:13px;padding:4px 8px;">High simulation fidelity & distributed rollout compute</td></tr>
+        <tr><td style="color:#475569;font-size:13px;padding:4px 8px;">Inference Latency</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Sub-millisecond to low milliseconds (pure forward pass)</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Low milliseconds (embedding lookup / distance)</td><td style="color:#475569;font-size:13px;padding:4px 8px;">Sub-millisecond policy evaluation (actor forward pass)</td></tr>
+        </table>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">09 / 12</span>
+        </div>
+      </section>
+<!-- Slide 10: Hybrid Architecture -->
+      <section class="slide">
+        <div class="eyebrow">The Modern Production Frontier</div>
+        <div>
+          <h1 class="display">The Unified Hybrid Architecture</h1>
+          <p class="subtitle">State-of-the-art AI systems no longer treat these paradigms as mutually exclusive</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">10 / 12</span>
+        </div>
+      </section>
+<!-- Slide 11: Decision Playbook -->
+      <section class="slide">
+        <div class="eyebrow">Strategic Engineering Playbook</div>
+        <div>
+          <h1 class="display">Paradigm Selection Decision Tree</h1>
+          <p class="subtitle">A deterministic framework for AI engineers choosing between Supervised, Unsupervised, and RL</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">11 / 12</span>
+        </div>
+      </section>
+<!-- Slide 12: Conclusion -->
+      <section class="slide">
+        <div class="eyebrow">Conclusion & Next Steps</div>
+        <div>
+          <h1 class="display">Conclusion & Next Steps</h1>
+          <p class="subtitle">• Start with labelled data you already have → build a supervised baseline• Use unsupervised clustering to discover hidden patterns in your full dataset• Progress to RL when you have a reward signal and can simulate or interact with the environment• Hybrid pipelines are where real ROI lives: stitch paradigms to solve end-to-end problems</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span><span class="slide-num">12 / 12</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="prevBtn" title="Previous Slide (←)">←</button>
+    <button class="ctrl-btn" id="nextBtn" title="Next Slide (→)">→</button>
+  </div>
+
+  <script>
+    class DeckPresentation {
+      constructor() {
+        this.stage = document.getElementById('deckStage');
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.currentIndex = 0;
+        this.initScaling();
+        this.initControls();
+      }
+      initScaling() {
+        const resize = () => {
+          const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+          const x = (window.innerWidth - 1920 * factor) / 2;
+          const y = (window.innerHeight - 1080 * factor) / 2;
+          this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+        };
+        resize();
+        window.addEventListener('resize', resize);
+      }
+      initControls() {
+        document.getElementById('prevBtn').onclick = () => this.prev();
+        document.getElementById('nextBtn').onclick = () => this.next();
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { this.next(); }
+          else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { this.prev(); }
+          else if (e.key.toLowerCase() === 'f') { this.toggleFullscreen(); }
+        });
+      }
+      show(idx) {
+        this.currentIndex = Math.max(0, Math.min(idx, this.slides.length - 1));
+        this.slides.forEach((s, i) => s.classList.toggle('active', i === this.currentIndex));
+      }
+      next() { this.show(this.currentIndex + 1); }
+      prev() { this.show(this.currentIndex - 1); }
+      toggleFullscreen() {
+        if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(() => {}); }
+        else { document.exitFullscreen(); }
+      }
+    }
+    new DeckPresentation();
+  </script>
+</body>
+</html>
