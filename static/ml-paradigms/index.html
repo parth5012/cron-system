@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Supervised, Unsupervised & Reinforcement Learning Techniques</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f7f5ee;
+      --card-bg: #ffffff;
+      --ink: #24271e;
+      --muted: #787b6e;
+      --line: #dfdfd3;
+      --accent: #eb542e;
+      --subtle: #e8ecd9;
+      --font-display: "Libre Caslon Display", Georgia, serif;
+      --font-body: "DM Sans", -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #111116; font-family: var(--font-body); }
+    .deck-viewport { position: fixed; inset: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #0c0d10; }
+    .deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; background: var(--paper); overflow: hidden; }
+    .slide { position: absolute; inset: 0; width: 1920px; height: 1080px; padding: 100px 130px; display: flex; flex-direction: column; justify-content: space-between; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.4s ease; background: var(--paper); color: var(--ink); }
+    .slide.active { opacity: 1; visibility: visible; pointer-events: auto; z-index: 2; }
+    .eyebrow { font-size: 18px; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 12px; }
+    .eyebrow::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    h1.display { font-family: var(--font-display); font-size: 88px; line-height: 1.05; letter-spacing: -2px; font-weight: 400; margin-top: 24px; color: var(--ink); }
+    h2.slide-title { font-family: var(--font-display); font-size: 64px; line-height: 1.1; letter-spacing: -1.5px; font-weight: 400; color: var(--ink); margin-top: 16px; }
+    p { font-size: 26px; line-height: 1.5; color: var(--muted); max-width: 1100px; margin-top: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 50px; flex: 1; align-content: center; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 50px; margin-top: 50px; flex: 1; align-content: center; }
+    .card { background: var(--card-bg); border: 1px solid var(--line); border-radius: 16px; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+    .card h3 { font-size: 28px; font-weight: 700; margin-bottom: 16px; color: var(--ink); }
+    .card p { font-size: 20px; line-height: 1.6; color: var(--muted); }
+    .slide-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 24px; font-size: 16px; color: var(--muted); }
+    .controls { position: fixed; bottom: 24px; right: 24px; z-index: 100; display: flex; gap: 10px; }
+    .ctrl-btn { background: rgba(36,39,30,0.85); color: #fff; border: none; border-radius: 8px; width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(8px); }
+    @page { size: 1920px 1080px; margin: 0; }
+    @media print {
+      html, body { width: 1920px !important; height: auto !important; margin: 0 !important; overflow: visible !important; background: transparent !important; }
+      .deck-viewport, .deck-stage { position: static !important; transform: none !important; width: 1920px !important; height: auto !important; overflow: visible !important; }
+      .slide { position: relative !important; inset: auto !important; width: 1920px !important; height: 1080px !important; display: flex !important; opacity: 1 !important; visibility: visible !important; break-after: page !important; }
+      .slide:last-child { break-after: auto !important; }
+      .controls { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck-viewport">
+    <div class="deck-stage" id="deckStage">
+      <!-- Slide 1: Paradigms of Machine Learning -->
+      <section class="slide active">
+        <div class="eyebrow">Paradigms of Machine Learning</div>
+        <div>
+          <h1 class="display">Paradigms of Machine Learning</h1>
+        </div><p class="subtitle">Defining the three core learning frameworks</p>
+        <p class="subtitle">Defining the three core learning frameworks</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span>
+          <span class="slide-num">01 / 08</span>
+        </div>
+      </section>
+      <!-- Slide 2: Supervised Learning: Prediction with Ground Truth -->
+      <section class="slide">
+        <div class="eyebrow">Supervised Learning: Prediction with Ground Truth</div>
+        <div>
+          <h1 class="display">Supervised Learning: Prediction with Ground Truth</h1>
+        </div><p class="subtitle">Labelled data → mapping function f(x) ≈ y</p>
+        </div><p class="subtitle">Loss functions, gradient descent, risk minimization</p>
+        <p class="subtitle">Labelled data → mapping function f(x) ≈ y</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span>
+          <span class="slide-num">02 / 08</span>
+        </div>
+      </section>
+      <!-- Slide 3: Unsupervised Learning: Structure Without Labels -->
+      <section class="slide">
+        <div class="eyebrow">Unsupervised Learning: Structure Without Labels</div>
+        <div>
+          <h1 class="display">Unsupervised Learning: Structure Without Labels</h1>
+        </div><p class="subtitle">Clustering, dimensionality reduction</p>
+        </div><p class="subtitle">Discovering latent patterns in raw data</p>
+        <p class="subtitle">Clustering, dimensionality reduction</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span>
+          <span class="slide-num">03 / 08</span>
+        </div>
+      </section>
+      <!-- Slide 4: Reinforcement Learning: Learning from Interaction -->
+      <section class="slide">
+        <div class="eyebrow">Reinforcement Learning: Learning from Interaction</div>
+        <div>
+          <h1 class="display">Reinforcement Learning: Learning from Interaction</h1>
+        </div><p class="subtitle">Agent, environment, reward signal</p>
+        </div><p class="subtitle">Policy optimization, value functions</p>
+        <p class="subtitle">Agent, environment, reward signal</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span>
+          <span class="slide-num">04 / 08</span>
+        </div>
+      </section>
+      <!-- Slide 5: Supervised Use Cases (Beyond Spam Filtering) -->
+      <section class="slide">
+        <div class="eyebrow">Supervised Use Cases (Beyond Spam Filtering)</div>
+        <div>
+          <h1 class="display">Supervised Use Cases (Beyond Spam Filtering)</h1>
+        </div><p class="subtitle">Semiconductor floorplanning with placement cost minimization</p>
+        </div><p class="subtitle">Diagnostic prediction from labeled medical imaging volumes</p>
+        <div class="grid-3">
+          <div class="card"><h3>Application 1</h3><p>Semiconductor floorplanning with placement cost minimization</p></div>
+          <div class="card"><h3>Application 2</h3><p>Diagnostic prediction from labeled medical imaging volumes</p></div>
+        </div>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span>
+          <span class="slide-num">05 / 08</span>
+        </div>
+      </section>
+      <!-- Slide 6: Unsupervised Use Cases (Beyond Spam Filtering) -->
+      <section class="slide">
+        <div class="eyebrow">Unsupervised Use Cases (Beyond Spam Filtering)</div>
+        <div>
+          <h1 class="display">Unsupervised Use Cases (Beyond Spam Filtering)</h1>
+        </div><p class="subtitle">Molecular retrosynthesis pathway discovery via clustering</p>
+        </div><p class="subtitle">Seismic fault line detection from unlabeled geophone arrays</p>
+        <div class="grid-3">
+          <div class="card"><h3>Application 1</h3><p>Molecular retrosynthesis pathway discovery via clustering</p></div>
+          <div class="card"><h3>Application 2</h3><p>Seismic fault line detection from unlabeled geophone arrays</p></div>
+        </div>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span>
+          <span class="slide-num">06 / 08</span>
+        </div>
+      </section>
+      <!-- Slide 7: Reinforcement Learning Use Cases (Beyond Spam Filtering) -->
+      <section class="slide">
+        <div class="eyebrow">Reinforcement Learning Use Cases (Beyond Spam Filtering)</div>
+        <div>
+          <h1 class="display">Reinforcement Learning Use Cases (Beyond Spam Filtering)</h1>
+        </div><p class="subtitle">Automated portfolio rebalancing with Markov decision processes</p>
+        </div><p class="subtitle">Warehouse robot fleet coordination via multi-agent RL</p>
+        <div class="grid-3">
+          <div class="card"><h3>Application 1</h3><p>Automated portfolio rebalancing with Markov decision processes</p></div>
+          <div class="card"><h3>Application 2</h3><p>Warehouse robot fleet coordination via multi-agent RL</p></div>
+        </div>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span>
+          <span class="slide-num">07 / 08</span>
+        </div>
+      </section>
+      <!-- Slide 8: Workflow & Outlook -->
+      <section class="slide">
+        <div class="eyebrow">Workflow & Outlook</div>
+        <div>
+          <h1 class="display">Workflow & Outlook</h1>
+        </div><p class="subtitle">From raw data → curated features → model selection</p>
+        </div><p class="subtitle">Hybrid pipelines that stitch supervised ↷ unsupervised ↷ RL</p>
+        <p class="subtitle">From raw data → curated features → model selection</p>
+        </div>
+        <div class="slide-footer">
+          <span>ShipSlides Architecture</span>
+          <span class="slide-num">08 / 08</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="prevBtn" title="Previous Slide (←)">←</button>
+    <button class="ctrl-btn" id="nextBtn" title="Next Slide (→)">→</button>
+  </div>
+
+  <script>
+    class DeckPresentation {
+      constructor() {
+        this.stage = document.getElementById('deckStage');
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.currentIndex = 0;
+        this.initScaling();
+        this.initControls();
+      }
+      initScaling() {
+        const resize = () => {
+          const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+          const x = (window.innerWidth - 1920 * factor) / 2;
+          const y = (window.innerHeight - 1080 * factor) / 2;
+          this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+        };
+        resize();
+        window.addEventListener('resize', resize);
+      }
+      initControls() {
+        document.getElementById('prevBtn').onclick = () => this.prev();
+        document.getElementById('nextBtn').onclick = () => this.next();
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { this.next(); }
+          else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { this.prev(); }
+          else if (e.key.toLowerCase() === 'f') { this.toggleFullscreen(); }
+        });
+      }
+      show(idx) {
+        this.currentIndex = Math.max(0, Math.min(idx, this.slides.length - 1));
+        this.slides.forEach((s, i) => s.classList.toggle('active', i === this.currentIndex));
+      }
+      next() { this.show(this.currentIndex + 1); }
+      prev() { this.show(this.currentIndex - 1); }
+      toggleFullscreen() {
+        if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(() => {}); }
+        else { document.exitFullscreen(); }
+      }
+    }
+    new DeckPresentation();
+  </script>
+</body>
+</html>
