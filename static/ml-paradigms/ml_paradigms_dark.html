@@ -3,213 +3,1380 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The Machine Learning Triad — Deep Tech Obsidian</title>
+  <title>The Machine Learning Triad — Variant 2: Deep Tech Obsidian</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --paper:#07090E; --card-bg:rgba(14,20,32,0.85); --card-border:rgba(255,255,255,0.08); --ink:#F1F5F9; --muted:#94A3B8; --accent:#00F2FE; --accent-light:rgba(0,242,254,0.12); --accent-border:rgba(0,242,254,0.35); --secondary-accent:#10B981; --secondary-light:rgba(16,185,129,0.12); --tertiary-accent:#A855F7; --tertiary-light:rgba(168,85,247,0.12); --tag-bg:rgba(255,255,255,0.06); --tag-ink:#CBD5E1; --font-display:'Space Grotesk',-apple-system,sans-serif; --font-body:'Plus Jakarta Sans',-apple-system,sans-serif; --font-mono:'JetBrains Mono',monospace; --grid-line:rgba(255,255,255,0.08); --pill-border:1px solid rgba(255,255,255,0.12); }
-    *{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;background:var(--paper);font-family:var(--font-body)}
-    .deck-viewport{position:fixed;inset:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#050609}
-    .deck-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;background:var(--paper);overflow:hidden}
-    .slide{position:absolute;inset:0;width:1920px;height:1080px;padding:80px 100px;display:flex;flex-direction:column;justify-content:space-between;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease;background:var(--paper);color:var(--ink)}
-    .slide.active{opacity:1;visibility:visible;pointer-events:auto;z-index:2}
-    .eyebrow{font-size:16px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-weight:700;display:flex;align-items:center;gap:8px}
-    .eyebrow::before{content:"";display:inline-block;width:6px;height:6;border-radius:50%;background:var(--accent)}
-    h1.display{font-family:var(--font-display);font-size:72px;line-height:1.05;letter-spacing:-1.5px;font-weight:400;margin-top:16px;color:var(--ink)}
-    p.subtitle{font-size:18px;line-height:1.4;color:var(--muted);margin-top:8px}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px;flex:1;align-content:center}
-    @media(max-width:768px){.grid-3{grid-template-columns:repeat(2,1fr);gap:16px}}
-    @media(max-width:480px){.grid-3{grid-template-columns:1fr}}
-    .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 12px 40px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.06)}
-    .card h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--accent)}
-    .card p{font-size:13px;line-height:1.5;color:var(--muted)}
-    .slide-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--grid-line);padding-top:16px;font-size:12px;color:var(--muted)}
-    .controls{position:fixed;bottom:20px;right:20px;z-index:100;display:flex;gap:8px}
-    .ctrl-btn{background:rgba(7,9,14,0.8);color:#fff;border:none;border-radius:6px;width:36px;height:36px;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(6px)}
-    @page{size:1920px 1080px;margin:0}
-    @media print{
-      html,body{width:1920px!important;height:auto!important;margin:0!important;overflow:visible!important;background:transparent!important}
-      .deck-viewport,.deck-stage{position:static!important;transform:none!important;width:1920px!important;height:auto!important;overflow:visible!important}
-      .slide{position:relative!important;inset:auto!important;width:1920px!important;height:1080px!important;display:flex!important;opacity:1!important;visibility:visible!important;break-after:page!important}
-      .slide:last-child{break-after:auto!important}
-      .controls{display:none!important}
+    
+        :root {
+            --paper: #07090E;
+            --card-bg: rgba(14, 20, 32, 0.85);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --ink: #F1F5F9;
+            --muted: #94A3B8;
+            --line: rgba(255, 255, 255, 0.08);
+            --accent: #00F2FE;
+            --accent-light: rgba(0, 242, 254, 0.12);
+            --accent-border: rgba(0, 242, 254, 0.35);
+            --secondary: #10B981;
+            --secondary-light: rgba(16, 185, 129, 0.12);
+            --tertiary: #A855F7;
+            --tertiary-light: rgba(168, 85, 247, 0.12);
+            --font-display: 'Space Grotesk', -apple-system, sans-serif;
+            --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --shadow: 0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+            --badge-bg: rgba(255, 255, 255, 0.06);
+            --badge-ink: #CBD5E1;
+        }
+        body { background: #07090E; }
+        .deck-viewport { background: #030407; }
+        
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font-body);
+      color: var(--ink);
+    }
+    .deck-viewport {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .deck-stage {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: 0 0;
+      background: var(--paper);
+      overflow: hidden;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      padding: 64px 84px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      background: var(--paper);
+    }
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      z-index: 2;
+    }
+    .eyebrow {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      font-weight: 700;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    h1.display {
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: -1.2px;
+      color: var(--ink);
+    }
+    p.subtitle {
+      color: var(--muted);
+      font-weight: 400;
+      max-width: 1200px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      font-size: 13px;
+    }
+    .controls {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+    }
+    .ctrl-btn {
+      background: var(--card-bg);
+      color: var(--ink);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.2s;
+    }
+    .ctrl-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+    @page {
+      size: 1920px 1080px;
+      margin: 0;
+    }
+    @media print {
+      html, body {
+        width: 1920px !important;
+        height: auto !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        background: transparent !important;
+      }
+      .deck-viewport, .deck-stage {
+        position: static !important;
+        transform: none !important;
+        width: 1920px !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      .slide {
+        position: relative !important;
+        inset: auto !important;
+        width: 1920px !important;
+        height: 1080px !important;
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        break-after: page !important;
+      }
+      .slide:last-child {
+        break-after: auto !important;
+      }
+      .controls {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body>
   <div class="deck-viewport">
     <div class="deck-stage" id="deckStage">
-<!-- Slide 1: Title -->
-      <section class="slide active">
-        <div class="eyebrow">The Machine Learning Triad</div>
+      
+    <!-- Slide 01: Title & Pitch -->
+    <section class="slide active">
+      <div class="eyebrow">PARTH AI-OS • EXECUTIVE BRIEFING</div>
+      <div style="display:grid; grid-template-columns: 1.15fr 0.85fr; gap:48px; align-items:center; flex:1; margin:24px 0;">
         <div>
-          <h1 class="display">The Machine Learning Triad</h1>
-          <p class="subtitle">Beyond the obvious: industry use cases that matter</p>
+          <h1 class="display" style="font-size:68px; line-height:1.06; margin-bottom:16px;">The Machine Learning Triad</h1>
+          <p class="subtitle" style="font-size:22px; line-height:1.35; margin-bottom:28px;">Supervised, Unsupervised & Reinforcement Learning in Mission-Critical Systems</p>
+          <div style="background:rgba(0, 242, 254, 0.12); border-left:4px solid #00F2FE; padding:20px 24px; border-radius:0 12px 12px 0;">
+            <div style="font-size:13px; font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace; margin-bottom:6px; letter-spacing:1px;">THE STARTING PITCH:</div>
+            <p style="font-size:15px; line-height:1.55; color:#F1F5F9;">Beyond toy classification benchmarks and generic spam filters: how production systems in semiconductor design, high-frequency trading, and molecular therapeutics deploy three distinct mathematical engines.</p>
+          </div>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">01 / 12</span>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          
+        <div class="card" style="padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:26px; font-weight:800; color:#00F2FE; line-height:1.1;">12ms vs 48h</div>
+          <div style="font-size:14px; font-weight:700; color:#F1F5F9; margin:8px 0 4px 0;">Semiconductor Floorplanning</div>
+          <div style="font-size:12px; color:#94A3B8; line-height:1.4;">Equivariant GNN inference replaces 48-hour SPICE physics simulations with 98.7% correlation.</div>
         </div>
-      </section>
-<!-- Slide 2: Framework Overview -->
-      <section class="slide">
-        <div class="eyebrow">Foundational Taxonomy</div>
-        <div>
-          <h1 class="display">Three Distinct Learning Mechanics</h1>
-          <p class="subtitle">How we learn from data (labeled, unlabeled, and interactive)</p>
+        
+        <div class="card" style="padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:26px; font-weight:800; color:#00F2FE; line-height:1.1;">100,000+</div>
+          <div style="font-size:14px; font-weight:700; color:#F1F5F9; margin:8px 0 4px 0;">SCADA Telemetry Streams</div>
+          <div style="font-size:12px; color:#94A3B8; line-height:1.4;">Streaming matrix profiles detect turbine bearing failure 21 days prior to mechanical seizure.</div>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">02 / 12</span>
+        
+        <div class="card" style="padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:26px; font-weight:800; color:#00F2FE; line-height:1.1;">500+ AGVs</div>
+          <div style="font-size:14px; font-weight:700; color:#F1F5F9; margin:8px 0 4px 0;">Autonomous Warehouse Swarms</div>
+          <div style="font-size:12px; color:#94A3B8; line-height:1.4;">Multi-Agent PPO coordinates 500+ mobile robots with zero grid deadlock and +28% throughput.</div>
         </div>
-      </section>
-<!-- Slide 2.5: Paradigm Deep Dive Supervised -->
-      <section class="slide">
-        <div class="eyebrow">Paradigm Deep Dive 01</div>
-        <div>
-          <h1 class="display">Supervised Learning: Precision Under Supervision</h1>
-          <p class="subtitle">min_θ E_{(x,y)} [L(f_θ(x), y)] — Ground Truth Mapping</p>
+        
+        <div class="card" style="padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="font-family:'JetBrains Mono', monospace; font-size:26px; font-weight:800; color:#00F2FE; line-height:1.1;"><0.01%</div>
+          <div style="font-size:14px; font-weight:700; color:#F1F5F9; margin:8px 0 4px 0;">Execution Slippage</div>
+          <div style="font-size:12px; color:#94A3B8; line-height:1.4;">Almgren-Chriss MDP liquidation policy saves 14 bps ($140k/100M block) against TWAP benchmarks.</div>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">03 / 12</span>
+        
         </div>
-      </section>
-<!-- Slide 4: Supervised Use Cases Grid -->
-      <section class="slide">
-        <div class="eyebrow">Supervised Learning: Real-World Applications</div>
-        <div>
-          <h1 class="display">Beyond the Ubiquitous Spam Filter</h1>
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">01 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 02: Architectural Taxonomy -->
+    <section class="slide">
+      <div class="eyebrow">FOUNDATIONAL TAXONOMY</div>
+      <div style="margin-top:12px; margin-bottom:16px;">
+        <h1 class="display" style="font-size:46px; margin:0;">Three Distinct Learning Mechanics</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">Contrasting mathematical formulations, feedback latency, and state transition assumptions.</p>
+      </div>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center; width:100%;">
+        
+    <svg viewBox="0 0 1600 460" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="max-height: 460px;">
+      <defs>
+        <marker id="arrow-dark" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#94A3B8" />
+        </marker>
+        <marker id="arrow-accent-dark" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#00F2FE" />
+        </marker>
+        <linearGradient id="grad-sup-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00F2FE" stop-opacity="0.15"/>
+          <stop offset="100%" stop-color="#00F2FE" stop-opacity="0.02"/>
+        </linearGradient>
+        <linearGradient id="grad-unsup-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#10B981" stop-opacity="0.15"/>
+          <stop offset="100%" stop-color="#10B981" stop-opacity="0.02"/>
+        </linearGradient>
+        <linearGradient id="grad-rl-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#A855F7" stop-opacity="0.15"/>
+          <stop offset="100%" stop-color="#A855F7" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Supervised Paradigm Column -->
+      <g transform="translate(40, 20)">
+        <rect width="480" height="420" rx="16" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+        <rect width="480" height="6" rx="3" fill="#00F2FE" />
+        <rect x="24" y="24" width="130" height="28" rx="14" fill="rgba(0, 242, 254, 0.12)" stroke="rgba(0, 242, 254, 0.35)" stroke-width="1" />
+        <text x="89" y="42" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#00F2FE" text-anchor="middle">GROUND TRUTH</text>
+        <text x="24" y="85" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#F1F5F9">Supervised Learning</text>
+        <text x="24" y="112" font-family="'JetBrains Mono', monospace" font-size="14" fill="#94A3B8">min_θ E_D [L(f_θ(x), y)]</text>
+        
+        <!-- Workflow nodes inside card -->
+        <rect x="24" y="140" width="432" height="60" rx="10" fill="url(#grad-sup-dark)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <text x="40" y="165" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#F1F5F9">1. Labeled Dataset D = (x_i, y_i)</text>
+        <text x="40" y="185" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="13" fill="#94A3B8">Paired inputs with explicit human or physical ground truth</text>
+
+        <path d="M 240 200 L 240 225" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-dark)" />
+
+        <rect x="24" y="230" width="432" height="60" rx="10" fill="url(#grad-sup-dark)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <text x="40" y="255" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#F1F5F9">2. Forward Pass & Loss Computation</text>
+        <text x="40" y="275" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="13" fill="#94A3B8">f_θ(x) → y_hat  |  Loss L(y_hat, y) measures prediction error</text>
+
+        <path d="M 240 290 L 240 315" stroke="#00F2FE" stroke-width="1.5" marker-end="url(#arrow-accent-dark)" />
+
+        <rect x="24" y="320" width="432" height="74" rx="10" fill="url(#grad-sup-dark)" stroke="rgba(0, 242, 254, 0.35)" stroke-width="1.5"/>
+        <text x="40" y="345" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#00F2FE">3. Gradient Backpropagation Update</text>
+        <text x="40" y="365" font-family="'JetBrains Mono', monospace" font-size="12" fill="#F1F5F9">θ ← θ - η · ∇_θ L  (Immediate, direct feedback)</text>
+        <text x="40" y="383" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="12" fill="#94A3B8">Deterministic minimization of empirical risk surface</text>
+      </g>
+
+      <!-- Unsupervised Paradigm Column -->
+      <g transform="translate(560, 20)">
+        <rect width="480" height="420" rx="16" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+        <rect width="480" height="6" rx="3" fill="#10B981" />
+        <rect x="24" y="24" width="130" height="28" rx="14" fill="rgba(16, 185, 129, 0.12)" stroke="#10B981" stroke-width="1" />
+        <text x="89" y="42" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#10B981" text-anchor="middle">LATENT MANIFOLD</text>
+        <text x="24" y="85" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#F1F5F9">Unsupervised Learning</text>
+        <text x="24" y="112" font-family="'JetBrains Mono', monospace" font-size="14" fill="#94A3B8">max_θ Σ log p_θ(x)  |  min_C Σ ||x - μ_k||²</text>
+
+        <!-- Workflow nodes inside card -->
+        <rect x="24" y="140" width="432" height="60" rx="10" fill="url(#grad-unsup-dark)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <text x="40" y="165" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#F1F5F9">1. Unlabeled Corpus X = (x_i) ∈ R^D</text>
+        <text x="40" y="185" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="13" fill="#94A3B8">Raw observations without teacher labels or target supervision</text>
+
+        <path d="M 240 200 L 240 225" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-dark)" />
+
+        <rect x="24" y="230" width="432" height="60" rx="10" fill="url(#grad-unsup-dark)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <text x="40" y="255" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#F1F5F9">2. Dimensionality & Topology Compression</text>
+        <text x="40" y="275" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="13" fill="#94A3B8">x → z ∈ R^d  (d &lt;&lt; D)  via VAE, Contrastive or GMM projection</text>
+
+        <path d="M 240 290 L 240 315" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow-dark)" />
+
+        <rect x="24" y="320" width="432" height="74" rx="10" fill="url(#grad-unsup-dark)" stroke="#10B981" stroke-width="1.5"/>
+        <text x="40" y="345" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#10B981">3. Structural Discovery & Clustering</text>
+        <text x="40" y="365" font-family="'JetBrains Mono', monospace" font-size="12" fill="#F1F5F9">p(x) density scoring, HDBSCAN clusters & anomaly detection</text>
+        <text x="40" y="383" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="12" fill="#94A3B8">Intrinsic information-theoretic geometry without external rewards</text>
+      </g>
+
+      <!-- Reinforcement Paradigm Column -->
+      <g transform="translate(1080, 20)">
+        <rect width="480" height="420" rx="16" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+        <rect width="480" height="6" rx="3" fill="#A855F7" />
+        <rect x="24" y="24" width="130" height="28" rx="14" fill="rgba(168, 85, 247, 0.12)" stroke="#A855F7" stroke-width="1" />
+        <text x="89" y="42" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#A855F7" text-anchor="middle">DYNAMIC CONTROL</text>
+        <text x="24" y="85" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="28" font-weight="700" fill="#F1F5F9">Reinforcement Learning</text>
+        <text x="24" y="112" font-family="'JetBrains Mono', monospace" font-size="14" fill="#94A3B8">max_π E_τ~π [Σ γ^t R(s_t, a_t)]</text>
+
+        <!-- Workflow nodes inside card -->
+        <rect x="24" y="140" width="432" height="60" rx="10" fill="url(#grad-rl-dark)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <text x="40" y="165" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#F1F5F9">1. Environment State Perception s_t</text>
+        <text x="40" y="185" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="13" fill="#94A3B8">Markov Decision Process: state observed from physics/simulator</text>
+
+        <path d="M 240 200 L 240 225" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-dark)" />
+
+        <rect x="24" y="230" width="432" height="60" rx="10" fill="url(#grad-rl-dark)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <text x="40" y="255" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#F1F5F9">2. Policy Action Execution a_t ~ π_θ(a|s)</text>
+        <text x="40" y="275" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="13" fill="#94A3B8">Action alters future states: Transition P(s_next | s_t, a_t)</text>
+
+        <path d="M 240 290 L 240 315" stroke="#A855F7" stroke-width="1.5" marker-end="url(#arrow-dark)" />
+
+        <rect x="24" y="320" width="432" height="74" rx="10" fill="url(#grad-rl-dark)" stroke="#A855F7" stroke-width="1.5"/>
+        <text x="40" y="345" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="14" font-weight="700" fill="#A855F7">3. Delayed Scalar Reward & Policy Gradient</text>
+        <text x="40" y="365" font-family="'JetBrains Mono', monospace" font-size="12" fill="#F1F5F9">δ_t = r_t + γ V(s_next) - V(s_t)  (TD Advantage Update)</text>
+        <text x="40" y="383" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="12" fill="#94A3B8">Optimizing cumulative trajectory payoff under uncertainty</text>
+      </g>
+    </svg>
+    
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">02 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 03: Supervised System Pipeline -->
+    <section class="slide">
+      <div class="eyebrow">PARADIGM 01: SYSTEM PIPELINE</div>
+      <div style="margin-top:12px; margin-bottom:12px;">
+        <h1 class="display" style="font-size:44px; margin:0;">Supervised Learning: Precision Under Supervision</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">From raw multimodal ingestion and weak supervision to backpropagation and uncertainty calibration.</p>
+      </div>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center; width:100%; margin:8px 0;">
+        
+    <svg viewBox="0 0 1600 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="max-height: 320px;">
+      <defs>
+        <marker id="arr-sup" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#00F2FE" />
+        </marker>
+        <marker id="arr-back" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#A855F7" />
+        </marker>
+        <linearGradient id="sup-card-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00F2FE" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#00F2FE" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Stage 1: Data Ingestion -->
+      <g transform="translate(40, 40)">
+        <rect width="210" height="150" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="210" height="4" rx="2" fill="#94A3B8"/>
+        <text x="20" y="32" font-family="sans-serif" font-size="11" font-weight="700" fill="#94A3B8" letter-spacing="1">STAGE 01</text>
+        <text x="20" y="60" font-family="sans-serif" font-size="16" font-weight="700" fill="#F1F5F9">Data Ingestion</text>
+        <text x="20" y="86" font-family="sans-serif" font-size="12" fill="#94A3B8">• Multimodal telemetry</text>
+        <text x="20" y="106" font-family="sans-serif" font-size="12" fill="#94A3B8">• Netlists / Order feeds</text>
+        <text x="20" y="126" font-family="sans-serif" font-size="12" fill="#94A3B8">• High-res 3D scans</text>
+      </g>
+
+      <path d="M 250 115 L 280 115" stroke="#00F2FE" stroke-width="2" marker-end="url(#arr-sup)"/>
+
+      <!-- Stage 2: Active Labeling -->
+      <g transform="translate(290, 40)">
+        <rect width="210" height="150" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="210" height="4" rx="2" fill="#00F2FE"/>
+        <text x="20" y="32" font-family="sans-serif" font-size="11" font-weight="700" fill="#00F2FE" letter-spacing="1">STAGE 02</text>
+        <text x="20" y="60" font-family="sans-serif" font-size="16" font-weight="700" fill="#F1F5F9">Ground Truth</text>
+        <text x="20" y="86" font-family="sans-serif" font-size="12" fill="#94A3B8">• Weak supervision</text>
+        <text x="20" y="106" font-family="sans-serif" font-size="12" fill="#94A3B8">• Radiologist consensus</text>
+        <text x="20" y="126" font-family="sans-serif" font-size="12" fill="#94A3B8">• SPICE simulation tags</text>
+      </g>
+
+      <path d="M 500 115 L 530 115" stroke="#00F2FE" stroke-width="2" marker-end="url(#arr-sup)"/>
+
+      <!-- Stage 3: Feature Encoder -->
+      <g transform="translate(540, 40)">
+        <rect width="220" height="150" rx="12" fill="url(#sup-card-grad)" stroke="#00F2FE" stroke-width="1.5"/>
+        <rect width="220" height="4" rx="2" fill="#00F2FE"/>
+        <text x="20" y="32" font-family="sans-serif" font-size="11" font-weight="700" fill="#00F2FE" letter-spacing="1">STAGE 03</text>
+        <text x="20" y="60" font-family="sans-serif" font-size="16" font-weight="700" fill="#F1F5F9">Deep Encoder f_θ</text>
+        <text x="20" y="86" font-family="sans-serif" font-size="12" fill="#94A3B8">• Equivariant GNN</text>
+        <text x="20" y="106" font-family="sans-serif" font-size="12" fill="#94A3B8">• 3D U-Net / ViT</text>
+        <text x="20" y="126" font-family="sans-serif" font-size="12" fill="#94A3B8">• Causal Convolutions</text>
+      </g>
+
+      <path d="M 760 115 L 790 115" stroke="#00F2FE" stroke-width="2" marker-end="url(#arr-sup)"/>
+
+      <!-- Stage 4: Task Heads -->
+      <g transform="translate(800, 40)">
+        <rect width="210" height="150" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="210" height="4" rx="2" fill="#00F2FE"/>
+        <text x="20" y="32" font-family="sans-serif" font-size="11" font-weight="700" fill="#00F2FE" letter-spacing="1">STAGE 04</text>
+        <text x="20" y="60" font-family="sans-serif" font-size="16" font-weight="700" fill="#F1F5F9">Task Prediction</text>
+        <text x="20" y="86" font-family="sans-serif" font-size="12" fill="#94A3B8">• Continuous regression</text>
+        <text x="20" y="106" font-family="sans-serif" font-size="12" fill="#94A3B8">• Voxel segmentation</text>
+        <text x="20" y="126" font-family="sans-serif" font-size="12" fill="#94A3B8">• Drift probability</text>
+      </g>
+
+      <path d="M 1010 115 L 1040 115" stroke="#00F2FE" stroke-width="2" marker-end="url(#arr-sup)"/>
+
+      <!-- Stage 5: Loss Engine -->
+      <g transform="translate(1050, 40)">
+        <rect width="220" height="150" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="220" height="4" rx="2" fill="#A855F7"/>
+        <text x="20" y="32" font-family="sans-serif" font-size="11" font-weight="700" fill="#A855F7" letter-spacing="1">STAGE 05</text>
+        <text x="20" y="60" font-family="sans-serif" font-size="16" font-weight="700" fill="#F1F5F9">Loss & Objective</text>
+        <text x="20" y="86" font-family="sans-serif" font-size="12" fill="#94A3B8">• L_Huber (wirelength)</text>
+        <text x="20" y="106" font-family="sans-serif" font-size="12" fill="#94A3B8">• Soft Dice (segmentation)</text>
+        <text x="20" y="126" font-family="sans-serif" font-size="12" fill="#94A3B8">• Focal Cross-Entropy</text>
+      </g>
+
+      <path d="M 1270 115 L 1300 115" stroke="#00F2FE" stroke-width="2" marker-end="url(#arr-sup)"/>
+
+      <!-- Stage 6: Calibrated Output -->
+      <g transform="translate(1310, 40)">
+        <rect width="250" height="150" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="#10B981" stroke-width="1.5"/>
+        <rect width="250" height="4" rx="2" fill="#10B981"/>
+        <text x="20" y="32" font-family="sans-serif" font-size="11" font-weight="700" fill="#10B981" letter-spacing="1">DEPLOYMENT</text>
+        <text x="20" y="60" font-family="sans-serif" font-size="16" font-weight="700" fill="#F1F5F9">Calibrated Inference</text>
+        <text x="20" y="86" font-family="sans-serif" font-size="12" fill="#94A3B8">• Epistemic uncertainty mask</text>
+        <text x="20" y="106" font-family="sans-serif" font-size="12" fill="#94A3B8">• Covariate shift rejection</text>
+        <text x="20" y="126" font-family="sans-serif" font-size="12" fill="#94A3B8">• &lt; 12ms latency SLA</text>
+      </g>
+
+      <!-- Backprop Feedback Arrow -->
+      <path d="M 1160 190 L 1160 250 L 650 250 L 650 200" stroke="#A855F7" stroke-width="2.5" fill="none" stroke-dasharray="6,4" marker-end="url(#arr-back)"/>
+      <rect x="800" y="235" width="220" height="30" rx="6" fill="rgba(14, 20, 32, 0.85)" stroke="#A855F7" stroke-width="1"/>
+      <text x="910" y="255" font-family="monospace" font-size="12" font-weight="700" fill="#A855F7" text-anchor="middle">∇_θ Loss (AdamW Backprop)</text>
+    </svg>
+    
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:8px;">
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#00F2FE; margin-bottom:6px;">Inductive Bias Constrains Search</div>
+          <p style="font-size:12px; line-height:1.45; color:#94A3B8;">Choosing specialized network architectures (e.g. SE(3)-equivariant GNNs for molecules, causal convolutions for order books) restricts hypothesis space to physically plausible solutions.</p>
         </div>
-        <div class="grid-3">
-          <div class="card"><h3>Semiconductor Floorplanning</h3><p>Placement cost minimization across billion-transistor designs using regression models</p></div>
-          <div class="card"><h3>Diagnostic Prediction</h3><p>Labeled MRI/CT volumes → disease risk scores for early intervention</p></div>
-          <div class="card"><h3>Demand Forecasting</h3><p>Retail price elasticity + weather + calendar features → optimized inventory</p></div>
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#00F2FE; margin-bottom:6px;">Loss Surface Optimization</div>
+          <p style="font-size:12px; line-height:1.45; color:#94A3B8;">Formulating convex surrogate loss functions (Huber, Focal, Cross-Entropy with label smoothing) enables stable convergence via AdamW with decoupled weight decay.</p>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">04 / 12</span>
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#00F2FE; margin-bottom:6px;">Covariate Shift & Calibration</div>
+          <p style="font-size:12px; line-height:1.45; color:#94A3B8;">Deploying temperature scaling and Monte Carlo epistemic dropout to quantify uncertainty when production test distributions diverge from training distributions.</p>
         </div>
-      </section>
-<!-- Slide 5: Unsupervised Deep Dive -->
-      <section class="slide">
-        <div class="eyebrow">Paradigm Deep Dive 02</div>
-        <div>
-          <h1 class="display">Unsupervised Learning: Manifolds & Latent Spaces</h1>
-          <p class="subtitle">max_θ Σ log p_θ(x) | min_C Σ ||x - μ_k||² — Latent Structure Discovery</p>
+        
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">03 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 04: Supervised Real-World Cases -->
+    <section class="slide">
+      <div class="eyebrow">PARADIGM 01: HIGH-STAKES IMPLEMENTATIONS</div>
+      <div style="margin-top:12px; margin-bottom:20px;">
+        <h1 class="display" style="font-size:46px; margin:0;">Beyond the Ubiquitous Spam Filter</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">Real-world supervised models solving billion-transistor, microsecond, and surgical challenges.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; flex:1; align-content:stretch; margin-bottom:16px;">
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:inline-block; padding:4px 10px; border-radius:6px; background:rgba(0, 242, 254, 0.12); border:1px solid rgba(0, 242, 254, 0.35); font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; color:#00F2FE; margin-bottom:12px;">VLSI EDA</div>
+            <h3 style="font-size:20px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">Semiconductor IC Floorplanning</h3>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; letter-spacing:0.5px;">The Physical Bottleneck:</span>
+              <p style="font-size:13px; line-height:1.45; color:#F1F5F9; margin-top:4px;">Billion-transistor ASIC layouts take 48 hours in SPICE physics simulators to compute parasitic wirelength, capacitance, and thermal hotspots.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#00F2FE; letter-spacing:0.5px;">Deep Architecture:</span>
+              <p style="font-size:13px; line-height:1.45; color:#94A3B8; margin-top:4px;">Equivariant Graph Neural Networks (GNN) map circuit netlist graphs directly to spatial routing congestion in 12ms.</p>
+            </div>
+          </div>
+          <div style="background:rgba(0, 242, 254, 0.12); border-left:3px solid #00F2FE; padding:10px 14px; border-radius:0 6px 6px 0;">
+            <div style="font-size:10px; font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">MEASURED OUTCOME:</div>
+            <div style="font-size:12px; font-weight:600; color:#F1F5F9; margin-top:2px;">40x acceleration in chip tape-out turnaround; enables automated macro placement exploration over billions of design variants.</div>
+          </div>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">05 / 12</span>
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:inline-block; padding:4px 10px; border-radius:6px; background:rgba(0, 242, 254, 0.12); border:1px solid rgba(0, 242, 254, 0.35); font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; color:#00F2FE; margin-bottom:12px;">BIOMEDICAL AI</div>
+            <h3 style="font-size:20px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">3D Volumetric Tumor Segmentation</h3>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; letter-spacing:0.5px;">The Physical Bottleneck:</span>
+              <p style="font-size:13px; line-height:1.45; color:#F1F5F9; margin-top:4px;">Manual voxel delineation of glioblastoma borders across multi-parametric MRI scans requires hours and suffers from high radiologist variance.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#00F2FE; letter-spacing:0.5px;">Deep Architecture:</span>
+              <p style="font-size:13px; line-height:1.45; color:#94A3B8; margin-top:4px;">Cascaded 3D nnU-Net with Bayesian Monte Carlo dropout outputs precise voxel masks along with epistemic uncertainty heatmaps.</p>
+            </div>
+          </div>
+          <div style="background:rgba(0, 242, 254, 0.12); border-left:3px solid #00F2FE; padding:10px 14px; border-radius:0 6px 6px 0;">
+            <div style="font-size:10px; font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">MEASURED OUTCOME:</div>
+            <div style="font-size:12px; font-weight:600; color:#F1F5F9; margin-top:2px;">0.91 Dice coefficient; provides sub-millimeter surgical resection margins for stereotactic neurosurgery.</div>
+          </div>
         </div>
-      </section>
-<!-- Slide 6: Unsupervised Use Cases Grid -->
-      <section class="slide">
-        <div class="eyebrow">Unsupervised Learning: Real-World Applications</div>
-        <div>
-          <h1 class="display">Discovering Structure Where No Labels Exist</h1>
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:inline-block; padding:4px 10px; border-radius:6px; background:rgba(0, 242, 254, 0.12); border:1px solid rgba(0, 242, 254, 0.35); font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; color:#00F2FE; margin-bottom:12px;">QUANTITATIVE ALPHA</div>
+            <h3 style="font-size:20px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">L3 Limit Order Book Microstructure</h3>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; letter-spacing:0.5px;">The Physical Bottleneck:</span>
+              <p style="font-size:13px; line-height:1.45; color:#F1F5F9; margin-top:4px;">High-frequency exchanges stream 50,000+ cancellations and fills per second; linear models fail to capture nonlinear queue depletion.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#00F2FE; letter-spacing:0.5px;">Deep Architecture:</span>
+              <p style="font-size:13px; line-height:1.45; color:#94A3B8; margin-top:4px;">Dilated Temporal Convolutional Networks (TCN) with multi-head cross-attention forecast 50ms mid-price directional drift.</p>
+            </div>
+          </div>
+          <div style="background:rgba(0, 242, 254, 0.12); border-left:3px solid #00F2FE; padding:10px 14px; border-radius:0 6px 6px 0;">
+            <div style="font-size:10px; font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">MEASURED OUTCOME:</div>
+            <div style="font-size:12px; font-weight:600; color:#F1F5F9; margin-top:2px;">64.2% directional accuracy under strict 250-microsecond FPGA inference latency SLA.</div>
+          </div>
         </div>
-        <div class="grid-3">
-          <div class="card"><h3>Molecular Retrosynthesis</h3><p>Cluster pathways from failed synthesis experiments → predict viable routes</p></div>
-          <div class="card"><h3>Seismic Fault Detection</h3><p>Unlabeled geophone arrays → identify fault line anomalies via density estimation</p></div>
-          <div class="card"><h3>Customer Segment Discovery</h3><p>Behavioral clustering from transaction logs → micro-segments for hyper-targeted ops</p></div>
+        
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">04 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 05: Unsupervised Structural Pipeline -->
+    <section class="slide">
+      <div class="eyebrow">PARADIGM 02: STRUCTURAL PIPELINE</div>
+      <div style="margin-top:12px; margin-bottom:12px;">
+        <h1 class="display" style="font-size:44px; margin:0;">Unsupervised Learning: Manifolds & Latent Spaces</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">Extracting geometric order, topological clusters, and anomalous deviations without teacher labels.</p>
+      </div>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center; width:100%; margin:8px 0;">
+        
+    <svg viewBox="0 0 1600 340" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="max-height: 340px;">
+      <defs>
+        <marker id="arr-unsup" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+        </marker>
+        <linearGradient id="unsup-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#10B981" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#10B981" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Input Space -->
+      <g transform="translate(40, 95)">
+        <rect width="280" height="140" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="280" height="4" rx="2" fill="#94A3B8"/>
+        <text x="20" y="32" font-family="sans-serif" font-size="11" font-weight="700" fill="#94A3B8" letter-spacing="1">INPUT SPACE</text>
+        <text x="20" y="60" font-family="sans-serif" font-size="17" font-weight="700" fill="#F1F5F9">High-D Unlabeled X ∈ R^D</text>
+        <text x="20" y="86" font-family="sans-serif" font-size="12" fill="#94A3B8">• 100M+ molecular SMILES</text>
+        <text x="20" y="106" font-family="sans-serif" font-size="12" fill="#94A3B8">• 32-ch seismic reflection arrays</text>
+        <text x="20" y="124" font-family="sans-serif" font-size="12" fill="#94A3B8">• 100k SCADA vibration telemetry</text>
+      </g>
+
+      <path d="M 320 165 L 380 165" stroke="#10B981" stroke-width="2" marker-end="url(#arr-unsup)"/>
+
+      <!-- Compression Encoder -->
+      <g transform="translate(390, 85)">
+        <rect width="300" height="160" rx="12" fill="url(#unsup-grad)" stroke="#10B981" stroke-width="1.5"/>
+        <rect width="300" height="4" rx="2" fill="#10B981"/>
+        <text x="20" y="32" font-family="sans-serif" font-size="11" font-weight="700" fill="#10B981" letter-spacing="1">REPRESENTATION LEARNER</text>
+        <text x="20" y="60" font-family="sans-serif" font-size="17" font-weight="700" fill="#F1F5F9">Variational / Contrastive Encoder</text>
+        <text x="20" y="86" font-family="monospace" font-size="12" fill="#F1F5F9">q_φ(z|x)  |  min D_KL(q||p)</text>
+        <text x="20" y="112" font-family="sans-serif" font-size="12" fill="#94A3B8">Forces ambient signal through</text>
+        <text x="20" y="132" font-family="sans-serif" font-size="12" fill="#94A3B8">information bottleneck</text>
+      </g>
+
+      <path d="M 690 165 L 750 165" stroke="#10B981" stroke-width="2" marker-end="url(#arr-unsup)"/>
+
+      <!-- Latent Manifold -->
+      <g transform="translate(760, 95)">
+        <rect width="260" height="140" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="260" height="4" rx="2" fill="#10B981"/>
+        <text x="20" y="32" font-family="sans-serif" font-size="11" font-weight="700" fill="#10B981" letter-spacing="1">LATENT MANIFOLD</text>
+        <text x="20" y="60" font-family="sans-serif" font-size="17" font-weight="700" fill="#F1F5F9">Bottleneck Space z ∈ R^d</text>
+        <text x="20" y="86" font-family="sans-serif" font-size="12" fill="#94A3B8">• d &lt;&lt; D (Intrinsic geometry)</text>
+        <text x="20" y="106" font-family="sans-serif" font-size="12" fill="#94A3B8">• Metric topology preserved</text>
+        <text x="20" y="124" font-family="sans-serif" font-size="12" fill="#94A3B8">• Invariant semantic factors</text>
+      </g>
+
+      <!-- Branching Arrows -->
+      <path d="M 1020 140 L 1080 65" stroke="#10B981" stroke-width="2" marker-end="url(#arr-unsup)"/>
+      <path d="M 1020 165 L 1080 165" stroke="#10B981" stroke-width="2" marker-end="url(#arr-unsup)"/>
+      <path d="M 1020 190 L 1080 265" stroke="#10B981" stroke-width="2" marker-end="url(#arr-unsup)"/>
+
+      <!-- Branch 1: Density & Anomaly -->
+      <g transform="translate(1090, 20)">
+        <rect width="470" height="85" rx="10" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="4" height="85" rx="2" fill="#A855F7"/>
+        <text x="20" y="26" font-family="sans-serif" font-size="14" font-weight="700" fill="#F1F5F9">Branch A: Density Estimation & Outlier Scoring</text>
+        <text x="20" y="48" font-family="monospace" font-size="12" fill="#A855F7">p_θ(x) &lt; τ  (Continuous Discord Tracking)</text>
+        <text x="20" y="68" font-family="sans-serif" font-size="12" fill="#94A3B8">Detects SCADA turbine bearing fatigue 21 days before physical fracture</text>
+      </g>
+
+      <!-- Branch 2: Topological Clustering -->
+      <g transform="translate(1090, 120)">
+        <rect width="470" height="85" rx="10" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="4" height="85" rx="2" fill="#10B981"/>
+        <text x="20" y="26" font-family="sans-serif" font-size="14" font-weight="700" fill="#F1F5F9">Branch B: Hierarchical Manifold Clustering (HDBSCAN)</text>
+        <text x="20" y="48" font-family="monospace" font-size="12" fill="#10B981">Riemannian Geodesic Neighborhoods</text>
+        <text x="20" y="68" font-family="sans-serif" font-size="12" fill="#94A3B8">Clusters molecular retrosynthesis pathways into 14 novel catalyst families</text>
+      </g>
+
+      <!-- Branch 3: Subspace Projection -->
+      <g transform="translate(1090, 220)">
+        <rect width="470" height="85" rx="10" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="4" height="85" rx="2" fill="#00F2FE"/>
+        <text x="20" y="26" font-family="sans-serif" font-size="14" font-weight="700" fill="#F1F5F9">Branch C: Structural Discontinuity Detection</text>
+        <text x="20" y="48" font-family="monospace" font-size="12" fill="#00F2FE">Reconstruction Residuals ||x - x_rec||²</text>
+        <text x="20" y="68" font-family="sans-serif" font-size="12" fill="#94A3B8">3D autoencoder uncovers sub-surface tectonic fault lines from seismic grids</text>
+      </g>
+    </svg>
+    
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:8px;">
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#10B981; margin-bottom:6px;">The Manifold Hypothesis</div>
+          <p style="font-size:12px; line-height:1.45; color:#94A3B8;">Real-world high-dimensional observations (images, waveforms, molecules) concentrate near low-dimensional sub-manifolds embedded within ambient space.</p>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">06 / 12</span>
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#10B981; margin-bottom:6px;">The Information Bottleneck</div>
+          <p style="font-size:12px; line-height:1.45; color:#94A3B8;">Forcing high-dimensional data through variational bottlenecks max I(Z; X) - β I(Z; Noise) discards spurious correlations while preserving core structural factors.</p>
         </div>
-      </section>
-<!-- Slide 7: RL Deep Dive -->
-      <section class="slide">
-        <div class="eyebrow">Paradigm Deep Dive 03</div>
-        <div>
-          <h1 class="display">Reinforcement Learning: Policy Synthesis in Dynamic MDPs</h1>
-          <p class="subtitle">max_π E_τ~π [Σ γ^t R(s_t, a_t)] — Closed-Loop Policy Control</p>
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#10B981; margin-bottom:6px;">Contrastive Representation Learning</div>
+          <p style="font-size:12px; line-height:1.45; color:#94A3B8;">Pulling semantically aligned data views together while pushing discordant samples apart constructs robust latent spaces without manual labels.</p>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">07 / 12</span>
+        
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">05 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 06: Unsupervised Real-World Cases -->
+    <section class="slide">
+      <div class="eyebrow">PARADIGM 02: HIGH-STAKES IMPLEMENTATIONS</div>
+      <div style="margin-top:12px; margin-bottom:20px;">
+        <h1 class="display" style="font-size:46px; margin:0;">Autonomous Structure Discovery in Production</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">Extracting critical patterns from millions of molecules, acoustic reflections, and turbine harmonics.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; flex:1; align-content:stretch; margin-bottom:16px;">
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:inline-block; padding:4px 10px; border-radius:6px; background:rgba(16, 185, 129, 0.12); border:1px solid #10B981; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; color:#10B981; margin-bottom:12px;">COMPUTATIONAL CHEMISTRY</div>
+            <h3 style="font-size:20px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">Molecular Retrosynthesis Pathways</h3>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; letter-spacing:0.5px;">The Discovery Bottleneck:</span>
+              <p style="font-size:13px; line-height:1.45; color:#F1F5F9; margin-top:4px;">Combinatorial reaction possibilities make manual chemical synthesis planning for novel oncology drug candidates computationally intractable.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#10B981; letter-spacing:0.5px;">Latent Representation:</span>
+              <p style="font-size:13px; line-height:1.45; color:#94A3B8; margin-top:4px;">Graph Variational Autoencoders (GVAE) project 100M+ unannotated chemical reactions into continuous latent reaction manifolds.</p>
+            </div>
+          </div>
+          <div style="background:rgba(16, 185, 129, 0.12); border-left:3px solid #10B981; padding:10px 14px; border-radius:0 6px 6px 0;">
+            <div style="font-size:10px; font-weight:700; color:#10B981; font-family:'JetBrains Mono', monospace;">MEASURED OUTCOME:</div>
+            <div style="font-size:12px; font-weight:600; color:#F1F5F9; margin-top:2px;">Identified viable synthetic routes for 14 novel kinase inhibitors; reduced wet-lab synthesis attempts by 65%.</div>
+          </div>
         </div>
-      </section>
-<!-- Slide 8: RL Use Cases Grid -->
-      <section class="slide">
-        <div class="eyebrow">Reinforcement Learning: Real-World Applications</div>
-        <div>
-          <h1 class="display">Beyond Autobots: Practical RL</h1>
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:inline-block; padding:4px 10px; border-radius:6px; background:rgba(16, 185, 129, 0.12); border:1px solid #10B981; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; color:#10B981; margin-bottom:12px;">GEOPHYSICAL EXPLORATION</div>
+            <h3 style="font-size:20px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">32-Channel Subsurface Seismic Faults</h3>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; letter-spacing:0.5px;">The Discovery Bottleneck:</span>
+              <p style="font-size:13px; line-height:1.45; color:#F1F5F9; margin-top:4px;">Continuous acoustic geophone sensor arrays generate petabytes of reflective waveforms with zero physical borehole ground truth.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#10B981; letter-spacing:0.5px;">Latent Representation:</span>
+              <p style="font-size:13px; line-height:1.45; color:#94A3B8; margin-top:4px;">3D Spatio-Temporal Convolutional Autoencoders detect structural discontinuities by calculating reconstruction residual gradients.</p>
+            </div>
+          </div>
+          <div style="background:rgba(16, 185, 129, 0.12); border-left:3px solid #10B981; padding:10px 14px; border-radius:0 6px 6px 0;">
+            <div style="font-size:10px; font-weight:700; color:#10B981; font-family:'JetBrains Mono', monospace;">MEASURED OUTCOME:</div>
+            <div style="font-size:12px; font-weight:600; color:#F1F5F9; margin-top:2px;">Automated discovery of micro-fracture fault lines across 4,000 sq km of seabed without a single human annotation.</div>
+          </div>
         </div>
-        <div class="grid-3">
-          <div class="card"><h3>Portfolio Rebalancing</h3><p>MDP policy → trade execution minimizing transaction costs + market impact</p></div>
-          <div class="card"><h3>Warehouse Robot Fleet</h3><p>Multi-agent RL → collision-free picking & sorting in dynamic environments</p></div>
-          <div class="card"><h3>Industrial Process Optimization</h3><p>Continuous control → reduce energy consumption in HVAC/manufacturing</p></div>
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:inline-block; padding:4px 10px; border-radius:6px; background:rgba(16, 185, 129, 0.12); border:1px solid #10B981; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; color:#10B981; margin-bottom:12px;">INDUSTRIAL IOT</div>
+            <h3 style="font-size:20px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">SCADA Power Turbine Telemetry</h3>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; letter-spacing:0.5px;">The Discovery Bottleneck:</span>
+              <p style="font-size:13px; line-height:1.45; color:#F1F5F9; margin-top:4px;">100,000 continuous sensor channels (bearing harmonics, thermal gradients) operate without historical catastrophic failure labels.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#10B981; letter-spacing:0.5px;">Latent Representation:</span>
+              <p style="font-size:13px; line-height:1.45; color:#94A3B8; margin-top:4px;">Online Matrix Profiles combined with Incremental Isolation Forests track multi-dimensional distance discord vectors in real time.</p>
+            </div>
+          </div>
+          <div style="background:rgba(16, 185, 129, 0.12); border-left:3px solid #10B981; padding:10px 14px; border-radius:0 6px 6px 0;">
+            <div style="font-size:10px; font-weight:700; color:#10B981; font-family:'JetBrains Mono', monospace;">MEASURED OUTCOME:</div>
+            <div style="font-size:12px; font-weight:600; color:#F1F5F9; margin-top:2px;">Detected bearing flaking anomalies 21 days prior to catastrophic physical turbine seizure, saving $4.2M in downtime.</div>
+          </div>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">08 / 12</span>
+        
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">06 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 07: RL Dynamic Control Pipeline -->
+    <section class="slide">
+      <div class="eyebrow">PARADIGM 03: DYNAMIC CONTROL PIPELINE</div>
+      <div style="margin-top:12px; margin-bottom:12px;">
+        <h1 class="display" style="font-size:44px; margin:0;">Reinforcement Learning: Policy Synthesis in Dynamic MDPs</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">The closed-loop interaction between agent policy, environment dynamics, and temporal credit assignment.</p>
+      </div>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center; width:100%; margin:8px 0;">
+        
+    <svg viewBox="0 0 1600 360" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="max-height: 360px;">
+      <defs>
+        <marker id="arr-rl" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#A855F7" />
+        </marker>
+        <linearGradient id="rl-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#A855F7" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#A855F7" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Agent Controller -->
+      <g transform="translate(60, 70)">
+        <rect width="420" height="200" rx="14" fill="url(#rl-grad)" stroke="#A855F7" stroke-width="2"/>
+        <rect width="420" height="5" rx="2.5" fill="#A855F7"/>
+        <text x="24" y="36" font-family="sans-serif" font-size="12" font-weight="700" fill="#A855F7" letter-spacing="1">LEARNING AGENT CONTROLLER</text>
+        <text x="24" y="70" font-family="sans-serif" font-size="22" font-weight="700" fill="#F1F5F9">Actor-Critic Architecture</text>
+        
+        <rect x="24" y="90" width="175" height="85" rx="8" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <text x="36" y="115" font-family="sans-serif" font-size="13" font-weight="700" fill="#F1F5F9">Actor Policy π_θ(a|s)</text>
+        <text x="36" y="135" font-family="sans-serif" font-size="11" fill="#94A3B8">Selects continuous</text>
+        <text x="36" y="152" font-family="sans-serif" font-size="11" fill="#94A3B8">action / routing path</text>
+
+        <rect x="220" y="90" width="175" height="85" rx="8" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <text x="232" y="115" font-family="sans-serif" font-size="13" font-weight="700" fill="#F1F5F9">Critic Baseline V_φ(s)</text>
+        <text x="232" y="135" font-family="sans-serif" font-size="11" fill="#94A3B8">Estimates state value</text>
+        <text x="232" y="152" font-family="sans-serif" font-size="11" fill="#94A3B8">reduces gradient variance</text>
+      </g>
+
+      <!-- Action Path (Top) -->
+      <path d="M 480 120 L 1060 120" stroke="#A855F7" stroke-width="3" marker-end="url(#arr-rl)"/>
+      <rect x="670" y="95" width="220" height="36" rx="6" fill="rgba(14, 20, 32, 0.85)" stroke="#A855F7" stroke-width="1.5"/>
+      <text x="780" y="118" font-family="monospace" font-size="13" font-weight="700" fill="#A855F7" text-anchor="middle">Action a_t ~ π_θ(·|s_t)</text>
+
+      <!-- Environment -->
+      <g transform="translate(1080, 70)">
+        <rect width="460" height="200" rx="14" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2"/>
+        <rect width="460" height="5" rx="2.5" fill="#10B981"/>
+        <text x="24" y="36" font-family="sans-serif" font-size="12" font-weight="700" fill="#10B981" letter-spacing="1">STOCHASTIC ENVIRONMENT</text>
+        <text x="24" y="70" font-family="sans-serif" font-size="22" font-weight="700" fill="#F1F5F9">Markov Dynamics P(s'|s,a)</text>
+        <text x="24" y="105" font-family="sans-serif" font-size="13" fill="#94A3B8">• Equity limit order book with transient slippage</text>
+        <text x="24" y="130" font-family="sans-serif" font-size="13" fill="#94A3B8">• 500-AGV warehouse grid with dynamic route bottlenecks</text>
+        <text x="24" y="155" font-family="sans-serif" font-size="13" fill="#94A3B8">• Exothermic chemical reactor with thermal runaway limits</text>
+      </g>
+
+      <!-- Feedback Path (Bottom) -->
+      <path d="M 1080 220 L 500 220" stroke="#10B981" stroke-width="3" marker-end="url(#arr-rl)"/>
+      <rect x="650" y="202" width="260" height="36" rx="6" fill="rgba(14, 20, 32, 0.85)" stroke="#10B981" stroke-width="1.5"/>
+      <text x="780" y="225" font-family="monospace" font-size="13" font-weight="700" fill="#10B981" text-anchor="middle">State s_{t+1} + Scalar Reward r_t</text>
+
+      <!-- Policy Update Engine -->
+      <g transform="translate(480, 290)">
+        <rect width="600" height="50" rx="8" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
+        <text x="300" y="31" font-family="monospace" font-size="12" font-weight="700" fill="#F1F5F9" text-anchor="middle">
+          L_PPO(θ) = E_t [min(r_t(θ) A_t, clip(r_t(θ), 1-ε, 1+ε) A_t)]  →  θ ← θ + α ∇_θ L
+        </text>
+      </g>
+    </svg>
+    
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:8px;">
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#A855F7; margin-bottom:6px;">The Temporal Credit Assignment Problem</div>
+          <p style="font-size:12px; line-height:1.45; color:#94A3B8;">Determining which specific action in an extended 10,000-step trajectory was responsible for a delayed terminal reward requires Generalized Advantage Estimation (GAE).</p>
         </div>
-      </section>
-<!-- Slide 9: Comparison Matrix -->
-      <section class="slide">
-        <div class="eyebrow">Engineering Architecture Matrix</div>
-        <div>
-          <h1 class="display">Comparative Trade-off Analysis</h1>
-          <p class="subtitle">Choosing the wrong paradigm produces catastrophic failures in production</p>
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#A855F7; margin-bottom:6px;">Exploration vs Exploitation Frontier</div>
+          <p style="font-size:12px; line-height:1.45; color:#94A3B8;">Balancing epistemic uncertainty exploration (via entropy bonuses, curiosity bonuses) against exploiting known high-value trajectory corridors.</p>
         </div>
-        <div style="width:100%;overflow-x:auto;margin-top:32px">
-        <table style="width:100%;border-collapse:collapse;margin-top:32px">
-        <tr><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Input Data Structure</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Supervised: paired features & ground-truth labels (x, y)</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Unsupervised: unlabeled observations x ∈ R^D</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">RL: environment states s, action spaces A, transition dynamics P</td></tr>
-        <tr><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Feedback Mechanism</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Instantaneous loss vector per forward pass</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Intrinsic manifold / density reconstruction error</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Delayed, sparse scalar reward r_t after sequential actions</td></tr>
-        <tr><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Sample Efficiency</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">High to Moderate (10³ – 10⁶ curated pairs)</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Very High on uncurated data (exploits raw scale)</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Extremely Low (10⁶ – 10⁸ environment simulation steps)</td></tr>
-        <tr><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Core Failure Mode</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Overfitting & OOD collapse</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Trivial feature shortcutting & mode collapse</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Reward hacking, policy destabilization, exploration plateau</td></tr>
-        <tr><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Production Cost Driver</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">High human annotation & verification cost</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">High memory & GPU cluster pretraining compute</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">High simulation fidelity & distributed rollout compute</td></tr>
-        <tr><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Inference Latency</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Sub-millisecond to low milliseconds (pure forward pass)</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Low milliseconds (embedding lookup / distance)</td><td style="color:#94A3B8;font-size:13px;padding:4px 8px;">Sub-millisecond policy evaluation (actor forward pass)</td></tr>
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#A855F7; margin-bottom:6px;">Policy Gradient Clipping Stability</div>
+          <p style="font-size:12px; line-height:1.45; color:#94A3B8;">PPO surrogate clipping restricts policy parameter updates within a trust region |r_t(θ) - 1| ≤ ε, preventing policy collapse during training.</p>
+        </div>
+        
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">07 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 08: RL Real-World Cases -->
+    <section class="slide">
+      <div class="eyebrow">PARADIGM 03: HIGH-STAKES IMPLEMENTATIONS</div>
+      <div style="margin-top:12px; margin-bottom:20px;">
+        <h1 class="display" style="font-size:46px; margin:0;">Autonomous Closed-Loop Control in Critical Systems</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">Where actions directly alter subsequent physical, financial, and logistical states.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; flex:1; align-content:stretch; margin-bottom:16px;">
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:inline-block; padding:4px 10px; border-radius:6px; background:rgba(168, 85, 247, 0.12); border:1px solid #A855F7; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; color:#A855F7; margin-bottom:12px;">MARKET MICROSTRUCTURE</div>
+            <h3 style="font-size:20px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">Institutional Block Portfolio Liquidation</h3>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; letter-spacing:0.5px;">Dynamic Environment Challenge:</span>
+              <p style="font-size:13px; line-height:1.45; color:#F1F5F9; margin-top:4px;">Unwinding a $100M equity position using TWAP/VWAP triggers adverse price drift and predatory front-running.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#A855F7; letter-spacing:0.5px;">MDP Formulation & Policy:</span>
+              <p style="font-size:13px; line-height:1.45; color:#94A3B8; margin-top:4px;">Actor-Critic policy trained in an Almgren-Chriss market impact MDP dynamically balances execution velocity against order-book depth.</p>
+            </div>
+          </div>
+          <div style="background:rgba(168, 85, 247, 0.12); border-left:3px solid #A855F7; padding:10px 14px; border-radius:0 6px 6px 0;">
+            <div style="font-size:10px; font-weight:700; color:#A855F7; font-family:'JetBrains Mono', monospace;">MEASURED OUTCOME:</div>
+            <div style="font-size:12px; font-weight:600; color:#F1F5F9; margin-top:2px;">14 basis points execution cost improvement ($140,000 saved per $100M block trade) compared to standard algorithmic benchmarks.</div>
+          </div>
+        </div>
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:inline-block; padding:4px 10px; border-radius:6px; background:rgba(168, 85, 247, 0.12); border:1px solid #A855F7; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; color:#A855F7; margin-bottom:12px;">ROBOTIC FLEET LOGISTICS</div>
+            <h3 style="font-size:20px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">Autonomous Warehouse AGV Swarm Coordination</h3>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; letter-spacing:0.5px;">Dynamic Environment Challenge:</span>
+              <p style="font-size:13px; line-height:1.45; color:#F1F5F9; margin-top:4px;">500+ Automated Guided Vehicles in fulfillment centers suffer from intersection route oscillations and traffic gridlock under A* routing.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#A855F7; letter-spacing:0.5px;">MDP Formulation & Policy:</span>
+              <p style="font-size:13px; line-height:1.45; color:#94A3B8; margin-top:4px;">Multi-Agent PPO (MAPPO) with Centralized Training and Decentralized Execution (CTDE) coordinates collision-free spatial reservations.</p>
+            </div>
+          </div>
+          <div style="background:rgba(168, 85, 247, 0.12); border-left:3px solid #A855F7; padding:10px 14px; border-radius:0 6px 6px 0;">
+            <div style="font-size:10px; font-weight:700; color:#A855F7; font-family:'JetBrains Mono', monospace;">MEASURED OUTCOME:</div>
+            <div style="font-size:12px; font-weight:600; color:#F1F5F9; margin-top:2px;">Eliminated 100% of grid deadlocks; increased continuous parcel pick-and-sort throughput by 28%.</div>
+          </div>
+        </div>
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:inline-block; padding:4px 10px; border-radius:6px; background:rgba(168, 85, 247, 0.12); border:1px solid #A855F7; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; color:#A855F7; margin-bottom:12px;">PROCESS AUTOMATION</div>
+            <h3 style="font-size:20px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">Exothermic Chemical Batch Reactor Control</h3>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#94A3B8; letter-spacing:0.5px;">Dynamic Environment Challenge:</span>
+              <p style="font-size:13px; line-height:1.45; color:#F1F5F9; margin-top:4px;">Extreme thermal runaway risks force conservative PID valve margins, sacrificing 35% of achievable polymer batch production yield.</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#A855F7; letter-spacing:0.5px;">MDP Formulation & Policy:</span>
+              <p style="font-size:13px; line-height:1.45; color:#94A3B8; margin-top:4px;">Continuous Soft Actor-Critic (SAC) policy dynamically regulates coolant injection valves right along the thermodynamic stability boundary.</p>
+            </div>
+          </div>
+          <div style="background:rgba(168, 85, 247, 0.12); border-left:3px solid #A855F7; padding:10px 14px; border-radius:0 6px 6px 0;">
+            <div style="font-size:10px; font-weight:700; color:#A855F7; font-family:'JetBrains Mono', monospace;">MEASURED OUTCOME:</div>
+            <div style="font-size:12px; font-weight:600; color:#F1F5F9; margin-top:2px;">22% increase in polymer batch throughput while maintaining zero safety envelope violations across 2,000 production cycles.</div>
+          </div>
+        </div>
+        
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">08 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 09: Comparison Matrix -->
+    <section class="slide">
+      <div class="eyebrow">SYSTEM ENGINEERING MATRIX</div>
+      <div style="margin-top:12px; margin-bottom:16px;">
+        <h1 class="display" style="font-size:44px; margin:0;">Rigorous Paradigm Trade-off Analysis</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">Selecting the wrong paradigm produces severe budget overruns, sample inefficiency, and production outages.</p>
+      </div>
+      <div style="flex:1; width:100%; overflow:hidden; border:1px solid rgba(255, 255, 255, 0.08); border-radius:12px; background:rgba(14, 20, 32, 0.85); margin-bottom:16px;">
+        <table style="width:100%; border-collapse:collapse; text-align:left;">
+          <thead>
+            <tr style="background:#E5E1D8; border-bottom:2px solid rgba(255, 255, 255, 0.08);">
+              <th style="padding:14px 16px; font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700; color:#94A3B8; text-transform:uppercase;">Dimension</th>
+              <th style="padding:14px 16px; font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700; color:#00F2FE; text-transform:uppercase; border-left:1px solid rgba(255, 255, 255, 0.08);">Supervised Learning</th>
+              <th style="padding:14px 16px; font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700; color:#10B981; text-transform:uppercase; border-left:1px solid rgba(255, 255, 255, 0.08);">Unsupervised Learning</th>
+              <th style="padding:14px 16px; font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700; color:#A855F7; text-transform:uppercase; border-left:1px solid rgba(255, 255, 255, 0.08);">Reinforcement Learning</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+        <tr style="border-bottom:1px solid rgba(255, 255, 255, 0.08);">
+          <td style="padding:12px 16px; font-weight:700; font-size:13px; color:#F1F5F9; width:20%;">Input Data Structure</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(0, 242, 254, 0.12);">Paired inputs & ground-truth targets (x_i, y_i) ∈ X × Y</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(16, 185, 129, 0.12);">Unlabeled continuous observations x_i ∈ R^D</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:28%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(168, 85, 247, 0.12);">State trajectories s_t ∈ S, actions a_t ∈ A, transition dynamics P</td>
+        </tr>
+        
+        <tr style="border-bottom:1px solid rgba(255, 255, 255, 0.08);">
+          <td style="padding:12px 16px; font-weight:700; font-size:13px; color:#F1F5F9; width:20%;">Feedback Mechanism & Latency</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(0, 242, 254, 0.12);">Instantaneous loss vector per forward pass via backpropagation</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(16, 185, 129, 0.12);">Intrinsic manifold reconstruction error or density threshold</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:28%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(168, 85, 247, 0.12);">Delayed, sparse scalar reward r_t after sequential interactions</td>
+        </tr>
+        
+        <tr style="border-bottom:1px solid rgba(255, 255, 255, 0.08);">
+          <td style="padding:12px 16px; font-weight:700; font-size:13px; color:#F1F5F9; width:20%;">Sample Efficiency</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(0, 242, 254, 0.12);">Moderate to High (10³ – 10⁶ curated pairs)</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(16, 185, 129, 0.12);">Very High on uncurated scale (exploits raw web/sensor volume)</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:28%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(168, 85, 247, 0.12);">Extremely Low (requires 10⁶ – 10⁸ environment simulation steps)</td>
+        </tr>
+        
+        <tr style="border-bottom:1px solid rgba(255, 255, 255, 0.08);">
+          <td style="padding:12px 16px; font-weight:700; font-size:13px; color:#F1F5F9; width:20%;">Primary Failure Mode</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(0, 242, 254, 0.12);">Overfitting & OOD generalization collapse</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(16, 185, 129, 0.12);">Trivial shortcut representations & mode collapse</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:28%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(168, 85, 247, 0.12);">Reward hacking, policy destabilization, exploration plateaus</td>
+        </tr>
+        
+        <tr style="border-bottom:1px solid rgba(255, 255, 255, 0.08);">
+          <td style="padding:12px 16px; font-weight:700; font-size:13px; color:#F1F5F9; width:20%;">Production Compute Footprint</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(0, 242, 254, 0.12);">Heavy offline training; lightweight sub-millisecond inference</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(16, 185, 129, 0.12);">Massive cluster pretraining; fast embedding lookups</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:28%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(168, 85, 247, 0.12);">Extreme simulation compute during training; ultra-fast policy execution</td>
+        </tr>
+        
+        <tr style="border-bottom:1px solid rgba(255, 255, 255, 0.08);">
+          <td style="padding:12px 16px; font-weight:700; font-size:13px; color:#F1F5F9; width:20%;">Real-Time Inference Latency</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(0, 242, 254, 0.12);">Sub-millisecond to low milliseconds (pure forward pass)</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(16, 185, 129, 0.12);">Low milliseconds (vector index distance search)</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:28%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(168, 85, 247, 0.12);">Sub-millisecond (actor policy neural forward pass)</td>
+        </tr>
+        
+        <tr style="border-bottom:1px solid rgba(255, 255, 255, 0.08);">
+          <td style="padding:12px 16px; font-weight:700; font-size:13px; color:#F1F5F9; width:20%;">Operational MLOps Complexity</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(0, 242, 254, 0.12);">Continuous label drift monitoring & retraining pipelines</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:26%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(16, 185, 129, 0.12);">Latent drift & embedding distribution calibration</td>
+          <td style="padding:12px 16px; font-size:12px; color:#F1F5F9; line-height:1.4; width:28%; border-left:1px solid rgba(255, 255, 255, 0.08); background:rgba(168, 85, 247, 0.12);">High-fidelity simulation environments & safety guardrails</td>
+        </tr>
+        
+          </tbody>
         </table>
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">09 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 10: Unified Hybrid Pipeline -->
+    <section class="slide">
+      <div class="eyebrow">THE PRODUCTION FRONTIER</div>
+      <div style="margin-top:12px; margin-bottom:12px;">
+        <h1 class="display" style="font-size:44px; margin:0;">The Unified Hybrid AI Architecture</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">Modern frontier AI systems combine all three paradigms into a self-improving closed loop.</p>
+      </div>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center; width:100%; margin:8px 0;">
+        
+    <svg viewBox="0 0 1600 340" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="max-height: 340px;">
+      <defs>
+        <marker id="arr-hyb" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#00F2FE" />
+        </marker>
+      </defs>
+
+      <!-- Phase 1: Unsupervised Pretraining -->
+      <g transform="translate(40, 40)">
+        <rect width="440" height="240" rx="14" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="440" height="6" rx="3" fill="#10B981"/>
+        <text x="24" y="36" font-family="sans-serif" font-size="11" font-weight="700" fill="#10B981" letter-spacing="1">PHASE 01: FOUNDATION</text>
+        <text x="24" y="68" font-family="sans-serif" font-size="20" font-weight="700" fill="#F1F5F9">Unsupervised Pretraining</text>
+        <text x="24" y="96" font-family="sans-serif" font-size="13" font-weight="600" fill="#10B981">Role: World Model Representation</text>
+        <text x="24" y="126" font-family="sans-serif" font-size="12" fill="#94A3B8">• Ingests petabytes of uncurated sensor tokens, netlists, or code</text>
+        <text x="24" y="148" font-family="sans-serif" font-size="12" fill="#94A3B8">• Autoregressive next-token or contrastive visual embeddings</text>
+        <text x="24" y="170" font-family="sans-serif" font-size="12" fill="#94A3B8">• Compresses high-D reality into dense latent representations</text>
+        
+        <rect x="24" y="195" width="392" height="28" rx="6" fill="#10B98118" />
+        <text x="36" y="214" font-family="monospace" font-size="11" font-weight="700" fill="#10B981">Outcome: Semantic World Manifold</text>
+      </g>
+
+      <path d="M 480 160 L 530 160" stroke="#00F2FE" stroke-width="2.5" marker-end="url(#arr-hyb)"/>
+
+      <!-- Phase 2: Supervised SFT -->
+      <g transform="translate(540, 40)">
+        <rect width="440" height="240" rx="14" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="440" height="6" rx="3" fill="#00F2FE"/>
+        <text x="24" y="36" font-family="sans-serif" font-size="11" font-weight="700" fill="#00F2FE" letter-spacing="1">PHASE 02: CALIBRATION</text>
+        <text x="24" y="68" font-family="sans-serif" font-size="20" font-weight="700" fill="#F1F5F9">Supervised Fine-Tuning (SFT)</text>
+        <text x="24" y="96" font-family="sans-serif" font-size="13" font-weight="600" fill="#00F2FE">Role: Behavioral Alignment & Constraints</text>
+        <text x="24" y="126" font-family="sans-serif" font-size="12" fill="#94A3B8">• Curated expert demonstrations & physical boundary tags</text>
+        <text x="24" y="148" font-family="sans-serif" font-size="12" fill="#94A3B8">• Teaches task schemas, syntax rules, and baseline protocols</text>
+        <text x="24" y="170" font-family="sans-serif" font-size="12" fill="#94A3B8">• Steep loss gradient prevents early catastrophic exploration</text>
+
+        <rect x="24" y="195" width="392" height="28" rx="6" fill="#00F2FE18" />
+        <text x="36" y="214" font-family="monospace" font-size="11" font-weight="700" fill="#00F2FE">Outcome: Compliant Task-Aligned Policy</text>
+      </g>
+
+      <path d="M 980 160 L 1030 160" stroke="#00F2FE" stroke-width="2.5" marker-end="url(#arr-hyb)"/>
+
+      <!-- Phase 3: RL with Verifiers -->
+      <g transform="translate(1040, 40)">
+        <rect width="500" height="240" rx="14" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5"/>
+        <rect width="500" height="6" rx="3" fill="#A855F7"/>
+        <text x="24" y="36" font-family="sans-serif" font-size="11" font-weight="700" fill="#A855F7" letter-spacing="1">PHASE 03: SUPERHUMAN DISCOVERY</text>
+        <text x="24" y="68" font-family="sans-serif" font-size="20" font-weight="700" fill="#F1F5F9">RL with Programmatic Verifiers</text>
+        <text x="24" y="96" font-family="sans-serif" font-size="13" font-weight="600" fill="#A855F7">Role: Autonomous Reasoning & Policy Search</text>
+        <text x="24" y="126" font-family="sans-serif" font-size="12" fill="#94A3B8">• Policy interacts with deterministic execution checkers (compilers, math proofs)</text>
+        <text x="24" y="148" font-family="sans-serif" font-size="12" fill="#94A3B8">• PPO / GRPO optimizes long chain-of-thought trajectories</text>
+        <text x="24" y="170" font-family="sans-serif" font-size="12" fill="#94A3B8">• Discovers non-intuitive solutions transcending human demonstrations</text>
+
+        <rect x="24" y="195" width="452" height="28" rx="6" fill="#A855F718" />
+        <text x="36" y="214" font-family="monospace" font-size="11" font-weight="700" fill="#A855F7">Outcome: Frontier Autonomous Capability</text>
+      </g>
+    </svg>
+    
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:8px;">
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#00F2FE; margin-bottom:4px;">Reasoning Foundation Models (DeepSeek R1 / OpenAI o1)</div>
+          <p style="font-size:12px; font-family:'JetBrains Mono', monospace; color:#F1F5F9; line-height:1.4;">Self-Supervised Pretraining → SFT Cold-Start → Rule-Based RL with Math & Code Verifiers.</p>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">09 / 12</span>
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#00F2FE; margin-bottom:4px;">Autonomous Driving Stack (Waymo)</div>
+          <p style="font-size:12px; font-family:'JetBrains Mono', monospace; color:#F1F5F9; line-height:1.4;">Self-Supervised point cloud autoencoding → Supervised trajectory imitation → Closed-loop RL safety policy.</p>
         </div>
-      </section>
-<!-- Slide 10: Hybrid Architecture -->
-      <section class="slide">
-        <div class="eyebrow">The Modern Production Frontier</div>
-        <div>
-          <h1 class="display">The Unified Hybrid Architecture</h1>
-          <p class="subtitle">State-of-the-art AI systems no longer treat these paradigms as mutually exclusive</p>
+        
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:14px; font-weight:700; color:#00F2FE; margin-bottom:4px;">Semiconductor Placement (AlphaChip)</div>
+          <p style="font-size:12px; font-family:'JetBrains Mono', monospace; color:#F1F5F9; line-height:1.4;">Netlist graph representation learning → Supervised wirelength prediction → RL macro placement policy.</p>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">10 / 12</span>
+        
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">10 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 11: Strategic Decision Playbook -->
+    <section class="slide">
+      <div class="eyebrow">ENGINEERING DECISION PLAYBOOK</div>
+      <div style="margin-top:12px; margin-bottom:12px;">
+        <h1 class="display" style="font-size:44px; margin:0;">Deterministic Paradigm Selection Framework</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">A systematic decision tree for AI system architects evaluating engineering constraints.</p>
+      </div>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center; width:100%;">
+        
+    <svg viewBox="0 0 1600 360" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="max-height: 360px;">
+      <defs>
+        <marker id="arr-dec" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#94A3B8" />
+        </marker>
+        <marker id="arr-yes" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#00F2FE" />
+        </marker>
+      </defs>
+
+      <!-- Decision Node 1 -->
+      <g transform="translate(40, 50)">
+        <polygon points="170,0 340,65 170,130 0,65" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2"/>
+        <text x="170" y="55" font-family="sans-serif" font-size="13" font-weight="700" fill="#F1F5F9" text-anchor="middle">Dense Ground-Truth</text>
+        <text x="170" y="75" font-family="sans-serif" font-size="13" font-weight="700" fill="#F1F5F9" text-anchor="middle">Target Labels Available?</text>
+      </g>
+
+      <!-- Path YES from Node 1 -->
+      <path d="M 380 115 L 490 115" stroke="#00F2FE" stroke-width="2.5" marker-end="url(#arr-yes)"/>
+      <rect x="400" y="90" width="60" height="22" rx="4" fill="#00F2FE" />
+      <text x="430" y="105" font-family="sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">YES</text>
+
+      <!-- Output: Supervised Learning -->
+      <g transform="translate(500, 45)">
+        <rect width="320" height="140" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="#00F2FE" stroke-width="2"/>
+        <rect width="320" height="4" rx="2" fill="#00F2FE"/>
+        <text x="20" y="28" font-family="sans-serif" font-size="11" font-weight="700" fill="#00F2FE">OPTIMAL PARADIGM</text>
+        <text x="20" y="54" font-family="sans-serif" font-size="17" font-weight="700" fill="#F1F5F9">Supervised Learning</text>
+        <text x="20" y="78" font-family="sans-serif" font-size="12" fill="#94A3B8">• Direct empirical risk minimization</text>
+        <text x="20" y="98" font-family="sans-serif" font-size="12" fill="#94A3B8">• Active learning to refine hard margins</text>
+        <text x="20" y="118" font-family="sans-serif" font-size="12" fill="#94A3B8">• Continuous covariate shift monitoring</text>
+      </g>
+
+      <!-- Path NO from Node 1 -->
+      <path d="M 210 180 L 210 240 L 490 240" stroke="#94A3B8" stroke-width="2" marker-end="url(#arr-dec)"/>
+      <rect x="185" y="195" width="50" height="22" rx="4" fill="#94A3B8" />
+      <text x="210" y="210" font-family="sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">NO</text>
+
+      <!-- Decision Node 2 -->
+      <g transform="translate(500, 200)">
+        <polygon points="160,0 320,55 160,110 0,55" fill="rgba(14, 20, 32, 0.85)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2"/>
+        <text x="160" y="48" font-family="sans-serif" font-size="12" font-weight="700" fill="#F1F5F9" text-anchor="middle">Fast Simulator or Programmatic</text>
+        <text x="160" y="68" font-family="sans-serif" font-size="12" font-weight="700" fill="#F1F5F9" text-anchor="middle">Verifier Feasible?</text>
+      </g>
+
+      <!-- Path YES from Node 2 -->
+      <path d="M 820 255 L 940 255" stroke="#A855F7" stroke-width="2.5" marker-end="url(#arr-yes)"/>
+      <rect x="850" y="235" width="60" height="22" rx="4" fill="#A855F7" />
+      <text x="880" y="250" font-family="sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">YES</text>
+
+      <!-- Output: Reinforcement Learning -->
+      <g transform="translate(950, 195)">
+        <rect width="320" height="130" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="#A855F7" stroke-width="2"/>
+        <rect width="320" height="4" rx="2" fill="#A855F7"/>
+        <text x="20" y="28" font-family="sans-serif" font-size="11" font-weight="700" fill="#A855F7">OPTIMAL PARADIGM</text>
+        <text x="20" y="54" font-family="sans-serif" font-size="17" font-weight="700" fill="#F1F5F9">Reinforcement Learning</text>
+        <text x="20" y="78" font-family="sans-serif" font-size="12" fill="#94A3B8">• MDP policy synthesis (PPO / SAC)</text>
+        <text x="20" y="98" font-family="sans-serif" font-size="12" fill="#94A3B8">• Reward shaping & terminal bonus</text>
+        <text x="20" y="118" font-family="sans-serif" font-size="12" fill="#94A3B8">• Safety envelope constraint shielding</text>
+      </g>
+
+      <!-- Path NO from Node 2 -->
+      <path d="M 660 310 L 660 340 L 1350 340 L 1350 185" stroke="#94A3B8" stroke-width="2" marker-end="url(#arr-dec)"/>
+      <rect x="635" y="315" width="50" height="20" rx="4" fill="#94A3B8" />
+      <text x="660" y="329" font-family="sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">NO</text>
+
+      <!-- Output: Unsupervised Learning -->
+      <g transform="translate(1260, 45)">
+        <rect width="300" height="140" rx="12" fill="rgba(14, 20, 32, 0.85)" stroke="#10B981" stroke-width="2"/>
+        <rect width="300" height="4" rx="2" fill="#10B981"/>
+        <text x="20" y="28" font-family="sans-serif" font-size="11" font-weight="700" fill="#10B981">OPTIMAL PARADIGM</text>
+        <text x="20" y="54" font-family="sans-serif" font-size="17" font-weight="700" fill="#F1F5F9">Unsupervised Learning</text>
+        <text x="20" y="78" font-family="sans-serif" font-size="12" fill="#94A3B8">• Latent manifold compression (VAE)</text>
+        <text x="20" y="98" font-family="sans-serif" font-size="12" fill="#94A3B8">• Density discord anomaly tracking</text>
+        <text x="20" y="118" font-family="sans-serif" font-size="12" fill="#94A3B8">• Geodesic clustering (HDBSCAN)</text>
+      </g>
+    </svg>
+    
+      </div>
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">11 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
+
+    <!-- Slide 12: Summary & Roadmap -->
+    <section class="slide">
+      <div class="eyebrow">SYNTHESIS & ROADMAP</div>
+      <div style="margin-top:12px; margin-bottom:20px;">
+        <h1 class="display" style="font-size:46px; margin:0;">The Convergence of Machine Intelligence</h1>
+        <p class="subtitle" style="font-size:16px; margin:4px 0 0 0;">Core architectural takeaways and why modern engineering is moving toward continuous learning loops.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; flex:1; align-content:stretch; margin-bottom:12px;">
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:'JetBrains Mono', monospace; font-size:24px; font-weight:800; color:#00F2FE; margin-bottom:12px;">01</div>
+            <h3 style="font-size:18px; font-weight:700; color:#F1F5F9; margin-bottom:10px;">Representation Precedes Control</h3>
+            <p style="font-size:13px; line-height:1.5; color:#94A3B8;">High-quality unsupervised latent spaces drastically compress the search space for both downstream supervised task heads and RL policies.</p>
+          </div>
+          <div style="height:3px; width:40px; background:#00F2FE; margin-top:16px; border-radius:1.5px;"></div>
         </div>
-      </section>
-<!-- Slide 11: Decision Playbook -->
-      <section class="slide">
-        <div class="eyebrow">Strategic Engineering Playbook</div>
-        <div>
-          <h1 class="display">Paradigm Selection Decision Tree</h1>
-          <p class="subtitle">A deterministic framework for AI engineers choosing between Supervised, Unsupervised, and RL</p>
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:'JetBrains Mono', monospace; font-size:24px; font-weight:800; color:#00F2FE; margin-bottom:12px;">02</div>
+            <h3 style="font-size:18px; font-weight:700; color:#F1F5F9; margin-bottom:10px;">Supervision Sets the Initial Orbit</h3>
+            <p style="font-size:13px; line-height:1.5; color:#94A3B8;">Supervised learning remains unmatched for rapid initialization, constraint bounding, and human safety alignment.</p>
+          </div>
+          <div style="height:3px; width:40px; background:#00F2FE; margin-top:16px; border-radius:1.5px;"></div>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">11 / 12</span>
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:'JetBrains Mono', monospace; font-size:24px; font-weight:800; color:#00F2FE; margin-bottom:12px;">03</div>
+            <h3 style="font-size:18px; font-weight:700; color:#F1F5F9; margin-bottom:10px;">Verifiers Unlock Autonomous Scale</h3>
+            <p style="font-size:13px; line-height:1.5; color:#94A3B8;">Reinforcement learning paired with verifiable execution checkers is how machines escape the glass ceiling of human demonstrations.</p>
+          </div>
+          <div style="height:3px; width:40px; background:#00F2FE; margin-top:16px; border-radius:1.5px;"></div>
         </div>
-      </section>
-<!-- Slide 12: Conclusion -->
-      <section class="slide">
-        <div class="eyebrow">Conclusion & Next Steps</div>
-        <div>
-          <h1 class="display">Conclusion & Next Steps</h1>
-          <p class="subtitle">• Start with labelled data you already have → build a supervised baseline• Use unsupervised clustering to discover hidden patterns in your full dataset• Progress to RL when you have a reward signal and can simulate or interact with the environment• Hybrid pipelines are where real ROI lives: stitch paradigms to solve end-to-end problems</p>
+        
+        <div class="card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:'JetBrains Mono', monospace; font-size:24px; font-weight:800; color:#00F2FE; margin-bottom:12px;">04</div>
+            <h3 style="font-size:18px; font-weight:700; color:#F1F5F9; margin-bottom:10px;">Production Demands Hybrid Triads</h3>
+            <p style="font-size:13px; line-height:1.5; color:#94A3B8;">Winning engineering teams build closed-loop feedback systems where each paradigm feeds the next continuously.</p>
+          </div>
+          <div style="height:3px; width:40px; background:#00F2FE; margin-top:16px; border-radius:1.5px;"></div>
         </div>
-        <div class="slide-footer">
-          <span>ShipSlides Architecture</span><span class="slide-num">12 / 12</span>
-        </div>
-      </section>
+        
+      </div>
+      
+    <div style="display:flex; align-items:center; gap:12px; margin-top:16px; padding:12px 18px; background:rgba(0, 242, 254, 0.12); border:1px solid rgba(0, 242, 254, 0.35); border-radius:10px;">
+      <span style="font-size:12px; font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">COMPARE DESIGN VARIANTS:</span>
+      <a href="ml_paradigms_editorial.html" style="text-decoration:none; padding:6px 14px; border-radius:6px; font-size:12px; font-family:'JetBrains Mono', monospace; background:rgba(14, 20, 32, 0.85); color:#94A3B8; border:1px solid rgba(255, 255, 255, 0.08);">Editorial Academic</a><a href="ml_paradigms_dark.html" style="text-decoration:none; padding:6px 14px; border-radius:6px; font-size:12px; font-family:'JetBrains Mono', monospace; background:#00F2FE; color:#FFFFFF; font-weight:700;">Deep Tech Obsidian</a><a href="ml_paradigms_swiss.html" style="text-decoration:none; padding:6px 14px; border-radius:6px; font-size:12px; font-family:'JetBrains Mono', monospace; background:rgba(14, 20, 32, 0.85); color:#94A3B8; border:1px solid rgba(255, 255, 255, 0.08);">Swiss Industrial Blueprint</a>
+    </div>
+    
+      
+    <div class="slide-footer">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span style="font-weight:700; color:#00F2FE; font-family:'JetBrains Mono', monospace;">PARTH AI-OS</span>
+        <span style="color:#94A3B8;">•</span>
+        <span style="color:#94A3B8;">Variant 2: Deep Tech Obsidian</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span style="color:#94A3B8; font-size:12px;">Use ← → to navigate | F for fullscreen</span>
+        <span class="slide-num" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F1F5F9;">12 / 12</span>
+      </div>
+    </div>
+    
+    </section>
+    
     </div>
   </div>
 
   <div class="controls">
-    <button class="ctrl-btn" id="prevBtn" title="Previous Slide (←)">←</button>
-    <button class="ctrl-btn" id="nextBtn" title="Next Slide (→)">→</button>
+    <button class="ctrl-btn" id="prevBtn" title="Previous Slide (← / PageUp)">←</button>
+    <button class="ctrl-btn" id="nextBtn" title="Next Slide (→ / Space / PageDown)">→</button>
+    <button class="ctrl-btn" id="fsBtn" title="Toggle Fullscreen (F)">⛶</button>
   </div>
 
   <script>
-    class DeckPresentation {
+    class DeckApp {
       constructor() {
         this.stage = document.getElementById('deckStage');
         this.slides = Array.from(document.querySelectorAll('.slide'));
         this.currentIndex = 0;
         this.initScaling();
-        this.initControls();
+        this.initKeyboard();
+        this.initButtons();
       }
       initScaling() {
         const resize = () => {
@@ -221,27 +1388,47 @@
         resize();
         window.addEventListener('resize', resize);
       }
-      initControls() {
-        document.getElementById('prevBtn').onclick = () => this.prev();
-        document.getElementById('nextBtn').onclick = () => this.next();
+      initKeyboard() {
         window.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { this.next(); }
-          else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { this.prev(); }
-          else if (e.key.toLowerCase() === 'f') { this.toggleFullscreen(); }
+          if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+            e.preventDefault();
+            this.next();
+          } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+            e.preventDefault();
+            this.prev();
+          } else if (e.key.toLowerCase() === 'f') {
+            this.toggleFullscreen();
+          } else if (e.key === 'Home') {
+            this.goTo(0);
+          } else if (e.key === 'End') {
+            this.goTo(this.slides.length - 1);
+          }
         });
       }
-      show(idx) {
-        this.currentIndex = Math.max(0, Math.min(idx, this.slides.length - 1));
-        this.slides.forEach((s, i) => s.classList.toggle('active', i === this.currentIndex));
+      initButtons() {
+        document.getElementById('prevBtn').onclick = () => this.prev();
+        document.getElementById('nextBtn').onclick = () => this.next();
+        document.getElementById('fsBtn').onclick = () => this.toggleFullscreen();
       }
-      next() { this.show(this.currentIndex + 1); }
-      prev() { this.show(this.currentIndex - 1); }
+      goTo(idx) {
+        this.currentIndex = Math.max(0, Math.min(idx, this.slides.length - 1));
+        this.slides.forEach((s, i) => {
+          s.classList.toggle('active', i === this.currentIndex);
+        });
+      }
+      next() { this.goTo(this.currentIndex + 1); }
+      prev() { this.goTo(this.currentIndex - 1); }
       toggleFullscreen() {
-        if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(() => {}); }
-        else { document.exitFullscreen(); }
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
       }
     }
-    new DeckPresentation();
+    window.addEventListener('DOMContentLoaded', () => {
+      new DeckApp();
+    });
   </script>
 </body>
 </html>
