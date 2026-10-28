@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constrained Decoding vs Scratchpad Reasoning — X Post Options</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --text-bright: #f0f6fc;
+      --accent: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-purple: #bc8cff;
+      --accent-orange: #d29922;
+      --tag-bg: #21262d;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 2.5rem 1.25rem;
+    }
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      color: var(--text-bright);
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-right: 0.5rem;
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+    .badge.green { color: var(--accent-green); }
+    .badge.purple { color: var(--accent-purple); }
+    .badge.orange { color: var(--accent-orange); }
+    .section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      color: var(--accent);
+      font-size: 1.35rem;
+      margin-top: 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .option-card {
+      background: #090d13;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+    .option-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-purple);
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .tweet-block {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.8rem;
+      position: relative;
+    }
+    .tweet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .tweet-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-orange);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .char-count {
+      font-size: 0.78rem;
+      color: #8b949e;
+    }
+    .tweet-content {
+      white-space: pre-wrap;
+      font-size: 0.98rem;
+      color: var(--text-bright);
+      line-height: 1.55;
+    }
+    .copy-btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: var(--accent);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.15s ease;
+    }
+    .copy-btn:hover {
+      background: #30363d;
+      color: var(--text-bright);
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Constrained Decoding vs Scratchpad Reasoning: 4 X Post Options</h1>
+      <p style="color: #8b949e; margin: 0.25rem 0 0.75rem 0;">
+        Engineering breakdown on why strict JSON schemas degrade agent planning and how production backends handle structured outputs.
+      </p>
+      <div>
+        <span class="badge green">Author: Parth (@parth__chawla)</span>
+        <span class="badge purple">X / Twitter</span>
+        <span class="badge orange">Strictly &le; 280 Chars</span>
+        <span class="badge">Date: 2026-10-28</span>
+      </div>
+    </header>
+
+    <div class="section">
+      <h2>Engineering Angles & Options</h2>
+
+      <!-- Option 1 -->
+      <div class="option-card">
+        <div class="option-title">
+          <span>Option 1: The Reasoning Tax of Forced JSON</span>
+          <span class="badge orange">Post + 1 Reply</span>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-header">
+            <span class="tweet-label">Main Tweet</span>
+            <div>
+              <span class="char-count">275 / 280 chars</span>
+              <button class="copy-btn" onclick="copyTweet(this)">Copy</button>
+            </div>
+          </div>
+          <div class="tweet-content">Forcing strict JSON schemas on your LLM tool calls eliminates syntax errors.
+
+It also destroys reasoning quality.
+
+When a model cannot output scratchpad tokens before opening the first curly brace, it has zero time to plan complex arguments.
+
+Valid syntax. Broken parameters.</div>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-header">
+            <span class="tweet-label">Reply 1</span>
+            <div>
+              <span class="char-count">259 / 280 chars</span>
+              <button class="copy-btn" onclick="copyTweet(this)">Copy</button>
+            </div>
+          </div>
+          <div class="tweet-content">Complex tool calls need intermediate reasoning.
+
+If an agent has to compute date ranges, SQL filters, or task graphs, let it think in plain text first.
+
+Validate the payload with Pydantic after generation. Formatting fixes are cheap. Logic failures are fatal.</div>
+        </div>
+      </div>
+
+      <!-- Option 2 -->
+      <div class="option-card">
+        <div class="option-title">
+          <span>Option 2: Engine Latency and Token Masking</span>
+          <span class="badge orange">Post + 1 Reply</span>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-header">
+            <span class="tweet-label">Main Tweet</span>
+            <div>
+              <span class="char-count">260 / 280 chars</span>
+              <button class="copy-btn" onclick="copyTweet(this)">Copy</button>
+            </div>
+          </div>
+          <div class="tweet-content">Grammar-constrained decoders look great on paper.
+
+In production on vLLM or SGLang, they crush your latency.
+
+Evaluating schema regular expressions over 128k vocab tokens at every step adds massive CPU overhead. Prefix caching breaks. Throughput drops by half.</div>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-header">
+            <span class="tweet-label">Reply 1</span>
+            <div>
+              <span class="char-count">267 / 280 chars</span>
+              <button class="copy-btn" onclick="copyTweet(this)">Copy</button>
+            </div>
+          </div>
+          <div class="tweet-content">Do not force grammar masks at the engine level for dozens of tool definitions.
+
+Use unconstrained decoding with lightweight stop tokens. Parse the output in user space.
+
+When a schema check fails, feed the error back into the state graph. Deterministic recovery wins.</div>
+        </div>
+      </div>
+
+      <!-- Option 3 -->
+      <div class="option-card">
+        <div class="option-title">
+          <span>Option 3: Compile-Time Constraints vs Run-Time Feedback</span>
+          <span class="badge">Standalone Post</span>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-header">
+            <span class="tweet-label">Main Tweet</span>
+            <div>
+              <span class="char-count">277 / 280 chars</span>
+              <button class="copy-btn" onclick="copyTweet(this)">Copy</button>
+            </div>
+          </div>
+          <div class="tweet-content">Most developers treat tool calling like an API contract.
+
+They force strict JSON schemas and celebrate zero syntax errors. Then they wonder why the model hallucinates columns.
+
+Never sacrifice model planning for parser convenience. Catch errors in Python, not at the tokenizer.</div>
+        </div>
+      </div>
+
+      <!-- Option 4 -->
+      <div class="option-card">
+        <div class="option-title">
+          <span>Option 4: Schema Bloat and Two-Tier Routing</span>
+          <span class="badge">Standalone Post</span>
+        </div>
+        <div class="tweet-block">
+          <div class="tweet-header">
+            <span class="tweet-label">Main Tweet</span>
+            <div>
+              <span class="char-count">271 / 280 chars</span>
+              <button class="copy-btn" onclick="copyTweet(this)">Copy</button>
+            </div>
+          </div>
+          <div class="tweet-content">If you give an autonomous agent 40 tool schemas in a single structured output call, it will fail.
+
+Token logit masks grow bloated and context attention dilutes.
+
+Production agents use two-tier dispatch. First route the intent to a domain cluster. Then expose 3 tools max.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function copyTweet(btn) {
+      const content = btn.closest('.tweet-block').querySelector('.tweet-content').innerText;
+      navigator.clipboard.writeText(content).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => { btn.innerText = originalText; }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>
