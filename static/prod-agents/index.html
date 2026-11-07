@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production AI Agent Systems Engineering - X Post Options</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    .option { margin: 30px 0; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .option-main { font-weight: bold; color: #1e293b; margin-bottom: 10px; }
+    .option-reply { color: #64748b; font-style: italic; margin-top: 10px; }
+    .option-standalone { color: #059669; }
+  </style>
+</head>
+<body>
+  <h1>Production AI Agent Systems Engineering - X Post Options</h1>
+  
+  <div class="option">
+    <div class="option-main">Option 1: Runtime Boundaries (Post + 1 Reply)</div>
+    <div>Main Post (274 chars):</div>
+    <p>"Most AI agent demos run on toy repos with clean deps. Production means managing bound deps, secret rotation, and debugging socket binds at 3am. If you cannot manage the runtime you are not shipping an agent you are shipping a prompt template."</div>
+    <div class="option-reply">"I have buried three agents because nobody warned me about cgroup thrashing and broken ODBC drivers on Ubuntu. Debugging raw system failures teaches you more than any demo. Real systems engineering begins where tutorials end."</div>
+  </div>
+  
+  <div class="option">
+    <div class="option-main">Option 2: LangGraph Threads (Post + 1 Reply)</div>
+    <div>Main Post (275 chars):</div>
+    <p>"LangGraph threads look elegant in notebooks until you hit 500 concurrent users. Then the event loop stalls memory grows unbounded and your process gets killed by the OOM killer. Orchestration is the easy part runtime stability is the real cost."</div>
+    <div class="option-reply">"I spent two weeks tracking a race condition in agent task queues that only appeared under load. There is no magic scheduler that handles backpressure for you. You build it."</div>
+  </div>
+  
+  <div class="option">
+    <div class="option-main">Option 3: FastAPI & LLM Output (Standalone)</div>
+    <div>Main Post (273 chars):</div>
+    <p>"FastAPI endpoints break when you pipe untrusted LLM output directly into SQL queries. Parameterized calls and typed tool definitions are not optional extras they are the difference between a working demo and a data breach."</div>
+  </div>
+  
+  <div class="option">
+    <div class="option-main">Option 4: Tutorial Hell (Standalone)</div>
+    <div>Main Post (268 chars):</div>
+    <p>"Every AI agent tutorial skips the Linux reality: systemd services security groups and log rotation. If you cannot debug a crashing VM you cannot ship an agent you are just running prompt experiments in the cloud."</div>
+  </div>
+</body>
+</html>
