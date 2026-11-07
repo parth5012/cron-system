@@ -1,0 +1,71 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>texure MCP probe — 19/19 PASS</title>
+<style>
+body{font:15px/1.5 system-ui,sans-serif;margin:0 auto;max-width:980px;padding:20px;background:#0f141a;color:#e6edf3}
+h1{font-size:22px}h2{font-size:17px;margin-top:28px}
+.badge{display:inline-block;background:#1f6feb;color:#fff;border-radius:999px;padding:4px 12px;font-weight:700}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:14px}
+.card{background:#161e27;border:1px solid #26303c;border-radius:10px;padding:12px}
+.ok{color:#3fb950}.tt{color:#a5d6ff}pre{background:#0b0f14;border:1px solid #26303c;border-radius:10px;padding:14px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px solid #26303c;padding:6px 8px;text-align:left;vertical-align:top}
+code{color:#a5d6ff}.bar{height:8px;background:#1f6feb;border-radius:4px;min-width:2px}
+small{color:#8b949e}
+</style></head><body>
+<h1>texure test MCP client — availability probe <span class="badge">19/19 PASS</span></h1>
+<p>Real <code>texure-server</code> binary over stdio JSON-RPC 2.0, driven against an in-process FakeBridge
+(HTTP Auth + rev-guard + PNG screenshot + HTTP polling fallback for <code>wait_for</code>).
+Wall time <b>2.1s</b> · client: <code>tools/test_mcp_client.py</code> · run: <code>python3 tools/test_mcp_client.py --no-build</code></p>
+<h2>Per-tool availability</h2>
+<div class="cards">
+<div class="card"><b class="ok">device_tree</b> — rev/nodes/window verified (4.0ms)</div>
+<div class="card"><b class="ok">tap</b> — fresh rev ok, stale rev → NODE_OUTDATED</div>
+<div class="card"><b class="ok">type</b> — editable write ok</div>
+<div class="card"><b class="ok">keypress</b> — ENTER/BACK ok</div>
+<div class="card"><b class="ok">screenshot</b> — image/png base64 decodes to PNG magic bytes</div>
+<div class="card"><b class="ok">wait_for</b> — immediate hit + timeout payload <code>{ok:false,last_rev}</code> via polling</div>
+<div class="card"><b class="ok">protocol</b> — initialize (2024-11-05, tools-only), ping, tools/list=6, unknown→-32602, bad JSON→-32700</div>
+<div class="card"><b class="ok">errors</b> — NO_CONFIG / OFFLINE / AUTH_FAILED + verbose:true full JSON; daemon stays alive</div>
+</div>
+<h2>Latency (ms, log-ish)</h2>
+<div id="bars"></div>
+<h2>All checks</h2>
+<table><tr><th>check</th><th>tool</th><th>ms</th><th>detail</th></tr>
+<tr><td>handshake initialize</td><td>protocol</td><td>3.3</td><td><code>proto=2024-11-05 server={'name': 'texure-server', 'version': '0.1.0'}</code></td></tr>
+<tr><td>ping</td><td>protocol</td><td>0.2</td><td><code>ping ok</code></td></tr>
+<tr><td>exactly 6 frozen tools</td><td>protocol</td><td>0.7</td><td><code>device_tree, tap, type, keypress, screenshot, wait_for</code></td></tr>
+<tr><td>fetch UI tree</td><td>device_tree</td><td>4.0</td><td><code>rev=42 nodes=2 window=com.velavoice/.MainActivity</code></td></tr>
+<tr><td>tap node with fresh rev</td><td>tap</td><td>2.4</td><td><code>{"ok":true}</code></td></tr>
+<tr><td>type into editable</td><td>type</td><td>4.9</td><td><code>{"ok":true}</code></td></tr>
+<tr><td>keypress ENTER</td><td>keypress</td><td>2.6</td><td><code>{"ok":true}</code></td></tr>
+<tr><td>keypress BACK</td><td>keypress</td><td>2.2</td><td><code>{"ok":true}</code></td></tr>
+<tr><td>screenshot PNG decode</td><td>screenshot</td><td>2.7</td><td><code>png 86 bytes, magic ok</code></td></tr>
+<tr><td>wait_for immediate hit</td><td>wait_for</td><td>3.7</td><td><code>{"ok":true,"rev":44}</code></td></tr>
+<tr><td>wait_for timeout → ok:false</td><td>wait_for</td><td>1004.6</td><td><code>{"hint":"re-fetch device_tree and re-plan","last_rev":44,"ok":false,"tree":{…502 chars}</code></td></tr>
+<tr><td>stale rev → NODE_OUTDATED</td><td>tap</td><td>2.7</td><td><code>NODE_OUTDATED: tree refreshed since reference; re-run /ui-tree; re-run device_tree, re-target</code></td></tr>
+<tr><td>unknown tool → -32602</td><td>protocol</td><td>0.5</td><td><code>Invalid params: Unknown tool: nope</code></td></tr>
+<tr><td>daemon survives tool errors</td><td>device_tree</td><td>2.2</td><td><code>daemon still serving</code></td></tr>
+<tr><td>missing config → NO_CONFIG</td><td>device_tree</td><td>4.9</td><td><code>NO_CONFIG: no config file or env vars; create ~/.config/texure/config.toml or set TEXURE_URL/TEXURE_TOKEN</code></td></tr>
+<tr><td>dead port → OFFLINE</td><td>device_tree</td><td>6.8</td><td><code>OFFLINE: device unreachable; same LAN? app open? fg service alive?</code></td></tr>
+<tr><td>wrong token → AUTH_FAILED</td><td>device_tree</td><td>11.4</td><td><code>AUTH_FAILED: token mismatch; re-paste fresh token from overlay</code></td></tr>
+<tr><td>verbose:true full JSON payload</td><td>device_tree</td><td>3.2</td><td><code>{"bridge_url":"http://127.0.0.1:44425","error":{"code":"AUTH_FAILED",…},"http_status":401,…}</code></td></tr>
+<tr><td>malformed JSON → -32700</td><td>protocol</td><td>2.5</td><td><code>parse error -32700</code></td></tr>
+</table>
+<small>Note: probe FakeBridge is HTTP-only (no WS upgrade), so wait_for exercised the 500ms HTTP-polling fallback — the documented degraded mode. WS push path is covered by <code>cargo run -p texure-blackbox -- --target mcp-real</code> (log: BB-A5 ws_events).</small>
+<h2>Terminal recording</h2>
+<pre>python3 tools/test_mcp_client.py --no-build
+========================================================================
+texure test MCP client — texure-server availability probe
+server: …/target/debug/texure-server
+========================================================================
+✅ [    3.3 ms] protocol     handshake initialize: proto=2024-11-05 server={'name': 'texure-server', 'version': '0.1.0'}
+✅ [    0.2 ms] protocol     ping: ping ok
+✅ [    0.7 ms] protocol     exactly 6 frozen tools: device_tree, tap, type, keypress, screenshot, wait_for
+✅ [    4.0 ms] device_tree  fetch UI tree: rev=42 nodes=2 …
+✅ [    2.4 ms] tap          tap node with fresh rev: {"ok":true}
+…(full 19-line run with exit 0; see session.typescript in the repo tmp/mcp-probe/)
+Summary: 19 passed, 0 failed, 19 total, 2.1s wall</pre>
+<script>
+(function(){var d=[[3.3,'initialize'],[0.2,'ping'],[0.7,'tools/list'],[4.0,'device_tree'],[2.4,'tap'],[4.9,'type'],[2.6,'keypress ENTER'],[2.2,'keypress BACK'],[2.7,'screenshot'],[3.7,'wait_for hit'],[1004.6,'wait_for timeout'],[2.7,'stale rev'],[0.5,'unknown tool'],[2.2,'alive'],[4.9,'NO_CONFIG'],[6.8,'OFFLINE'],[11.4,'AUTH_FAILED'],[3.2,'verbose'],[2.5,'parse error']];
+var b=document.getElementById('bars');d.forEach(function(x){var r=document.createElement('div');r.innerHTML='<small>'+x[1]+' '+x[0]+'ms</small> &nbsp;<span class="bar" style="display:inline-block;width:'+Math.min(100,Math.max(1,Math.log10(x[0]+1)*20))+'%"></span>';b.appendChild(r);});})();
+</script>
+</body></html>

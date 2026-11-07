@@ -1,0 +1,143 @@
+{
+  "summary": {
+    "passed": 19,
+    "failed": 0,
+    "total": 19
+  },
+  "checks": [
+    {
+      "name": "handshake initialize",
+      "tool": "protocol",
+      "status": "PASS",
+      "latency_ms": 3.3,
+      "detail": "proto=2024-11-05 server={'name': 'texure-server', 'version': '0.1.0'}"
+    },
+    {
+      "name": "ping",
+      "tool": "protocol",
+      "status": "PASS",
+      "latency_ms": 0.2,
+      "detail": "ping ok"
+    },
+    {
+      "name": "exactly 6 frozen tools",
+      "tool": "protocol",
+      "status": "PASS",
+      "latency_ms": 0.7,
+      "detail": "device_tree, tap, type, keypress, screenshot, wait_for"
+    },
+    {
+      "name": "fetch UI tree",
+      "tool": "device_tree",
+      "status": "PASS",
+      "latency_ms": 4.0,
+      "detail": "rev=42 nodes=2 window=com.velavoice/.MainActivity"
+    },
+    {
+      "name": "tap node with fresh rev",
+      "tool": "tap",
+      "status": "PASS",
+      "latency_ms": 2.4,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "name": "type into editable",
+      "tool": "type",
+      "status": "PASS",
+      "latency_ms": 4.9,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "name": "keypress ENTER",
+      "tool": "keypress",
+      "status": "PASS",
+      "latency_ms": 2.6,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "name": "keypress BACK",
+      "tool": "keypress",
+      "status": "PASS",
+      "latency_ms": 2.2,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "name": "screenshot PNG decode",
+      "tool": "screenshot",
+      "status": "PASS",
+      "latency_ms": 2.7,
+      "detail": "png 86 bytes, magic ok"
+    },
+    {
+      "name": "wait_for immediate hit",
+      "tool": "wait_for",
+      "status": "PASS",
+      "latency_ms": 3.7,
+      "detail": "{\"ok\":true,\"rev\":44}"
+    },
+    {
+      "name": "wait_for timeout -> ok:false",
+      "tool": "wait_for",
+      "status": "PASS",
+      "latency_ms": 1004.6,
+      "detail": "{\"hint\":\"re-fetch device_tree and re-plan\",\"last_rev\":44,\"ok\":false,\"tree\":{\"nodes\":[{\"bounds\":[12,340,108,56],\"cd\":null,\"children\":[],\"clickable\":true,\"cls\":\"android.widget.Button\",\"editable\":false,\"id\":\"btn_send\",\"inde\u2026(502 chars)"
+    },
+    {
+      "name": "stale rev -> NODE_OUTDATED",
+      "tool": "tap",
+      "status": "PASS",
+      "latency_ms": 2.7,
+      "detail": "NODE_OUTDATED: tree refreshed since reference; re-run /ui-tree; re-run device_tree, re-target"
+    },
+    {
+      "name": "unknown tool -> -32602",
+      "tool": "protocol",
+      "status": "PASS",
+      "latency_ms": 0.5,
+      "detail": "Invalid params: Unknown tool: nope"
+    },
+    {
+      "name": "daemon survives tool errors",
+      "tool": "device_tree",
+      "status": "PASS",
+      "latency_ms": 2.2,
+      "detail": "daemon still serving"
+    },
+    {
+      "name": "missing config -> NO_CONFIG",
+      "tool": "device_tree",
+      "status": "PASS",
+      "latency_ms": 4.9,
+      "detail": "NO_CONFIG: no config file or env vars; create ~/.config/texure/config.toml or set TEXURE_URL/TEXURE_TOKEN"
+    },
+    {
+      "name": "dead port -> OFFLINE",
+      "tool": "device_tree",
+      "status": "PASS",
+      "latency_ms": 6.8,
+      "detail": "OFFLINE: device unreachable; same LAN? app open? fg service alive?"
+    },
+    {
+      "name": "wrong token -> AUTH_FAILED",
+      "tool": "device_tree",
+      "status": "PASS",
+      "latency_ms": 11.4,
+      "detail": "AUTH_FAILED: token mismatch; re-paste fresh token from overlay"
+    },
+    {
+      "name": "verbose:true full JSON payload",
+      "tool": "device_tree",
+      "status": "PASS",
+      "latency_ms": 3.2,
+      "detail": "{\"bridge_url\":\"http://127.0.0.1:44425\",\"error\":{\"code\":\"AUTH_FAILED\",\"hint\":\"re-paste fresh token from overlay\",\"message\":\"token mismatch\"},\"http_status\":401,\"w\u2026(179 chars)"
+    },
+    {
+      "name": "malformed JSON -> -32700",
+      "tool": "protocol",
+      "status": "PASS",
+      "latency_ms": 2.5,
+      "detail": "parse error -32700"
+    }
+  ],
+  "wall_seconds": 2.09
+}

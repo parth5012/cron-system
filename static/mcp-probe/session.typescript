@@ -1,0 +1,29 @@
+Script started on 2026-11-07 09:20:22-08:00 [COMMAND="python3 tools/test_mcp_client.py --no-build" <not executed on terminal>]
+========================================================================
+texure test MCP client — texure-server availability probe
+server: /home/parth/.t3/worktrees/texure/t3-fbaa7cb6/target/debug/texure-server
+========================================================================
+✅ [    3.3 ms] protocol     handshake initialize: proto=2024-11-05 server={'name': 'texure-server', 'version': '0.1.0'}
+✅ [    0.2 ms] protocol     ping: ping ok
+✅ [    0.7 ms] protocol     exactly 6 frozen tools: device_tree, tap, type, keypress, screenshot, wait_for
+✅ [    4.0 ms] device_tree  fetch UI tree: rev=42 nodes=2 window=com.velavoice/.MainActivity
+✅ [    2.4 ms] tap          tap node with fresh rev: {"ok":true}
+✅ [    4.9 ms] type         type into editable: {"ok":true}
+✅ [    2.6 ms] keypress     keypress ENTER: {"ok":true}
+✅ [    2.2 ms] keypress     keypress BACK: {"ok":true}
+✅ [    2.7 ms] screenshot   screenshot PNG decode: png 86 bytes, magic ok
+✅ [    3.7 ms] wait_for     wait_for immediate hit: {"ok":true,"rev":44}
+✅ [ 1004.6 ms] wait_for     wait_for timeout -> ok:false: {"hint":"re-fetch device_tree and re-plan","last_rev":44,"ok":false,"tree":{"nodes":[{"bounds":[12,340,108,56],"cd":null,"children":[],"clickable":true,"cls":"android.widget.Button","editable":false,"id":"btn_send","inde…(502 chars)
+✅ [    2.7 ms] tap          stale rev -> NODE_OUTDATED: NODE_OUTDATED: tree refreshed since reference; re-run /ui-tree; re-run device_tree, re-target
+✅ [    0.5 ms] protocol     unknown tool -> -32602: Invalid params: Unknown tool: nope
+✅ [    2.2 ms] device_tree  daemon survives tool errors: daemon still serving
+✅ [    4.9 ms] device_tree  missing config -> NO_CONFIG: NO_CONFIG: no config file or env vars; create ~/.config/texure/config.toml or set TEXURE_URL/TEXURE_TOKEN
+✅ [    6.8 ms] device_tree  dead port -> OFFLINE: OFFLINE: device unreachable; same LAN? app open? fg service alive?
+✅ [   11.4 ms] device_tree  wrong token -> AUTH_FAILED: AUTH_FAILED: token mismatch; re-paste fresh token from overlay
+✅ [    3.2 ms] device_tree  verbose:true full JSON payload: {"bridge_url":"http://127.0.0.1:44425","error":{"code":"AUTH_FAILED","hint":"re-paste fresh token from overlay","message":"token mismatch"},"http_status":401,"w…(179 chars)
+✅ [    2.5 ms] protocol     malformed JSON -> -32700: parse error -32700
+
+Summary: 19 passed, 0 failed, 19 total, 2.1s wall
+Wrote tmp/mcp-probe/report.json and tmp/mcp-probe/report.md
+
+Script done on 2026-11-07 09:20:24-08:00 [COMMAND_EXIT_CODE="0"]
