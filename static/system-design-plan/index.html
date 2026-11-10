@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design Study Plan (HLD + LLD)</title>
+<style>
+  :root { --bg:#0f1115; --card:#1a1d24; --text:#e6e8eb; --muted:#9aa0a6; --accent:#5b9dff; --border:#2a2e36; --ok:#4ade80; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 24px 80px; }
+  h1 { font-size:2rem; margin:0 0 8px; }
+  .sub { color:var(--muted); margin:0 0 24px; }
+  h2 { font-size:1.4rem; margin:40px 0 12px; border-bottom:1px solid var(--border); padding-bottom:6px; color:var(--accent); }
+  h3 { font-size:1.1rem; margin:20px 0 8px; color:#fff; }
+  ul { padding-left:20px; }
+  li { margin:6px 0; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin:12px 0; }
+  .tag { display:inline-block; background:#2a2e36; color:var(--muted); font-size:0.75rem; padding:2px 8px; border-radius:4px; margin-right:6px; }
+  .week { color:var(--accent); font-weight:600; }
+  input[type=checkbox] { accent-color:var(--accent); transform:scale(1.1); margin-right:6px; }
+  .routine { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; }
+  .routine div { background:#14171c; border:1px solid var(--border); border-radius:6px; padding:8px 10px; font-size:0.85rem; }
+  .footer { color:var(--muted); font-size:0.8rem; margin-top:40px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>System Design Study Plan</h1>
+<p class="sub">HLD (distributed systems, scalability, databases, messaging, availability) + LLD (OOP, SOLID, patterns, schema, concurrency, machine coding). ~8-10 hrs/week. Depth &gt; speed.</p>
+
+<h2>Phase 0 — Foundations (Week 1)</h2>
+<div class="card">
+<ul>
+<li><input type="checkbox"> OSI model, TCP vs UDP, HTTP/1.1 vs HTTP/2 vs HTTP/3, gRPC, WebSockets (Hussein Nasser)</li>
+<li><input type="checkbox"> DNS, CDN, load balancers (L4 vs L7), reverse proxies, connection pooling (HN)</li>
+<li><input type="checkbox"> SQL vs NoSQL, B-trees, LSM trees, indexing, ACID, isolation levels (HN + DDIA ch.1-4)</li>
+<li><input type="checkbox"> Read System Design Primer "System Design Topics" + "Trade-offs" cheat sheets</li>
+</ul>
+<p><strong>Deliverable:</strong> 1-page cheat sheet of trade-offs (latency vs throughput, consistency vs availability)</p>
+</div>
+
+<h2>Phase 1 — HLD Building Blocks (Weeks 2-3)</h2>
+<div class="card">
+<ul>
+<li><input type="checkbox"> Caching: cache-aside, write-through, write-back, write-around; eviction (LRU/LFU); thundering herd (Gaurav Sen + ByteByteGo)</li>
+<li><input type="checkbox"> Replication: single-leader, multi-leader, leaderless; sync vs async; read replicas (DDIA ch.5)</li>
+<li><input type="checkbox"> Partitioning/sharding: hash, range, consistent hashing; hot partitions (GS + BBG)</li>
+<li><input type="checkbox"> Consistency models: strong, eventual, causal; CAP, PACELC (DDIA ch.9, GS)</li>
+<li><input type="checkbox"> Message queues: Kafka vs RabbitMQ vs SQS; at-least-once/exactly-once; idempotency (BBG + HN)</li>
+<li><input type="checkbox"> Rate limiting: token bucket, leaky bucket, sliding window (Shrayansh Jain LLD)</li>
+</ul>
+<p><strong>Deliverable:</strong> Implement an LRU cache + token-bucket rate limiter (machine coding) with unit tests</p>
+</div>
+
+<h2>Phase 2 — LLD Core: SOLID + Patterns (Weeks 4-5)</h2>
+<div class="card">
+<ul>
+<li><input type="checkbox"> SOLID principles with violations + fixes (Refactoring Guru + Shrayansh Jain)</li>
+<li><input type="checkbox"> Creational: Singleton, Factory, Builder, Prototype (Concept &amp;&amp; Coding)</li>
+<li><input type="checkbox"> Structural: Adapter, Decorator, Facade, Proxy, Composite (Concept &amp;&amp; Coding)</li>
+<li><input type="checkbox"> Behavioral: Strategy, Observer, Command, State, Template Method (Concept &amp;&amp; Coding)</li>
+<li><input type="checkbox"> UML class diagrams: associations, composition vs aggregation, multiplicity (SudoCODE)</li>
+<li><input type="checkbox"> Schema design: ER diagrams, normalization, indexing strategy for LLD problems</li>
+</ul>
+<p><strong>Deliverable:</strong> Refactor a "God class" into SOLID-compliant design; draw class diagram before coding</p>
+</div>
+
+<h2>Phase 3 — LLD Machine Coding (Weeks 6-7)</h2>
+<div class="card">
+<p>Each problem: requirements → class diagram → code → tests → extensibility review.</p>
+<ul>
+<li><input type="checkbox"> Parking Lot (Shrayansh Jain / InterviewReady LLD)</li>
+<li><input type="checkbox"> Tic-Tac-Toe + Snake &amp; Ladders (SJ)</li>
+<li><input type="checkbox"> Splitwise / expense sharing (SJ)</li>
+<li><input type="checkbox"> Movie Ticket Booking (Educative reference)</li>
+<li><input type="checkbox"> Elevator System (Educative reference)</li>
+<li><input type="checkbox"> LRU Cache + Rate Limiter (revisit from Phase 1 with patterns)</li>
+</ul>
+<p><strong>Deliverable:</strong> 3 fully implemented + tested problems in your language of choice</p>
+</div>
+
+<h2>Phase 4 — HLD Case Studies (Weeks 8-9)</h2>
+<div class="card">
+<p>Pick 6 from ByteByteGo + Gaurav Sen + Hello Interview:</p>
+<ul>
+<li><input type="checkbox"> URL Shortener</li>
+<li><input type="checkbox"> Pastebin</li>
+<li><input type="checkbox"> Twitter / News Feed</li>
+<li><input type="checkbox"> YouTube / video streaming</li>
+<li><input type="checkbox"> Uber / ride-sharing</li>
+<li><input type="checkbox"> Web Crawler</li>
+<li><input type="checkbox"> Distributed Job Scheduler</li>
+<li><input type="checkbox"> Payment system / wallet</li>
+<li><input type="checkbox"> Search (typeahead + full-text)</li>
+<li><input type="checkbox"> Chat system (WhatsApp)</li>
+</ul>
+<p><strong>Per case study template:</strong> functional reqs → non-functional (QPS, storage, latency) → API → data model → high-level arch → deep dives (bottlenecks, scaling) → trade-offs</p>
+<p><strong>Deliverable:</strong> 6 written case studies (markdown) with diagrams</p>
+</div>
+
+<h2>Phase 5 — Concurrency + Advanced (Week 10)</h2>
+<div class="card">
+<ul>
+<li><input type="checkbox"> Threads, locks, mutexes, semaphores, deadlocks, race conditions (language-specific)</li>
+<li><input type="checkbox"> Concurrent data structures, producer-consumer, thread pools</li>
+<li><input type="checkbox"> Distributed transactions: 2PC, Saga, outbox pattern (DDIA ch.7-9)</li>
+<li><input type="checkbox"> Consensus: Raft/Paxos basics, leader election (GS)</li>
+<li><input type="checkbox"> CQRS, event sourcing, idempotency keys (BBG)</li>
+</ul>
+<p><strong>Deliverable:</strong> Thread-safe bounded blocking queue + a Saga-based order flow sketch</p>
+</div>
+
+<h2>Phase 6 — Interview Polish (Weeks 11-12)</h2>
+<div class="card">
+<ul>
+<li><input type="checkbox"> Hello Interview rubric: requirements scoping, capacity estimation, API design, data model, high-level, deep dives, trade-offs</li>
+<li><input type="checkbox"> 45-min timed mock HLD (record yourself)</li>
+<li><input type="checkbox"> 45-min timed mock LLD (class diagram + code on whiteboard)</li>
+<li><input type="checkbox"> Review weak areas; revisit Phase 1-5 notes</li>
+</ul>
+<p><strong>Deliverable:</strong> 3 mock interviews (self or peer) with rubric scoring</p>
+</div>
+
+<h2>Weekly Routine</h2>
+<div class="routine">
+<div><strong>Mon/Thu</strong><br>1 video concept + notes (GS/SJ/HN)</div>
+<div><strong>Tue/Fri</strong><br>1 machine-coding problem or case study write-up</div>
+<div><strong>Wed</strong><br>Read (DDIA chapter or Refactoring Guru pattern)</div>
+<div><strong>Sat</strong><br>Mock interview or review; update cheat sheet</div>
+<div><strong>Sun</strong><br>Rest / light review</div>
+</div>
+
+<h2>Tracking</h2>
+<div class="card">
+<ul>
+<li><input type="checkbox"> Keep LEARNINGS.md with edge cases discovered</li>
+<li><input type="checkbox"> Keep case-studies/ for HLD write-ups</li>
+<li><input type="checkbox"> Keep lld/ for machine-coding solutions</li>
+</ul>
+</div>
+
+<h2>Skip / Defer</h2>
+<div class="card">
+<ul>
+<li>Educative (you're video-tolerant → videos win)</li>
+<li>Concept &amp;&amp; Coding (only if you need Java/C++ pattern code; SJ covers LLD in code)</li>
+<li>Hello Interview until Phase 6 (interview polish needs a base first)</li>
+</ul>
+</div>
+
+<p class="footer">Generated for Parth — AI-OS. Resources: GS Gaurav Sen/InterviewReady · SJ Shrayansh Jain · BBG ByteByteGo · HN Hussein Nasser · HI Hello Interview · SDP System Design Primer · DDIA Kleppmann · RG Refactoring Guru</p>
+</div>
+</body>
+</html>
