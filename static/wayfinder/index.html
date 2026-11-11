@@ -111,6 +111,21 @@ tbody tr.focused{outline:2px solid var(--primary);outline-offset:-2px}
 .skel i.w20{width:20%}.skel i.w45{width:45%}.skel i.w90{width:90%}
 @keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
 @media (prefers-reduced-motion:reduce){.skel i,.spinner{animation:none}}
+/* view switcher + project cards */
+.view-switcher{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.view-switcher .btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:16px}
+.project-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);cursor:pointer;transition:border-color .15s,transform .1s}
+.project-card:hover{border-color:var(--primary);transform:translateY(-1px)}
+.project-card .pc-name{font-size:1.05rem;font-weight:700;margin-bottom:4px}
+.project-card .pc-meta{font-size:.74rem;color:var(--text-muted);margin-bottom:8px}
+.project-card .pc-lowest{background:var(--bg);border-left:3px solid var(--primary);padding:8px 10px;border-radius:0 8px 8px 0;font-size:.84rem}
+.project-card .pc-lowest .pl-label{font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700}
+.project-card .pc-lowest .pl-title{font-weight:600;margin-top:2px}
+.project-card .pc-count{display:inline-block;margin-top:8px;font-size:.72rem;padding:2px 8px;border-radius:99px;background:var(--bg);border:1px solid var(--border);color:var(--text-muted)}
+.project-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.project-header h2{font-size:1.15rem;font-weight:700}
+.back-btn{padding:6px 12px;font-size:.82rem}
 /* bottom navigation (thumb reach + safe area) */
 .bottomnav{position:fixed;left:0;right:0;bottom:0;display:none;background:var(--card-bg);border-top:1px solid var(--border);z-index:50;padding-bottom:env(safe-area-inset-bottom,16px);box-shadow:0 -2px 12px rgba(0,0,0,.08)}
 .bottomnav a{flex:1;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-decoration:none;color:var(--text-muted);font-size:.66rem;font-weight:600;padding:6px 2px;-webkit-tap-highlight-color:transparent}
@@ -142,6 +157,27 @@ tbody tr.focused{outline:2px solid var(--primary);outline-offset:-2px}
 </div>
 </header>
 
+<!-- View switcher -->
+<div class="view-switcher">
+<button class="btn btn-primary active" id="btn-view-projects">Projects (lowest map)</button>
+<button class="btn" id="btn-view-all">All Maps</button>
+</div>
+
+<!-- Projects view (default): one card per project showing lowest-numbered map -->
+<section id="view-projects">
+<div id="projects-container" class="projects-grid"></div>
+<div id="projects-empty" class="statebox" style="display:none"><h3>No projects found</h3><p>Wayfinder maps will appear grouped by repository.</p></div>
+</section>
+
+<!-- Project maps view (drill-down) -->
+<section id="view-project" style="display:none">
+<div class="project-header">
+<button class="btn back-btn" id="btn-back-projects">← Back to projects</button>
+<h2 id="project-title">Project</h2>
+<span class="pill" id="project-count-pill"></span>
+</div>
+</section>
+
 <!-- PC metrics (B) -->
 <div class="metrics-grid pc-only">
 <div class="metric-card"><span class="metric-title">Total Wayfinder Maps</span><span class="metric-value" id="val-total-maps">-</span></div>
@@ -151,6 +187,8 @@ tbody tr.focused{outline:2px solid var(--primary);outline-offset:-2px}
 <div class="metric-card"><span class="metric-title">Stale (&gt;7d untouched)</span><span class="metric-value" style="color:var(--warning)" id="val-stale">-</span></div>
 </div>
 
+<!-- Maps view (all or selected project) -->
+<section id="view-maps" style="display:none">
 <!-- PC command bar (B) -->
 <div class="commandbar pc-only">
 <div class="searchbox">
@@ -185,6 +223,7 @@ tbody tr.focused{outline:2px solid var(--primary);outline-offset:-2px}
 <aside class="drawer" id="drawer"><p style="color:var(--text-muted)">Select a row to inspect destination, decisions and frontier tickets. <span class="kbd">Enter</span> opens, <span class="kbd">j</span>/<span class="kbd">k</span> moves.</p></aside>
 </div>
 <div class="statusbar pc-only"><span id="fetch-status">Connecting...</span><span id="result-count"></span><span><span class="kbd">/</span> search <span class="kbd">r</span> refresh <span class="kbd">1/2/3</span> state <span class="kbd">x</span> select <span class="kbd">?</span> help</span></div>
+</section>
 
 <!-- Mobile Frontier Now (C) -->
 <div class="mobile-only">
@@ -220,7 +259,7 @@ tbody tr.focused{outline:2px solid var(--primary);outline-offset:-2px}
 </div></div>
 
 <script>
-var allMaps=[],stateFilter='open',repoFilter='all',searchQuery='',sortMode='updated',selected=new Set(),focusIdx=-1,currentOpen=null;
+var allMaps=[],stateFilter='open',repoFilter='all',searchQuery='',sortMode='updated',selected=new Set(),focusIdx=-1,currentOpen=null,currentView='projects',selectedProject=null;
 var $=function(id){return document.getElementById(id)};
 function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function fmtDate(d){if(!d)return '-';try{var t=new Date(d);return t.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}catch(e){return d}}
@@ -246,6 +285,8 @@ var pill=$('rate-limit-text'),dot=$('rate-dot');
 if(data.rate_limit){var auth=data.authenticated?'Auth':'Public - private repos hidden';pill.textContent='GitHub API: '+data.rate_limit.remaining+' left • '+auth;dot.className='dot'+(data.authenticated?'':' warn')}else if(data.authenticated===false){pill.textContent='Public mode - private repos hidden';dot.className='dot warn'}
 selected=new Set();focusIdx=-1;currentOpen=null;
 populateRepo();updateMetrics();renderAll();
+renderProjects();
+showView(currentView||'projects');
 setFetch('Loaded '+allMaps.length+' maps • '+(data.cached?'cached':'live')+' • '+new Date().toLocaleTimeString());
 }).catch(function(err){
 container.innerHTML='<tr><td colspan="6"><div class="statebox"><h3>Failed to load maps</h3><p>'+esc(err.message)+'</p><button class="btn btn-primary" onclick="loadMaps(true)">Retry</button></div></td></tr>';
@@ -358,6 +399,104 @@ function populateRepoChipsOnly(){var chips=$('repo-chips');Array.prototype.forEa
 function toggleSelect(id){if(selected.has(id))selected.delete(id);else selected.add(id);renderAll();if(currentOpen)openDrawer(currentOpen)}
 function resetFilters(){$('input-search').value='';searchQuery='';setState('all');setRepo('all')}
 
+/* ---- projects view ---- */
+function projectsGrouped(){
+  var groups={};
+  allMaps.forEach(function(m){
+    if(!groups[m.repo])groups[m.repo]=[];
+    groups[m.repo].push(m);
+  });
+  return groups;
+}
+
+function lowestMapForRepo(repo){
+  var maps=projectsGrouped()[repo]||[];
+  if(!maps.length)return null;
+  return maps.slice().sort(function(a,b){return (a.number||0)-(b.number||0)})[0];
+}
+
+function renderProjects(){
+  var container=$('projects-container');
+  var empty=$('projects-empty');
+  var groups=projectsGrouped();
+  var repos=Object.keys(groups).sort();
+  if(!repos.length){container.innerHTML='';empty.style.display='block';return}
+  empty.style.display='none';
+  container.innerHTML=repos.map(function(repo){
+    var maps=groups[repo];
+    var lowest=lowestMapForRepo(repo);
+    var openCount=maps.filter(function(m){return m.state==='open'}).length;
+    var lowestHtml='';
+    if(lowest){
+      lowestHtml='<div class="pc-lowest"><div class="pl-label">Lowest issue #'+lowest.number+'</div>'
+        +'<div class="pl-title">'+esc(lowest.title)+'</div>'
+        +'<div style="font-size:.74rem;color:var(--text-muted);margin-top:2px">'+esc(lowest.state)+' • '+rel(lowest.updated_at)+'</div></div>';
+    }
+    return '<div class="project-card" data-repo="'+esc(repo)+'">'
+      +'<div class="pc-name">'+esc(repo.split('/').pop())+'</div>'
+      +'<div class="pc-meta">'+esc(repo)+' • '+maps.length+' map'+(maps.length>1?'s':'')+' • '+openCount+' open</div>'
+      +lowestHtml
+      +'<span class="pc-count">'+maps.length+' wayfinder map'+(maps.length>1?'s':'')+'</span>'
+      +'</div>';
+  }).join('');
+  Array.prototype.forEach.call(container.querySelectorAll('.project-card'),function(card){
+    card.addEventListener('click',function(){openProject(card.getAttribute('data-repo'))});
+  });
+}
+
+function showView(view){
+  currentView=view;
+  var vp=$('view-projects');
+  var vm=$('view-maps');
+  var vpr=$('view-project');
+  if(view==='projects'){
+    if(vp)vp.style.display='block';
+    if(vm)vm.style.display='none';
+    if(vpr)vpr.style.display='none';
+  } else {
+    if(vp)vp.style.display='none';
+    if(vm)vm.style.display='block';
+    if(vpr)vpr.style.display=(view==='project'?'block':'none');
+  }
+  // toggle button active state
+  var b1=$('btn-view-projects'), b2=$('btn-view-all');
+  if(b1&&b2){
+    b1.classList.toggle('active', view==='projects');
+    b2.classList.toggle('active', view!=='projects');
+  }
+}
+
+function openProject(repo){
+  selectedProject=repo;
+  repoFilter=repo;
+  var sel=$('select-repo');
+  if(sel)sel.value=repo;
+  var title=$('project-title');
+  if(title)title.textContent=repo.split('/').pop()+' Wayfinder Maps';
+  var pill=$('project-count-pill');
+  var maps=(projectsGrouped()[repo]||[]);
+  if(pill)pill.textContent=maps.length+' map'+(maps.length>1?'s':'');
+  showView('project');
+  // filter table to this repo
+  searchQuery='';
+  var si=$('input-search'); if(si)si.value='';
+  stateFilter='all';
+  var ss=$('select-state'); if(ss)ss.value='all';
+  renderAll();
+}
+
+function backToProjects(){
+  selectedProject=null;
+  repoFilter='all';
+  var sel=$('select-repo'); if(sel)sel.value='all';
+  stateFilter='open';
+  var ss=$('select-state'); if(ss)ss.value='open';
+  searchQuery='';
+  var si=$('input-search'); if(si)si.value='';
+  showView('projects');
+  renderAll();
+}
+
 /* events */
 $('input-search').addEventListener('input',function(e){searchQuery=e.target.value;renderAll()});
 $('select-state').addEventListener('change',function(e){setState(e.target.value)});
@@ -365,6 +504,9 @@ $('select-repo').addEventListener('change',function(e){setRepo(e.target.value)})
 $('select-sort').addEventListener('change',function(e){sortMode=e.target.value;renderAll()});
 Array.prototype.forEach.call($('seg-state').querySelectorAll('button'),function(b){b.addEventListener('click',function(){setState(b.getAttribute('data-state'))})});
 $('btn-refresh').addEventListener('click',function(){loadMaps(true)});
+$('btn-view-projects').addEventListener('click',function(){backToProjects();renderProjects();showView('projects')});
+$('btn-view-all').addEventListener('click',function(){selectedProject=null;repoFilter='all';var sel=$('select-repo');if(sel)sel.value='all';showView('all');renderAll()});
+$('btn-back-projects').addEventListener('click',function(){backToProjects()});
 $('btn-bulk-copy').addEventListener('click',function(){var cmds=allMaps.filter(function(m){return selected.has(m.id)}).map(runnerCmd).join('\n');if(cmds)copyText(cmds,selected.size+' cmds')});
 $('btn-bulk-clear').addEventListener('click',function(){selected=new Set();renderAll()});
 $('btn-help-close').addEventListener('click',function(){$('help-overlay').classList.remove('open')});

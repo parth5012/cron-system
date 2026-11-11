@@ -82,3 +82,6 @@ values instead of keeping the first hit. Regression tests:
   `TECH_DEBT.md`.
 
 - wayfinder: pull latest remote; update WayfinderService to fetch issues tagged `wayfinder` in addition to `wayfinder:map` (search + per-repo fallback), dedup by id, filter to wayfinder-tagged issues. Unit tests green (13 passed). E2E wall-clock latency failures are pre-existing flaky (TECH_DEBT.md).
+
+## 2026-11-11 02:49 UTC
+- Updated static/wayfinder/index.html: added Projects view (lowest-numbered map per project) + drill-down to project maps list.
