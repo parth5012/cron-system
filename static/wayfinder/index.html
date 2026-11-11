@@ -412,7 +412,9 @@ function projectsGrouped(){
 function lowestMapForRepo(repo){
   var maps=projectsGrouped()[repo]||[];
   if(!maps.length)return null;
-  return maps.slice().sort(function(a,b){return (a.number||0)-(b.number||0)})[0];
+  var openMaps=maps.filter(function(m){return m.state==='open'});
+  var pool=openMaps.length?openMaps:maps;
+  return pool.slice().sort(function(a,b){return (a.number||0)-(b.number||0)})[0];
 }
 
 function renderProjects(){
@@ -428,7 +430,7 @@ function renderProjects(){
     var openCount=maps.filter(function(m){return m.state==='open'}).length;
     var lowestHtml='';
     if(lowest){
-      lowestHtml='<div class="pc-lowest"><div class="pl-label">Lowest issue #'+lowest.number+'</div>'
+      lowestHtml='<div class="pc-lowest"><div class="pl-label">Lowest open issue #'+lowest.number+'</div>'
         +'<div class="pl-title">'+esc(lowest.title)+'</div>'
         +'<div style="font-size:.74rem;color:var(--text-muted);margin-top:2px">'+esc(lowest.state)+' • '+rel(lowest.updated_at)+'</div></div>';
     }
