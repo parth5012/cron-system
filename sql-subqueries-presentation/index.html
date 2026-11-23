@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Subqueries: Mastering Nested Queries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Libre+Caslon+Display:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f7f5ee;
+      --card-bg: #ffffff;
+      --ink: #24271e;
+      --muted: #787b6e;
+      --line: #dfdfd3;
+      --accent: #eb542e;
+      --subtle: #e8ecd9;
+      --font-display: 'Libre Caslon Display', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #111116; font-family: var(--font-body); }
+
+    .deck-viewport { position: fixed; inset: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #0c0d10; }
+    .deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; background: var(--paper); overflow: hidden; }
+
+    .slide {
+      position: absolute; inset: 0; width: 1920px; height: 1080px; padding: 100px 130px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.4s ease;
+      background: var(--paper); color: var(--ink);
+    }
+    .slide.active { opacity: 1; visibility: visible; pointer-events: auto; z-index: 2; }
+
+    .eyebrow { font-size: 18px; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 12px; }
+    .eyebrow::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    h1.display { font-family: var(--font-display); font-size: 88px; line-height: 1.05; letter-spacing: -2px; font-weight: 400; margin-top: 24px; color: var(--ink); }
+    h2.slide-title { font-family: var(--font-display); font-size: 64px; line-height: 1.1; letter-spacing: -1.5px; font-weight: 400; color: var(--ink); margin-top: 16px; }
+    p.subtitle { font-size: 26px; line-height: 1.5; color: var(--muted); max-width: 1100px; margin-top: 24px; }
+    h3 { font-size: 36px; font-weight: 700; color: var(--ink); margin: 24px 0 16px 0; }
+    ul { font-size: 24px; line-height: 1.6; color: var(--ink); margin-left: 32px; }
+    li { margin-bottom: 12px; }
+    code {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      background: var(--subtle);
+      color: var(--ink);
+      padding: 8px 16px;
+      border-radius: 8px;
+      display: block;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+    pre {
+      background: var(--subtle);
+      color: var(--ink);
+      padding: 24px;
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 20px;
+      line-height: 1.5;
+      overflow-x: auto;
+      border-left: 4px solid var(--accent);
+      margin: 16px 0;
+    }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 50px; flex: 1; align-content: center; }
+    .card { background: var(--card-bg); border: 1px solid var(--line); border-radius: 16px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+    .card h3 { font-size: 28px; font-weight: 700; margin-bottom: 20px; color: var(--ink); }
+    .card p { font-size: 20px; line-height: 1.6; color: var(--muted); }
+    .tag { align-self: flex-start; background: var(--subtle); color: var(--ink); padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; margin-bottom: 20px; }
+
+    .slide-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 24px; font-size: 16px; color: var(--muted); }
+
+    .sql-problem {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 16px 0;
+    }
+    .sql-title { color: var(--accent); font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+
+    .controls { position: fixed; bottom: 24px; right: 24px; z-index: 100; display: flex; gap: 10px; }
+    .ctrl-btn { background: rgba(36,39,30,0.85); color: #fff; border: none; border-radius: 8px; width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(8px); }
+
+    @page { size: 1920px 1080px; margin: 0; }
+    @media print {
+      html, body { width: 1920px !important; height: auto !important; margin: 0 !important; overflow: visible !important; background: transparent !important; }
+      .deck-viewport, .deck-stage { position: static !important; transform: none !important; width: 1920px !important; height: auto !important; overflow: visible !important; }
+      .slide { position: relative !important; inset: auto !important; width: 1920px !important; height: 1080px !important; display: flex !important; opacity: 1 !important; visibility: visible !important; break-after: page !important; }
+      .slide:last-child { break-after: auto !important; }
+      .controls { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck-viewport">
+    <div class="deck-stage" id="deckStage">
+
+      <!-- Slide 1: Title -->
+      <section class="slide active">
+        <div class="eyebrow">SQL Subqueries</div>
+        <div>
+          <h1 class="display">Mastering Nested Queries</h1>
+          <p class="subtitle">A comprehensive guide to thinking through problems and solving them with SQL subqueries</p>
+        </div>
+        <div class="slide-footer">
+          <span>SQL Subqueries Presentation</span>
+          <span class="slide-num">01 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 2: What is a Subquery? -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Definition</div>
+          <h2 class="slide-title">What is a Subquery?</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <p style="font-size: 24px; line-height: 1.6; color: var(--ink); margin-bottom: 24px;">
+            A subquery is a SELECT statement nested inside another SQL statement. Also called: inner query, nested query, or sub-SELECT.
+          </p>
+          <p style="font-size: 24px; line-height: 1.6; color: var(--ink);"><strong>Key principle:</strong> The inner query is executed first, then the outer query uses its results.</p>
+        </div>
+        <div class="slide-footer">
+          <span>Understanding Subqueries</span>
+          <span class="slide-num">02 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 3: The Thinking Process -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Problem Solving</div>
+          <h2 class="slide-title">The Thinking Process</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <p style="font-size: 24px; line-height: 1.6; color: var(--ink); margin-bottom: 24px;">Think of it as solving a puzzle: solve the inner puzzle first, then use those pieces to complete the outer puzzle.</p>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <h3>1. IDENTIFY</h3>
+            <p>What data do you need? What's the final output?</p>
+          </div>
+          <div class="card">
+            <h3>2. ANALYZE</h3>
+            <p>Do you need aggregated data (AVG, MAX, COUNT)?</p>
+          </div>
+          <div class="card">
+            <h3>3. PLAN</h3>
+            <p>What should the inner query return?</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Problem-Solving Framework</span>
+          <span class="slide-num">03 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 4: Build and Wrap -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Step by Step</div>
+          <h2 class="slide-title">Build and Wrap</h2>
+        </div>
+        <div style="max-width: 1400px; margin-bottom: 24px;">
+          <p style="font-size: 24px; line-height: 1.6; color: var(--ink);"><strong>4. BUILD</strong> - Write the inner query first</p>
+          <p style="font-size: 24px; line-height: 1.6; color: var(--ink); margin-top: 12px;"><strong>5. WRAP</strong> - Use the inner query results in the outer query</p>
+        </div>
+        <div class="sql-problem">
+          <div class="sql-title">Example Problem: "Find employees earning above average salary"</div>
+          <code>-- Thought Process:
+-- "First, calculate the average salary (inner query), then filter employees earning more (outer query)"</code>
+        </div>
+        <div class="slide-footer">
+          <span>Five-Step Framework</span>
+          <span class="slide-num">04 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 5: Types of Subqueries -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Classification</div>
+          <h2 class="slide-title">Types of Subqueries</h2>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <span class="tag">Scalar</span>
+            <h3>Returns Single Value</h3>
+            <p>SELECT name FROM employees WHERE salary > (SELECT AVG(salary) FROM employees)</p>
+          </div>
+          <div class="card">
+            <span class="tag">Row</span>
+            <h3>Returns Single Row</h3>
+            <p>SELECT * FROM employees WHERE (dept_id, salary) = (SELECT department_id, MAX(salary) FROM employees WHERE name = 'John')</p>
+          </div>
+          <div class="card">
+            <span class="tag">Table</span>
+            <h3>Returns Multiple Rows</h3>
+            <p>SELECT * FROM employees WHERE department_id IN (SELECT department_id FROM departments WHERE location = 'NYC')</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Four Main Types</span>
+          <span class="slide-num">05 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 6: Correlated Subqueries -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Advanced Type</div>
+          <h2 class="slide-title">Correlated Subqueries</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <p style="font-size: 24px; line-height: 1.6; color: var(--ink); margin-bottom: 16px;">
+            <strong>Correlated subqueries depend on the outer query</strong> - they're executed once per row in the outer query.
+          </p>
+          <pre>-- Example: Find employees earning above their department average
+SELECT e1.name, e1.salary 
+FROM employees e1 
+WHERE e1.salary > (
+    SELECT AVG(e2.salary) 
+    FROM employees e2 
+    WHERE e2.department_id = e1.department_id
+);</pre>
+        </div>
+        <div class="slide-footer">
+          <span>Execution Order</span>
+          <span class="slide-num">06 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 7: Subqueries vs JOINs -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Comparison</div>
+          <h2 class="slide-title">When to Use Subqueries vs JOINs</h2>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <span class="tag" style="background: #d4edda; color: #155724;">✅ Use Subqueries</span>
+            <h3>WHEN:</h3>
+            <ul style="margin-top: 12px; padding-left: 20px;">
+              <li>You need aggregated data for filtering</li>
+              <li>Checking existence of records</li>
+              <li>Simplifying complex queries</li>
+              <li>Filtering based on calculated values</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="tag" style="background: #f8d7da; color: #721c24;">❌ Avoid Subqueries</span>
+            <h3>WHEN:</h3>
+            <ul style="margin-top: 12px; padding-left: 20px;">
+              <li>Simple joins solve the problem</li>
+              <li>Performance is critical</li>
+              <li>Multiple tables need joining</li>
+              <li>Same data accessed repeatedly</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="tag" style="background: #fff3cd; color: #856404;">💡 Pro Tip</span>
+            <h3>EXISTS is often faster</h3>
+            <p style="margin-top: 12px;">EXISTS is faster than IN for checking row existence</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Best Practices</span>
+          <span class="slide-num">07 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 8: Problem 1 -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Example Problem</div>
+          <h2 class="slide-title">Problem 1: Employees Above Average Salary</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <pre>SELECT name, salary 
+FROM employees 
+WHERE salary > (
+    SELECT AVG(salary) 
+    FROM employees
+);</pre>
+        </div>
+        <div class="slide-footer">
+          <span>Practice Problem 1</span>
+          <span class="slide-num">08 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 9: Problem 2 -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Example Problem</div>
+          <h2 class="slide-title">Problem 2: Customers with Recent Orders</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <pre>SELECT name 
+FROM customers 
+WHERE id IN (
+    SELECT customer_id 
+    FROM orders 
+    WHERE order_date > NOW() - INTERVAL 30 DAY
+);</pre>
+        </div>
+        <div class="slide-footer">
+          <span>Practice Problem 2</span>
+          <span class="slide-num">09 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 10: Problem 3 -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Example Problem</div>
+          <h2 class="slide-title">Problem 3: Employees in Same Department as 'John'</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <pre>SELECT name, department_id 
+FROM employees 
+WHERE department_id = (
+    SELECT department_id 
+    FROM employees 
+    WHERE name = 'John'
+) AND name != 'John';</pre>
+        </div>
+        <div class="slide-footer">
+          <span>Practice Problem 3</span>
+          <span class="slide-num">10 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 11: Problem 4 -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Example Problem</div>
+          <h2 class="slide-title">Problem 4: Orders with Maximum Amount</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <pre>SELECT order_id, total_amount, order_date 
+FROM orders 
+WHERE total_amount = (
+    SELECT MAX(total_amount) 
+    FROM orders
+);</pre>
+        </div>
+        <div class="slide-footer">
+          <span>Practice Problem 4</span>
+          <span class="slide-num">11 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 12: Problem 5 -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Example Problem</div>
+          <h2 class="slide-title">Problem 5: Products Never Ordered</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <pre>SELECT name, category 
+FROM products 
+WHERE id NOT IN (
+    SELECT product_id 
+    FROM order_items 
+    WHERE quantity > 0
+);</pre>
+          <p style="font-size: 22px; line-height: 1.6; color: #721c24; margin-top: 16px;">⚠️ CAVEAT: Handle NULLs carefully with NOT IN</p>
+        </div>
+        <div class="slide-footer">
+          <span>Practice Problem 5</span>
+          <span class="slide-num">12 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 13: Best Practices -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Performance Tips</div>
+          <h2 class="slide-title">Best Practices & Performance Tips</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <ul style="font-size: 24px; line-height: 1.6; color: var(--ink);">
+            <li>✅ Index the columns used in subquery conditions</li>
+            <li>✅ Use EXISTS instead of IN for large datasets</li>
+            <li>✅ Limit subqueries to necessary scope</li>
+            <li>✅ Consider JOINs when performance is critical</li>
+            <li>✅ Use aliases to make correlated subqueries readable</li>
+            <li>✅ Avoid correlated subqueries in large datasets</li>
+            <li>✅ Test with EXPLAIN to see execution plan</li>
+          </ul>
+        </div>
+        <div class="slide-footer">
+          <span>Performance Optimization</span>
+          <span class="slide-num">13 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 14: Common Pitfalls -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Error Prevention</div>
+          <h2 class="slide-title">Common Pitfalls & How to Avoid Them</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <div class="sql-problem">
+            <p style="font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 12px;">❌ Multiple Rows Error</p>
+            <code style="background: #fff3cd;">-- Problem: Subquery returns more than one value
+-- Fix: Ensure single value or use IN</code>
+          </div>
+          <div class="sql-problem">
+            <p style="font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 12px;">❌ NULL Handling with NOT IN</p>
+            <code style="background: #fff3cd;">-- Problem: NOT IN with NULLs returns nothing
+-- Fix: Use NOT EXISTS or add 'AND column IS NOT NULL' condition</code>
+          </div>
+          <div class="sql-problem">
+            <p style="font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 12px;">❌ Ambiguous Columns</p>
+            <code style="background: #fff3cd;">-- Problem: Column name confusion in joins
+-- Fix: Always qualify with table aliases (e1.salary vs e2.salary)</code>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Error Prevention</span>
+          <span class="slide-num">14 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 15: EXISTS vs IN -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Comparison</div>
+          <h2 class="slide-title">EXISTS vs IN: Which to Choose?</h2>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <span class="tag" style="background: #d4edda; color: #155724;">EXISTS</span>
+            <h3>Better For:</h3>
+            <ul style="margin-top: 12px; padding-left: 20px;">
+              <li>Existence checks</li>
+              <li>Large datasets</li>
+              <li>Performance</li>
+              <li>NULL-safe operations</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="tag" style="background: #d1ecf1; color: #0c5460;">IN</span>
+            <h3>Better For:</h3>
+            <ul style="margin-top: 12px; padding-left: 20px;">
+              <li>Simple membership tests</li>
+              <li>Small result sets</li>
+              <li>Readability</li>
+              <li>When you need the actual values</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Choosing the Right Operator</span>
+          <span class="slide-num">15 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 16: Real-World Use Cases -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Industry Examples</div>
+          <h2 class="slide-title">Real-World Industry Use Cases</h2>
+        </div>
+        <div style="max-width: 1400px;">
+          <div class="sql-problem">
+            <p style="font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 8px;">🛒 E-commerce: Inactive Customers</p>
+            <code>SELECT name FROM customers WHERE id NOT IN (
+    SELECT DISTINCT customer_id FROM orders 
+    WHERE order_date > NOW() - INTERVAL 90 DAY
+);</code>
+          </div>
+          <div class="sql-problem">
+            <p style="font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 8px;">👥 HR: Promotion Eligibility</p>
+            <code>SELECT name FROM employees e WHERE score > (
+    SELECT AVG(score) FROM employees 
+    WHERE department_id = e.department_id
+);</code>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Practical Applications</span>
+          <span class="slide-num">16 / 17</span>
+        </div>
+      </section>
+
+      <!-- Slide 17: Key Takeaways -->
+      <section class="slide">
+        <div>
+          <div class="eyebrow">Summary</div>
+          <h1 class="display">Key Takeaways</h1>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <span class="tag">Incremental</span>
+            <h3>Think Step by Step</h3>
+            <p>Subqueries solve problems incrementally - break down complex queries</p>
+          </div>
+          <div class="card">
+            <span class="tag">Types</span>
+            <h3>Four Main Types</h3>
+            <p>Scalar, Row, Table, and Correlated subqueries</p>
+          </div>
+          <div class="card">
+            <span class="tag">Performance</span>
+            <h3>Optimize Wisely</h3>
+            <p>Use EXISTS for large datasets, consider JOINs alternatives</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Remember These</span>
+          <span class="slide-num">17 / 17</span>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="prevBtn" title="Previous Slide (←)">←</button>
+    <button class="ctrl-btn" id="nextBtn" title="Next Slide (→)">→</button>
+  </div>
+
+  <script>
+    class DeckPresentation {
+      constructor() {
+        this.stage = document.getElementById('deckStage');
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.currentIndex = 0;
+        this.initScaling();
+        this.initControls();
+      }
+
+      initScaling() {
+        const resize = () => {
+          const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+          const x = (window.innerWidth - 1920 * factor) / 2;
+          const y = (window.innerHeight - 1080 * factor) / 2;
+          this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+        };
+        resize();
+        window.addEventListener('resize', resize);
+      }
+
+      initControls() {
+        document.getElementById('prevBtn').onclick = () => this.prev();
+        document.getElementById('nextBtn').onclick = () => this.next();
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { this.next(); }
+          else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { this.prev(); }
+          else if (e.key.toLowerCase() === 'f') { this.toggleFullscreen(); }
+        });
+      }
+
+      show(idx) {
+        this.currentIndex = Math.max(0, Math.min(idx, this.slides.length - 1));
+        this.slides.forEach((s, i) => s.classList.toggle('active', i === this.currentIndex));
+      }
+
+      next() { this.show(this.currentIndex + 1); }
+      prev() { this.show(this.currentIndex - 1); }
+
+      toggleFullscreen() {
+        if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(() => {}); }
+        else { document.exitFullscreen(); }
+      }
+    }
+    new DeckPresentation();
+  </script>
+</body>
+</html>
