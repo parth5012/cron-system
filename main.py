@@ -230,7 +230,21 @@ async def get_cron_logs(name: str, limit: int = 50):
     return [asdict(r) for r in logs]
 
 
-def mount_static_dirs(app):
+def 
+@app.get("/sql-subqueries-presentation/download")
+async def download_pptx():
+    """Download the SQL Subqueries PPTX presentation"""
+    pptx_path = STATIC_DIR / "sql-subqueries-presentation" / "SQL_Subqueries_Presentation.pptx"
+    if pptx_path.exists():
+        return FileResponse(
+            str(pptx_path),
+            media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            filename="SQL_Subqueries_Presentation.pptx"
+        )
+    raise HTTPException(status_code=404, detail="PPTX file not found")
+
+
+mount_static_dirs(app):
     if not STATIC_DIR.exists():
         return
     # These directories are served by their own routers (self-contained HTML),
