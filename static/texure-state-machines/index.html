@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Texure State-Machine Council &amp; Wayfinder Maps (43–48)</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --surface: #ffffff;
+      --surface-2: #f1f3f8;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.1);
+      --emerald: #059669;
+      --emerald-soft: rgba(5, 150, 105, 0.12);
+      --amber: #d97706;
+      --amber-soft: rgba(217, 119, 6, 0.12);
+      --rose: #e11d48;
+      --rose-soft: rgba(225, 29, 72, 0.12);
+      --sky: #0284c7;
+      --sky-soft: rgba(2, 132, 199, 0.12);
+      --shadow: 0 2px 10px rgba(17, 24, 39, 0.06);
+      --radius: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --surface: #131317;
+      --surface-2: #1c1c22;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --border: #27272f;
+      --accent: #818cf8;
+      --accent-soft: rgba(129, 140, 248, 0.14);
+      --emerald: #34d399;
+      --emerald-soft: rgba(52, 211, 153, 0.14);
+      --amber: #fbbf24;
+      --amber-soft: rgba(251, 191, 36, 0.14);
+      --rose: #fb7185;
+      --rose-soft: rgba(251, 113, 133, 0.14);
+      --sky: #38bdf8;
+      --sky-soft: rgba(56, 189, 248, 0.14);
+      --shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #09090b;
+        --surface: #131317;
+        --surface-2: #1c1c22;
+        --text: #f4f4f5;
+        --muted: #a1a1aa;
+        --border: #27272f;
+        --accent: #818cf8;
+        --accent-soft: rgba(129, 140, 248, 0.14);
+        --emerald: #34d399;
+        --emerald-soft: rgba(52, 211, 153, 0.14);
+        --amber: #fbbf24;
+        --amber-soft: rgba(251, 191, 36, 0.14);
+        --rose: #fb7185;
+        --rose-soft: rgba(251, 113, 133, 0.14);
+        --sky: #38bdf8;
+        --sky-soft: rgba(56, 189, 248, 0.14);
+        --shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 56px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code {
+      font-family: var(--mono);
+      font-size: 0.84em;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 1px 5px;
+      border-radius: 5px;
+      word-break: break-word;
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 18px 16px; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+    .title h1 { font-size: 1.38rem; font-weight: 750; letter-spacing: -0.02em; }
+    .title p { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+    .hdr-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .btn:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+    }
+    .kpi-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 700; }
+    .kpi-val { font-size: 1.55rem; font-weight: 750; margin-top: 2px; }
+    .kpi-sub { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      background: var(--surface);
+      padding: 5px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .tab {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 650;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab.active { background: var(--accent); color: #fff; }
+    .tab .count {
+      font-size: 0.72rem;
+      padding: 1px 6px;
+      border-radius: 99px;
+      background: rgba(128, 128, 128, 0.18);
+    }
+    .tab.active .count { background: rgba(255, 255, 255, 0.24); }
+    .search {
+      flex: 1;
+      min-width: 220px;
+      max-width: 340px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.86rem;
+      outline: none;
+    }
+    .search:focus { border-color: var(--accent); }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 14px; }
+    @media (max-width: 420px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .card-title { font-size: 0.98rem; font-weight: 700; line-height: 1.35; }
+    .badge {
+      font-size: 0.68rem;
+      font-weight: 750;
+      padding: 3px 8px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .b-crit { background: var(--rose-soft); color: var(--rose); }
+    .b-p1 { background: var(--amber-soft); color: var(--amber); }
+    .b-p2 { background: var(--sky-soft); color: var(--sky); }
+    .b-ok { background: var(--emerald-soft); color: var(--emerald); }
+    .b-accent { background: var(--accent-soft); color: var(--accent); }
+
+    .dest {
+      font-size: 0.84rem;
+      color: var(--text);
+      background: var(--surface-2);
+      border-left: 3px solid var(--accent);
+      padding: 8px 11px;
+      border-radius: 0 8px 8px 0;
+    }
+    .tickets { display: flex; flex-direction: column; gap: 7px; }
+    .ticket {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      font-size: 0.82rem;
+    }
+    .ticket-left { display: flex; gap: 8px; align-items: flex-start; min-width: 0; }
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 750;
+      padding: 2px 6px;
+      border-radius: 5px;
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+    .tag-hitl { background: var(--amber-soft); color: var(--amber); }
+    .tag-red { background: var(--rose-soft); color: var(--rose); }
+    .tag-green { background: var(--emerald-soft); color: var(--emerald); }
+    .ticket a { font-weight: 600; color: var(--text); }
+    .ticket a:hover { color: var(--accent); }
+    .ticket-num { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+
+    .trio {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 5px;
+      font-size: 0.79rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+    .trio strong { color: var(--text); }
+    .evidence { font-size: 0.77rem; color: var(--muted); }
+
+    .list { display: flex; flex-direction: column; gap: 10px; }
+    .row-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .row-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .row-head h3 { font-size: 0.94rem; font-weight: 700; }
+    .row-body { font-size: 0.84rem; color: var(--muted); }
+    .row-meta { font-size: 0.78rem; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .council-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+    .member {
+      font-size: 0.76rem;
+      padding: 4px 10px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dot-ok { background: var(--emerald); }
+    .dot-fail { background: var(--rose); }
+    .empty { padding: 28px; text-align: center; color: var(--muted); font-size: 0.9rem; display: none; }
+    footer { margin-top: 26px; font-size: 0.76rem; color: var(--muted); text-align: center; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title">
+      <h1>Texure State-Machine Council &amp; Wayfinder Maps</h1>
+      <p>Repo: <a href="https://github.com/parth5012/texure/issues" target="_blank" rel="noopener">parth5012/texure</a> · Non-breaking UX / DX / AX hardening (`schema_version: 1`, 6 frozen MCP tools, 16 frozen error codes)</p>
+    </div>
+    <div class="hdr-actions">
+      <button class="btn" id="themeBtn" type="button">Theme</button>
+    </div>
+  </header>
+
+  <div class="council-bar">
+    <span class="member"><span class="dot dot-ok"></span>DeepSeek V4.1 Flash</span>
+    <span class="member"><span class="dot dot-ok"></span>Hy4 Flash</span>
+    <span class="member"><span class="dot dot-ok"></span>Beam</span>
+    <span class="member"><span class="dot dot-ok"></span>Gemini 3.8 Flash</span>
+    <span class="member"><span class="dot dot-ok"></span>Tidepool Alpha</span>
+    <span class="member"><span class="dot dot-fail"></span>Claude Sonnet 4.6 (quota limit — 4h50m reset)</span>
+  </div>
+
+  <section class="kpis">
+    <div class="kpi"><div class="kpi-label">New Maps Created</div><div class="kpi-val">6</div><div class="kpi-sub">Maps 43–48 (#232–#257)</div></div>
+    <div class="kpi"><div class="kpi-label">Child Tickets</div><div class="kpi-val">20</div><div class="kpi-sub">6 HITL · 6 Red · 8 Green</div></div>
+    <div class="kpi"><div class="kpi-label">Implicit SMs Found</div><div class="kpi-val">14</div><div class="kpi-sub">Across 4 codebases/layers</div></div>
+    <div class="kpi"><div class="kpi-label">Unsure / Open</div><div class="kpi-val">8</div><div class="kpi-sub">Held out for human call</div></div>
+    <div class="kpi"><div class="kpi-label">Existing Overlaps</div><div class="kpi-val">4</div><div class="kpi-sub">#143, #179, #204, #213</div></div>
+  </section>
+
+  <div class="controls">
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="maps" type="button">Wayfinder Maps <span class="count">6</span></button>
+      <button class="tab" data-tab="inventory" type="button">Implicit State Machines <span class="count">14</span></button>
+      <button class="tab" data-tab="unsure" type="button">Unsure / Open <span class="count">8</span></button>
+      <button class="tab" data-tab="overlaps" type="button">Already Mapped <span class="count">4</span></button>
+    </div>
+    <input class="search" id="searchInput" type="search" placeholder="Filter maps, files, symbols, or issues...">
+  </div>
+
+  <!-- TAB 1: WAYFINDER MAPS -->
+  <section class="panel active" id="panel-maps">
+    <div class="grid">
+      <article class="card searchable">
+        <div class="card-top">
+          <div class="card-title"><a href="https://github.com/parth5012/texure/issues/232" target="_blank" rel="noopener">Wayfinder map 43: BridgeSession FSM, non-clobberable HUMAN_STEERING &amp; owner identity</a></div>
+          <span class="badge b-crit">Critical</span>
+        </div>
+        <div class="dest">Make human-wins enforceable and non-clobberable via an epoch-guarded <code>BridgeSession</code> reducer, session-scoped touch hook, and distinct local owner handles.</div>
+        <div class="tickets">
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-hitl">HITL</span><a href="https://github.com/parth5012/texure/issues/233" target="_blank" rel="noopener">Freeze BridgeSession epoch reducer, touch-hook scope &amp; owner identity rules</a></div>
+            <span class="ticket-num">#233</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-red">AFK RED</span><a href="https://github.com/parth5012/texure/issues/234" target="_blank" rel="noopener">Write-first blackbox &amp; unit tests for HUMAN_STEERING latch, non-clobber &amp; owner isolation</a></div>
+            <span class="ticket-num">#234</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-green">AFK GREEN</span><a href="https://github.com/parth5012/texure/issues/235" target="_blank" rel="noopener">Implement BridgeSession epoch FSM, passive touch hook &amp; distinct owner handles</a></div>
+            <span class="ticket-num">#235</span>
+          </div>
+        </div>
+        <div class="trio">
+          <div><strong>UX:</strong> Overlay &amp; notification reflect real <code>@ACTIVE</code> / <code>@HUMAN</code>; human touches are never overridden.</div>
+          <div><strong>DX:</strong> One pure CAS reducer replaces scattered <code>currentState.set</code> writes; resolves <code>human_win</code> vs <code>steer_flow</code> conflict.</div>
+          <div><strong>AX:</strong> Reliable <code>409 HUMAN_STEERING</code> + accurate <code>BUSY</code> owner identity for localhost agents.</div>
+        </div>
+        <div class="evidence">Evidence: <code>BridgeServer.kt:69,86-90,713-715,1130-1152</code> · <code>BridgeModels.kt:40-42</code></div>
+      </article>
+
+      <article class="card searchable">
+        <div class="card-top">
+          <div class="card-title"><a href="https://github.com/parth5012/texure/issues/236" target="_blank" rel="noopener">Wayfinder map 44: Bridge idle timers (60s/10m), Activity sync &amp; overlay/notification truth</a></div>
+          <span class="badge b-p1">P1</span>
+        </div>
+        <div class="dest">Implement BB-B6 (60s <code>FLAG_KEEP_SCREEN_ON</code>/overlay detach) &amp; BB-B9 (10m service stop), WeakRef Activity tracking, and live notification/overlay state projection.</div>
+        <div class="tickets">
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-hitl">HITL</span><a href="https://github.com/parth5012/texure/issues/237" target="_blank" rel="noopener">Decide ClientLeaseRegistry timers, Activity ref tracking &amp; overlay projection</a></div>
+            <span class="ticket-num">#237</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-red">AFK RED</span><a href="https://github.com/parth5012/texure/issues/238" target="_blank" rel="noopener">Write-first blackbox &amp; unit tests for 60s/10m idle lifecycle &amp; Activity handoff</a></div>
+            <span class="ticket-num">#238</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-green">AFK GREEN</span><a href="https://github.com/parth5012/texure/issues/239" target="_blank" rel="noopener">Implement ClientLeaseRegistry, idle timers, WeakRef Activity tracker &amp; reactive overlay</a></div>
+            <span class="ticket-num">#239</span>
+          </div>
+        </div>
+        <div class="trio">
+          <div><strong>UX:</strong> Prevents battery drain/screen burn-in; stops frozen <code>(@IDLE)</code> notification lies.</div>
+          <div><strong>DX:</strong> Clock-injectable timers and generation-tagged Activity refs eliminate <code>Thread.sleep</code> test flakiness.</div>
+          <div><strong>AX:</strong> Stopped bridge surfaces <code>OFFLINE</code> instead of hanging; fewer spurious <code>APP_NOT_FOREGROUND</code> errors.</div>
+        </div>
+        <div class="evidence">Evidence: <code>BridgeOverlay.kt:71,219-252</code> · <code>BridgeService.kt:88,156-164</code> · <code>TexureInitProvider.kt:46-70</code></div>
+      </article>
+
+      <article class="card searchable">
+        <div class="card-top">
+          <div class="card-title"><a href="https://github.com/parth5012/texure/issues/240" target="_blank" rel="noopener">Wayfinder map 45: MCP server TransportSession RAII, mDNS TTL &amp; truthful diagnostics</a></div>
+          <span class="badge b-p1">P1</span>
+        </div>
+        <div class="dest">Replace <code>Option&lt;CachedBridge&gt;</code> with an RAII <code>TransportSession</code> enum, memoize <code>url="auto"</code> mDNS lookups, and fix <code>wait_for</code> lag &amp; tunnel <code>ws_connected</code> reporting.</div>
+        <div class="tickets">
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-hitl">HITL</span><a href="https://github.com/parth5012/texure/issues/241" target="_blank" rel="noopener">Freeze TransportSession RAII ownership, mDNS TTL &amp; retryable descriptor policy</a></div>
+            <span class="ticket-num">#241</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-red">AFK RED</span><a href="https://github.com/parth5012/texure/issues/242" target="_blank" rel="noopener">Write-first blackbox &amp; unit tests for supervisor abort on switch, mDNS cache &amp; lag re-fetch</a></div>
+            <span class="ticket-num">#242</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-green">AFK GREEN</span><a href="https://github.com/parth5012/texure/issues/243" target="_blank" rel="noopener">Implement TransportSession RAII, mDNS cache, ToolArgs retry policy &amp; wait_for lag fix</a></div>
+            <span class="ticket-num">#243</span>
+          </div>
+        </div>
+        <div class="trio">
+          <div><strong>UX:</strong> Stops zombie LAN reconnect spam and 2s per-call mDNS stalls on <code>url="auto"</code>.</div>
+          <div><strong>DX:</strong> <code>Drop</code>-based task cancellation and typed <code>ToolArgs</code> retryability remove string checks.</div>
+          <div><strong>AX:</strong> Truthful <code>verbose:true</code> diagnostics + instant re-fetch on <code>RecvError::Lagged</code>.</div>
+        </div>
+        <div class="evidence">Evidence: <code>server.rs:27-43,314-364,467-483</code> · <code>router.rs:28</code> · <code>mdns.rs:254-285</code> · <code>wait_for.rs:78-81</code></div>
+      </article>
+
+      <article class="card searchable">
+        <div class="card-top">
+          <div class="card-title"><a href="https://github.com/parth5012/texure/issues/244" target="_blank" rel="noopener">Wayfinder map 46: Companion tunnel handshake truth, wake-lock sync &amp; QrScanner FSM</a></div>
+          <span class="badge b-p1">P1</span>
+        </div>
+        <div class="dest">Gate <code>TunnelState::Connected</code> on handshake acceptance, sync daemon wake-lock 1h expiry, and collapse <code>QrScanner</code>/<code>ControlPanel</code> booleans into explicit FSMs.</div>
+        <div class="tickets">
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-hitl">HITL</span><a href="https://github.com/parth5012/texure/issues/245" target="_blank" rel="noopener">Decide opt-in tunnel register ACK, uptime anchor, wake-lock expiry &amp; QrScanner FSM</a></div>
+            <span class="ticket-num">#245</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-red">AFK RED</span><a href="https://github.com/parth5012/texure/issues/246" target="_blank" rel="noopener">Write-first blackbox, Rust, Kotlin &amp; Vitest tests for handshake gate, wake-lock &amp; QrScanner</a></div>
+            <span class="ticket-num">#246</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-green">AFK GREEN</span><a href="https://github.com/parth5012/texure/issues/247" target="_blank" rel="noopener">Implement TunnelState::Registering + opt-in ACK &amp; daemon wake-lock expiry sync</a></div>
+            <span class="ticket-num">#247</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-green">AFK GREEN</span><a href="https://github.com/parth5012/texure/issues/248" target="_blank" rel="noopener">Implement QrScanner discriminated union FSM &amp; per-action ControlPanel dispatch</a></div>
+            <span class="ticket-num">#248</span>
+          </div>
+        </div>
+        <div class="trio">
+          <div><strong>UX:</strong> Eliminates green flash on <code>AUTH_FAILED</code>/<code>BUSY</code>, double-pairing races, and cross-card button lockouts.</div>
+          <div><strong>DX:</strong> Single discriminated union replaces 6 overlapping booleans in <code>QrScanner.tsx</code>.</div>
+          <div><strong>AX:</strong> Remote tunnel readiness and wake-lock state never report false positives.</div>
+        </div>
+        <div class="evidence">Evidence: <code>tunnel.rs:239-254</code> · <code>commands.rs:184-266</code> · <code>CompanionDaemonService.kt:44-58,262-292</code> · <code>QrScanner.tsx:55-135</code></div>
+      </article>
+
+      <article class="card searchable">
+        <div class="card-top">
+          <div class="card-title"><a href="https://github.com/parth5012/texure/issues/249" target="_blank" rel="noopener">Wayfinder map 47: Live Web Inspector in-band refresh, partial snapshots &amp; selection continuity</a></div>
+          <span class="badge b-p1">P1</span>
+        </div>
+        <div class="dest">Replace <code>socket.close()</code> 2s refresh hack with an in-band WS frame, stream trees even when screenshots fail, and forward full bridge errors/hints.</div>
+        <div class="tickets">
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-hitl">HITL</span><a href="https://github.com/parth5012/texure/issues/250" target="_blank" rel="noopener">Freeze Inspector in-band WS protocol, partial-snapshot payload &amp; error mapping</a></div>
+            <span class="ticket-num">#250</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-red">AFK RED</span><a href="https://github.com/parth5012/texure/issues/251" target="_blank" rel="noopener">Write-first integration &amp; blackbox tests for Inspector refresh, partial snapshot &amp; error relay</a></div>
+            <span class="ticket-num">#251</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-green">AFK GREEN</span><a href="https://github.com/parth5012/texure/issues/252" target="_blank" rel="noopener">Implement Inspector in-band refresh, partial snapshots, error relay &amp; selection rebind</a></div>
+            <span class="ticket-num">#252</span>
+          </div>
+        </div>
+        <div class="trio">
+          <div><strong>UX:</strong> &lt;20ms refresh with zero disconnect flash; stays usable when screen is off; node stays selected.</div>
+          <div><strong>DX:</strong> Socket generation tokens and single reconnect backoff eliminate stacked WS races.</div>
+          <div><strong>AX:</strong> <code>BUSY</code>/<code>HUMAN_STEERING</code>/<code>SCREEN_OFF</code> surface exact codes and hints instead of HTTP 500.</div>
+        </div>
+        <div class="evidence">Evidence: <code>inspect.rs:432-476,566-585</code> · <code>inspect.html:769-774,952-1000</code></div>
+      </article>
+
+      <article class="card searchable">
+        <div class="card-top">
+          <div class="card-title"><a href="https://github.com/parth5012/texure/issues/253" target="_blank" rel="noopener">Wayfinder map 48: Android debug subsystem atomicity</a></div>
+          <span class="badge b-p2">P2</span>
+        </div>
+        <div class="dest">Fix <code>RecordingController.stop()</code> <code>TextWatcher</code> leak + route muting, mock <code>times</code> timing, <code>ConfigStress</code> main-thread barrier, <code>Snapshot</code> rollback, and <code>NotificationManager</code> sync.</div>
+        <div class="tickets">
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-hitl">HITL</span><a href="https://github.com/parth5012/texure/issues/254" target="_blank" rel="noopener">Freeze atomicity rules for Recording muting, Mock times, ConfigStress, Snapshot &amp; Notifications</a></div>
+            <span class="ticket-num">#254</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-red">AFK RED</span><a href="https://github.com/parth5012/texure/issues/255" target="_blank" rel="noopener">Write-first blackbox &amp; unit tests for all 5 Android subsystem atomicity fixes</a></div>
+            <span class="ticket-num">#255</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-green">AFK GREEN</span><a href="https://github.com/parth5012/texure/issues/256" target="_blank" rel="noopener">Fix RecordingController TextWatcher leak, mute coverage &amp; NotificationManager sync</a></div>
+            <span class="ticket-num">#256</span>
+          </div>
+          <div class="ticket">
+            <div class="ticket-left"><span class="tag tag-green">AFK GREEN</span><a href="https://github.com/parth5012/texure/issues/257" target="_blank" rel="noopener">Harden TexureNetworkInterceptor times, ConfigStress barrier &amp; Snapshot rollback</a></div>
+            <span class="ticket-num">#257</span>
+          </div>
+        </div>
+        <div class="trio">
+          <div><strong>UX:</strong> No leaked EditText watchers, accurate notification shade state, clean stress resets.</div>
+          <div><strong>DX:</strong> Removes dead fields (<code>watcherIndex</code>/<code>watcherNode</code>) and off-main configuration fallbacks.</div>
+          <div><strong>AX:</strong> Pure recorded traces, deterministic concurrent mocks, and rollback-safe snapshot restores.</div>
+        </div>
+        <div class="evidence">Evidence: <code>RecordingController.kt:90-96,218,261,405</code> · <code>TexureNetworkInterceptor.kt:48-58</code> · <code>BridgeConfigStress.kt:67-78</code> · <code>BridgeStateSnapshot.kt:320-351</code> · <code>BridgeNotificationSimulator.kt:33,82</code></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- TAB 2: INVENTORY -->
+  <section class="panel" id="panel-inventory">
+    <div class="list">
+      <div class="row-card searchable">
+        <div class="row-head"><h3>1. Bridge Execution State &amp; Dead HUMAN_STEERING Hook</h3><span class="badge b-crit">P0 · Map 43</span></div>
+        <div class="row-body"><code>setHumanSteering()</code> has zero callers in the repo; mutation handlers unconditionally reset state to <code>IDLE</code>; <code>GET /ui-tree</code> clears <code>HUMAN_STEERING</code> even for background polls; <code>human_win.json</code> vs <code>steer_flow.json</code> contradict.</div>
+        <div class="row-meta"><span><code>BridgeModels.kt:40-42</code></span><span><code>BridgeServer.kt:69,86-90,713-715,740-894</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>2. Single-Flight Owner Lease (60s TTL &amp; IP Collision)</h3><span class="badge b-crit">P0 · Map 43</span></div>
+        <div class="row-body"><code>activeOwner</code> / <code>lastOwnerActivityTime</code> keys on <code>remote-addr</code>/<code>remoteIpAddress</code>, causing local clients, Inspector, and companion proxy to collide on <code>"127.0.0.1"</code>.</div>
+        <div class="row-meta"><span><code>BridgeServer.kt:72-74,109,1130-1152</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>3. Service, Overlay, Multi-Activity &amp; Keep-Screen-On Lifecycle</h3><span class="badge b-p1">P1 · Map 44</span></div>
+        <div class="row-body">No 60s screen-on detach (BB-B6) or 10m idle stop (BB-B9); notification frozen at <code>(@IDLE)</code>; <code>getServerState()</code> returns <code>IDLE</code> when stopped; static <code>activeActivity</code> gaps during multi-Activity switches.</div>
+        <div class="row-meta"><span><code>BridgeService.kt:88,156-164,205</code></span><span><code>BridgeOverlay.kt:71,219-286</code></span><span><code>TexureInitProvider.kt:46-70</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>4. RecordingController Hook, Touch, TextDelta &amp; Mute Machine</h3><span class="badge b-crit">P0 · Map 22 + 48</span></div>
+        <div class="row-body"><code>stop()</code> clears <code>sessionRef</code> before <code>uninstallHooksOnMain()</code> reads it, leaking <code>TextWatcher</code>; <code>muted</code> unchecked in <code>onTouchObserved</code>; <code>/tag</code>, <code>/intent</code>, <code>/config/stress</code> unmuted; async hook attach race.</div>
+        <div class="row-meta"><span><code>RecordingController.kt:43-66,90-96,176-222,261-442</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>5. In-App Network Mock Expiration &amp; Mode Toggle</h3><span class="badge b-p2">P2 · Map 48</span></div>
+        <div class="row-body"><code>MockRule.times</code> decrements before <code>delayMs</code> sleep; global singleton <code>reset()</code> silently re-enables <code>mockingEnabled = true</code> on server stop.</div>
+        <div class="row-meta"><span><code>TexureNetworkInterceptor.kt:27-58,105-124,221-229</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>6. Config Stress Baseline &amp; 200ms Off-Main Fallback</h3><span class="badge b-p2">P2 · Map 48</span></div>
+        <div class="row-body">200ms latch timeout falls back to running or returns bumped <code>rev</code> before main-thread applies; background <code>DELETE /config/stress</code> refuses with <code>APP_NOT_FOREGROUND</code> leaving process locale/theme dirty.</div>
+        <div class="row-meta"><span><code>BridgeConfigStress.kt:44-86,157-339</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>7. Notification Shadow Set &amp; Snapshot Restore Atomicity</h3><span class="badge b-p2">P2 · Map 48</span></div>
+        <div class="row-body"><code>activeNotificationIds</code> drifts on human swipe / <code>setAutoCancel(true)</code>; <code>restoreSnapshot()</code> wipes live prefs/DBs before copying staged files and skips <code>rev</code> bump on error.</div>
+        <div class="row-meta"><span><code>BridgeNotificationSimulator.kt:32-126</code></span><span><code>BridgeStateSnapshot.kt:47-112,246-366</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>8. MCP Server Transport Cache &amp; Zombie WsSupervisor</h3><span class="badge b-p1">P1 · Map 45</span></div>
+        <div class="row-body">Switching from <code>Direct</code> to <code>ReverseWs</code> skips <code>get_or_init_bridge</code> and leaks the old <code>WsSupervisor</code> dial loop; <code>url="auto"</code> runs a 2s mDNS query per tool call; <code>TUNNEL_WS_CONNECTED</code> hardcoded <code>true</code>.</div>
+        <div class="row-meta"><span><code>server.rs:27-43,295-364,467-483</code></span><span><code>router.rs:28</code></span><span><code>mdns.rs:254-285</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>9. wait_for Dual-Path &amp; Remote lifecycle_probe</h3><span class="badge b-p1">P1 · Map 39 + 45</span></div>
+        <div class="row-body"><code>RecvError::Lagged</code> sleeps 100ms instead of immediate re-fetch; <code>lifecycle_probe</code> calls <code>device_state</code> RPC which companion <code>ProxyRouter</code> does not implement.</div>
+        <div class="row-meta"><span><code>wait_for.rs:23-120</code></span><span><code>router.rs:88-90,335-353</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>10. TunnelServer Pending Map &amp; Bare-Reply Heuristic</h3><span class="badge b-p1">P1 · Map 46</span></div>
+        <div class="row-body"><code>request()</code> reads <code>active</code> before inserting into <code>pending</code>; bare-reply fallback only works when <code>pending.len() == 1</code>; backoff 1/5/15 vs companion 1/3/10.</div>
+        <div class="row-meta"><span><code>tunnel_server.rs:113-255,547-557</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>11. Live Web Inspector WS Close-Refresh &amp; Lock Split</h3><span class="badge b-p1">P1 · Map 47</span></div>
+        <div class="row-body"><code>triggerRefresh()</code> calls <code>socket.close()</code> + 2000ms timer; screenshot failure drops valid tree snapshot; HTTP 500 masks <code>BUSY</code>/<code>HUMAN_STEERING</code>; selection lost when hash rotates.</div>
+        <div class="row-meta"><span><code>inspect.rs:94-101,412-589</code></span><span><code>inspect.html:576-1032</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>12. ReverseTunnel Premature Connected State</h3><span class="badge b-p1">P1 · Map 46</span></div>
+        <div class="row-body"><code>notify_state(TunnelState::Connected)</code> fires on WS open before <code>RegisterHandshake</code> send or <code>AUTH_FAILED</code>/<code>BUSY</code> check; <code>started_at</code> starts before connect.</div>
+        <div class="row-meta"><span><code>tunnel.rs:14-30,239-254</code></span><span><code>commands.rs:184-266</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>13. Companion UI Optimistic defaultState vs Unregistered Tauri Commands</h3><span class="badge b-crit">P0 · Map 31 + 37</span></div>
+        <div class="row-body"><code>lib.rs</code> registers 4 commands while <code>CompanionContext</code> invokes 10+ (implemented only in <code>mock-backend.ts</code>); <code>defaultState</code> hardcodes green <code>CONNECTED / AUTHORIZED / FOREGROUND</code>.</div>
+        <div class="row-meta"><span><code>lib.rs:34-39</code></span><span><code>CompanionContext.tsx:34-147</code></span><span><code>StatusDashboard.tsx:394-413</code></span></div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>14. QrScanner Booleans, ControlPanel Lock &amp; Daemon Wake-Lock</h3><span class="badge b-p1">P1 · Map 46</span></div>
+        <div class="row-body"><code>QrScanner.scanFrame()</code> ignores <code>isProcessing</code> (duplicate pairing); <code>ControlPanel</code> locks all cards globally; <code>CompanionDaemonService._isWakeLockHeld</code> stays <code>true</code> after 1h timeout; <code>shizuku://binder-state</code> ignored.</div>
+        <div class="row-meta"><span><code>QrScanner.tsx:55-135</code></span><span><code>ControlPanel.tsx:60-111</code></span><span><code>CompanionDaemonService.kt:44-58,262-292</code></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: UNSURE / OPEN -->
+  <section class="panel" id="panel-unsure">
+    <div class="list">
+      <div class="row-card searchable">
+        <div class="row-head"><h3>1. Backoff schedule drift: [1, 3, 10] vs [1, 5, 15]</h3><span class="badge b-p1">Spec Decision</span></div>
+        <div class="row-body"><code>behavior-spec.md</code> §2.1 &amp; <code>ws_supervisor.rs</code> use <code>1s → 5s → 15s</code>, while companion <code>tunnel.rs</code> uses <code>[1, 3, 10]</code>. Changing either is spec-visible and requires a <code>DECISIONS.md</code> choice.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>2. Publishing Companion device_state RPC &amp; --lifecycle-probe</h3><span class="badge b-p1">Council Split</span></div>
+        <div class="row-body"><strong>Tidepool Alpha</strong> urged publishing <code>device_state</code> immediately so <code>--lifecycle-probe</code> works end-to-end; <strong>Hy4 Flash</strong> warned silent <code>am start</code> inside tool calls violates explicit-launch expectations and lacks a post-launch bridge readiness wait.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>3. BridgeOverlay http:// QR vs Companion wss://-only QR Parser</h3><span class="badge b-p2">Product Flow</span></div>
+        <div class="row-body"><code>BridgeOverlay.updateQr()</code> encodes <code>http://&lt;ip&gt;:8765</code> while <code>qr-parser.ts</code> rejects non-<code>wss://</code> payloads per BB-R11. Unclear whether Overlay QR is for a future LAN desktop scanner or needs a Companion LAN-direct mode.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>4. Live Room/SQLite WAL Pool Invalidation on Reset/Restore</h3><span class="badge b-p2">Android Constraint</span></div>
+        <div class="row-body">Deleting <code>.db</code> files while the target app holds open Room/SQLite handles risks <code>SQLiteDiskIOException</code>. Under Guardrail G2 (no app-side code), unsure whether to switch to SQL <code>DELETE</code> + WAL checkpoint, optional Shizuku process restart, or document the limitation.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>5. 300ms Activity-Recreation Grace Window vs Fast-Fail APP_NOT_FOREGROUND</h3><span class="badge b-p2">Council Split</span></div>
+        <div class="row-body"><strong>Gemini 3.8 Flash</strong> proposed a 300ms transition latch during config-stress recreation; <strong>DeepSeek V4.1</strong> &amp; <strong>Hy4</strong> noted it can delay true <code>APP_NOT_FOREGROUND</code> failures unless gated by <code>ProcessLifecycleOwner</code> / <code>ActivityManager</code>.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>6. Shared vs Separate Single-Flight Lock for Web Inspector</h3><span class="badge b-p2">UX vs AX</span></div>
+        <div class="row-body">Unsure whether passive Inspector inspection should stay lock-free while only mutating <code>POST /inspect/action</code> ("Live Drive") contends for the bridge's <code>BUSY</code> lease.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>7. CompanionDaemonService START_NOT_STICKY &amp; Interceptor reset() Mode</h3><span class="badge b-p2">Intent Check</span></div>
+        <div class="row-body">Unclear if <code>START_NOT_STICKY</code> was deliberate to avoid zombie background services, and whether <code>TexureNetworkInterceptor.reset()</code> on server stop should restore <code>mockingEnabled = true</code> or preserve the user's toggle.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3>8. Hardware L3 Verification &amp; Missing Claude Sonnet 4.6 Review</h3><span class="badge b-crit">Coverage Gap</span></div>
+        <div class="row-body">Audit was read-only (hardware <code>device</code>-tagged scenarios like <code>human_win.json</code> were not run on phone), and <strong>Claude Sonnet 4.6</strong> hit quota limit before returning its opinion.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: OVERLAPS -->
+  <section class="panel" id="panel-overlaps">
+    <div class="list">
+      <div class="row-card searchable">
+        <div class="row-head"><h3><a href="https://github.com/parth5012/texure/issues/143" target="_blank" rel="noopener">Wayfinder map 22 (#143): Recording start/stop race hardening</a></h3><span class="badge b-accent">Existing Map</span></div>
+        <div class="row-body">Already tracks <code>RecordingController</code> async <code>installHooksOnMain</code> vs <code>stop()</code> race, synthetic key filtering, and overlay hit-test coordinates. Map 48 (#253) intentionally avoids duplicating this and scopes to the <code>TextWatcher</code> leak + unmuted HTTP routes.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3><a href="https://github.com/parth5012/texure/issues/179" target="_blank" rel="noopener">Wayfinder map 31 (#179): Companion real loading/error/offline states &amp; device profiles</a></h3><span class="badge b-accent">Existing Map</span></div>
+        <div class="row-body">Already tracks replacing <code>CompanionContext.tsx</code> hardcoded optimistic <code>defaultState</code> and adding multi-device profile switching.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3><a href="https://github.com/parth5012/texure/issues/204" target="_blank" rel="noopener">Wayfinder map 37 (#204): Control surface integrity: WS auth + companion command wiring</a></h3><span class="badge b-accent">Existing Map</span></div>
+        <div class="row-body">Already tracks WS token/URI guard in <code>BridgeServer.kt</code> and registering the ~10 missing Tauri commands/events between <code>lib.rs</code> and <code>CompanionContext.tsx</code>.</div>
+      </div>
+      <div class="row-card searchable">
+        <div class="row-head"><h3><a href="https://github.com/parth5012/texure/issues/213" target="_blank" rel="noopener">Wayfinder map 39 (#213): Truthful waits: wait_for validation &amp; transient retry</a></h3><span class="badge b-accent">Existing Map</span></div>
+        <div class="row-body">Already tracks <code>wait_for</code> empty predicate validation, timeout 0, and transient mid-poll fetch retries. Map 45 (#240) complements it with <code>RecvError::Lagged</code> immediate re-fetch and <code>TransportSession</code> RAII cleanup.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="empty" id="emptyState">No matching items found.</div>
+
+  <footer>
+    Texure State-Machine Audit · Generated 2026-11-24 · Hosted via <code>cron-system/static/texure-state-machines/</code>
+  </footer>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const saved = localStorage.getItem('texure_sm_theme');
+  if (saved) root.setAttribute('data-theme', saved);
+
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark' ||
+      (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const next = isDark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('texure_sm_theme', next);
+  });
+
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  const searchInput = document.getElementById('searchInput');
+  const emptyState = document.getElementById('emptyState');
+
+  function applyFilter() {
+    const q = searchInput.value.trim().toLowerCase();
+    const activePanel = document.querySelector('.panel.active');
+    let visible = 0;
+    activePanel.querySelectorAll('.searchable').forEach((el) => {
+      const match = !q || el.textContent.toLowerCase().includes(q);
+      el.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    emptyState.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => t.classList.remove('active'));
+      panels.forEach((p) => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      applyFilter();
+    });
+  });
+
+  searchInput.addEventListener('input', applyFilter);
+</script>
+</body>
+</html>
